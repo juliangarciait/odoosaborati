@@ -201,6 +201,13 @@ class SaleOrder(models.Model):
         for line in lines:
             is_custom_line, is_gift_card_line, product = self.search_custom_tip_gift_card_product(line, instance)
 
+            if float(line.get("total_discount")) != 0.0 and total_discount and float(total_discount) > 0.0:
+                discount_amount = 0.0
+                for discount_allocation in line.get("discount_allocations"):
+                    discount_amount += float(discount_allocation.get("amount"))
+                if discount_amount > 0.0: 
+                    line['price'] = ((float(line.get("price")) * float(line.get("quantity"))) - float(discount_amount)) / float(line.get("quantity"))
+
             order_line = self.shopify_create_sale_order_line(line, product, line.get("quantity"),
                                                              product.name, line.get("price"),
                                                              order_response)
@@ -213,7 +220,8 @@ class SaleOrder(models.Model):
             if is_custom_line:
                 order_line.write({'name': line.get('name')})
 
-            if float(total_discount) > 0.0:
+            #Código que crea la línea del descuento en odoo cuando este no viene en el producto
+            if float(line.get("total_discount")) == 0.0 and float(total_discount) > 0.0:
                 discount_amount = 0.0
                 for discount_allocation in line.get("discount_allocations"):
                     discount_amount += float(discount_allocation.get("amount"))
