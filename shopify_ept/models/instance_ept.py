@@ -136,6 +136,8 @@ class ShopifyInstanceEpt(models.Model):
                                                 "2.During order sync operation, this pricelist "
                                                 "will be set in the order if the order currency from store and the "
                                                 "currency from the pricelist set here, matches.")
+    shopify_consumer_pricelist_id = fields.Many2one('product.pricelist', string='Consumer Pricelist')
+    shopify_b2b_pricelist_id = fields.Many2one('product.pricelist', string='B2B Pricelist')
 
     shopify_order_prefix = fields.Char(size=10, string='Order Prefix',
                                        help="Enter your order prefix")
