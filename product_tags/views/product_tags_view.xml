@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="product_tags_tree_view" model="ir.ui.view">
+        <field name="name">Product Tags Tree View</field>
+        <field name="model">product.tags</field>
+        <field name="arch" type="xml">
+            <tree string="Tags">
+                <field name="name"/>
+                <field name="to_shopify"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_tags_form_view" model="ir.ui.view">
+        <field name="name">Product Tags Form View</field>
+        <field name="model">product.tags</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Product Tags">
+                <sheet>
+                    <group>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <field name="to_shopify"/>
+                    </group>
+                    <notebook>
+                        <page string="Products">
+                            <field name="product_ids" mode="kanban"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_tags" model="ir.actions.act_window">
+        <field name="name">Product Tags</field>
+        <field name="res_model">product.tags</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No tags registered
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="product_tags_menu" name="Product Tags" action="action_product_tags" parent="stock.menu_stock_inventory_control" sequence="2"/>
+</odoo>

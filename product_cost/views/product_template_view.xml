@@ -10,6 +10,9 @@
             <xpath expr="//field[@name='categ_id']" position="before">
                 <field name="replacement_cost" widget="monetary" readonly="1"/>
             </xpath>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
