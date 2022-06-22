@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="product_supplierinfo_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.supplierinfo.form.view.inherit</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[@name='vendor']/field[@name='product_variant_count']" position="before">
+                <field name="create_date" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/group" position="after">
+                <group string="Notes">
+                    <field name="notes" nolabel="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
