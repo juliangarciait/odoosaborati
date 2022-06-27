@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="mrp_bom_form_inherit_result_field" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherit.result.field</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_qty']" position="after">
+                <field name="result" readonly="1" widget="monetary"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/field[@name='bom_line_ids']" position="after">
+                <group>
+                    <group class="oe_subtotal_footer oe_right">
+                        <field name="replacement_cost_total" readonly="1" colspan="2"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

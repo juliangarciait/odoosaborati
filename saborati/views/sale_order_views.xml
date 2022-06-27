@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="sale_order_list_inherit_delivery_percent" model="ir.ui.view">
+        <field name="name">sale.order.list.inherit.delivery.percent</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="delivery_percentage" optional="hidden" widget="percentage"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
