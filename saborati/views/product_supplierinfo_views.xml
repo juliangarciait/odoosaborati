@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="product_supplierinfo_inherit_history" model="ir.ui.view">
+        <field name="name">product.supplierinfo.inherit.history</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group" position="after">
+                <group>
+                    <group>
+                        <field name="create_date" readonly="1"/>
+                        <field name="create_uid" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="write_date" readonly="1"/>
+                        <field name="write_uid" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_supplierinfo_inherit_replace" model="ir.ui.view">
+        <field name="name">product.supplierinfo.inherit.replace</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="vendor_pricelist_fields.product_supplierinfo_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[@name='vendor']/field[@name='create_date']" position="replace">
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_supplierinfo_inherit_required_fields" model="ir.ui.view">
+        <field name="name">product.supplierinfo.inherit.required.fields</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[@name='vendor']/field[@name='name']" position="attributes">
+                <attribute name="required">True</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="required">True</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/field[@name='price']" position="attributes">
+                <attribute name="required">True</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_supplierinfo_inherit_list_fields" model="ir.ui.view">
+        <field name="name">product.supplierinfo.inherit.list.fields</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='sequence']" position="before">
+                <field name="create_date" optional="hidden"/>
+                <field name="create_uid" optional="hidden"/>
+                <field name="write_date" optional="hidden"/>
+                <field name="write_uid" optional="hidden"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
