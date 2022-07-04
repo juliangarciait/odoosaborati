@@ -20,6 +20,9 @@
         'views/product_template_views.xml',
         'views/sale_order_views.xml',
         'views/mrp_bom_views.xml',
+        'views/product_template_views.xml',
+        'views/product_tags_views.xml',
+        'views/product_pricelist_views.xml',
     ], 
     'installable' : True, 
     'auto_install' : False
