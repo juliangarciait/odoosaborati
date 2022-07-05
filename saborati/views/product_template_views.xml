@@ -9,7 +9,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="options">{'no_create_edit':True, 'no_create': True}</attribute>
-                <attribute name="required">True</attribute>
             </xpath>
         </field>
     </record>
