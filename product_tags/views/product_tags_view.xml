@@ -28,7 +28,7 @@
                     </group>
                     <notebook>
                         <page string="Products">
-                            <field name="product_ids" mode="kanban"/>
+                            <field name="product_ids" mode="tree"/>
                         </page>
                     </notebook>
                 </sheet>

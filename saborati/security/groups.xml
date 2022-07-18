@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="group_delete_vendor_pricelist" model="res.groups">
+        <field name="name">Delete vendor pricelist</field>
+    </record>
+    
+</odoo>
