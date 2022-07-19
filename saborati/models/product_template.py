@@ -16,7 +16,7 @@ class ProductTemplate(models.Model):
     replacement_cost = fields.Float(compute="_compute_replacement_cost", store=True)
 
     ingredients = fields.Text('Ingredients')
-    brand = fields.Many2one('product.template', 'Brand*')
+    brand = fields.Many2one('brand', 'Brand*')
 
 
     @api.depends('margin_ids', 'replacement_cost')
