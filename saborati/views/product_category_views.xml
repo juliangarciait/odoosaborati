@@ -10,7 +10,21 @@
             <xpath expr="//form/sheet" position="inside">
                 <notebook>
                     <page name="products" string="Products">
-                        <field name="product_ids" mode="tree"/>
+                        <field name="product_ids">
+                            <tree string="Products" editable="bottom" create="false">
+                                <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                                <field name="name" optional="show"/>
+                                <field name="default_code" optional="show"/>
+                                <field name="barcode" optional="hidden"/>
+                                <field name="company_id" optional="hidden"/>
+                                <field name="list_price" optional="show"/>
+                                <field name="standard_price" optional="show"/>
+                                <field name="categ_id" optional="hidden"/>
+                                <field name="detailed_type" optional="hidden"/>
+                                <field name="qty_available" optional="show"/>
+                                <field name="virtual_available" optional="show"/>
+                            </tree>
+                        </field>
                     </page>
                 </notebook>
             </xpath>

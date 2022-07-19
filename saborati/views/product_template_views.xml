@@ -87,7 +87,7 @@
         <field name="arch" type="xml"> 
             <xpath expr="//form/sheet/notebook/page[@name='general_information']/group/group[@name='group_general']/field[@name='detailed_type']" position="after">
                 <field name="ingredients" attrs="{'invisible': [('detailed_type', '!=', 'product')]}"/>
-                <field name="brand" attrs="{'invisible': [('detailed_type', '!=', 'product')]}" domain="[('tag_ids', 'in', tag_ids), ('id', '!=', id)]" options="{'no_create_edit': True, 'no_create': True}"/>
+                <field name="brand" attrs="{'invisible': [('detailed_type', '!=', 'product')]}" options="{'no_create_edit': True, 'no_create': True}"/>
             </xpath>
         </field>
     </record>
