@@ -28,6 +28,7 @@
         'views/stock_production_lot_views.xml',
         'views/product_category_views.xml',
         'views/product_product_views.xml',
+        'views/brand_views.xml'
     ], 
     'installable' : True, 
     'auto_install' : False

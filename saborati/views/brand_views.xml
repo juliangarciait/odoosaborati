@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="brand_tree_view" model="ir.ui.view">
+        <field name="name">Product Brand Tree View</field>
+        <field name="model">brand</field>
+        <field name="arch" type="xml">
+            <tree string="Brands">
+                <field name="image_1920" widget="image" class="oe_avatar" string="Logo"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="brand_form_view" model="ir.ui.view">
+        <field name="name">Brand Form View</field>
+        <field name="model">brand</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Brand">
+                <sheet>
+                    <h1>
+                        <field name="image_1920" widget="image" class="oe_avatar" nolabel="1"/>
+                        <field name="name"/>
+                    </h1>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_product_brands" model="ir.actions.act_window">
+        <field name="name">Product Brands</field>
+        <field name="res_model">brand</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No brands registered
+            </p>
+        </field>
+    </record>
+
+    
+    <menuitem id="product_brands" name="Product Brands" action="action_product_brands" parent="stock.menu_product_in_config_stock" sequence="5"/>
+
+</odoo>
