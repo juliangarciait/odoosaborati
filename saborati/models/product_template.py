@@ -39,16 +39,16 @@ class ProductTemplate(models.Model):
                 record.replacement_cost = has_mrp_bom.replacement_cost_total
 
 
-    @api.model
-    def create(self, vals_list): 
-        res = super(ProductTemplate, self).create(vals_list)
+    #@api.model
+    #def create(self, vals_list): 
+    #    res = super(ProductTemplate, self).create(vals_list)
 
 
-        self.env['product.margin'].create(
-            {
-                'margin' : self.env.company.default_company_margin,
-                'product_tmpl_id' : res.id,
-            }
-        )
+    #    self.env['product.margin'].create(
+    #        {
+    #            'margin' : self.env.company.default_company_margin,
+    #            'product_tmpl_id' : res.id,
+    #        }
+    #    )
         
-        return res
+    #    return res
