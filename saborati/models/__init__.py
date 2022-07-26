@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from . import res_company
 from . import sale_order
 from . import product_pricelist
 from . import mrp_bom
