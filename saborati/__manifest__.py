@@ -29,7 +29,6 @@
         'views/product_category_views.xml',
         'views/product_product_views.xml',
         'views/brand_views.xml', 
-        'views/res_company.xml',
     ], 
     'installable' : True, 
     'auto_install' : False
