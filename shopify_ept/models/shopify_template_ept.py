@@ -47,9 +47,10 @@ class ShopifyProductTemplateEpt(models.Model):
     website_published = fields.Selection([('unpublished', 'Unpublished'), ('published_web', 'Published in Web Only'),
                                           ('published_global', 'Published in Web and POS')],
                                          default='unpublished', copy=False, string="Published ?")
-    tag_ids = fields.Many2many("shopify.tags", "shopify_tags_rel", "product_tmpl_id", "tag_id",
-                               "Tags")
+    tag_ids = fields.Many2many("product.tags", string="Tags")
     description = fields.Html()
+    brand = fields.Many2one("brand", string="Brand*")
+    replacement_cost = fields.Float("Replacement Cost")
     total_variants_in_shopify = fields.Integer("Total Variants", default=0)
     total_sync_variants = fields.Integer("Total Synced Variants", compute="_compute_total_sync_variants",
                                          store=True)

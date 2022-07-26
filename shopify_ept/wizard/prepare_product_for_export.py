@@ -129,7 +129,11 @@ class PrepareProductForExport(models.TransientModel):
         template_vals = {"product_tmpl_id": product_template.id,
                          "shopify_instance_id": shopify_instance.id,
                          "shopify_product_category": product_template.categ_id.id,
-                         "name": product_template.name}
+                         "name": product_template.name,
+                         "tag_ids": product_template.tag_ids.ids,
+                         "description": product_template.description_sale,
+                         "replacement_cost": product_template.replacement_cost, 
+                         "brand": product_template.brand.id}
         if ir_config_parameter_obj.sudo().get_param("shopify_ept.set_sales_description"):
             template_vals.update({"description": variant.description_sale})
         return template_vals

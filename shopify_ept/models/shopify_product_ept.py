@@ -235,7 +235,7 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail or is_set_price:
             variants = []
             for variant in template.shopify_product_ids:
-                variant_vals = self.shopify_prepare_variant_vals(instance, variant, is_set_price,
+                variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
                                                                  is_set_basic_detail)
                 variants.append(variant_vals)
             new_product.variants = variants
@@ -404,8 +404,8 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail:
             if template.description:
                 new_product.body_html = template.description
-            if template.product_tmpl_id.seller_ids:
-                new_product.vendor = template.product_tmpl_id.seller_ids[0].display_name
+            if template.brand:
+                new_product.vendor = template.brand.name
             new_product.product_type = template.shopify_product_category.name
             new_product.tags = [tag.name for tag in template.tag_ids]
             if template.template_suffix:
@@ -414,7 +414,7 @@ class ShopifyProductProductEpt(models.Model):
 
         return True
 
-    def shopify_prepare_variant_vals(self, instance, variant, is_set_price, is_set_basic_detail):
+    def shopify_prepare_variant_vals(self, instance, template, variant, is_set_price, is_set_basic_detail):
         """This method used to prepare variant vals for export product variant from
             shopify third layer to shopify store.
             :param variant: Record of shopify product product(shopify product variant)
@@ -427,7 +427,7 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_price:
             price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
-            variant_vals.update({"price": float(price)})
+            variant_vals.update({"price": float(price), 'cost': template.replacement_cost})
         if is_set_basic_detail:
             variant_vals = self.prepare_vals_for_product_basic_details(variant_vals, variant)
 
