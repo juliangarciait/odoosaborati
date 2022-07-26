@@ -37,3 +37,18 @@ class ProductTemplate(models.Model):
                 record.replacement_cost = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.id)], order='create_date desc', limit=1).price
             elif has_mrp_bom: 
                 record.replacement_cost = has_mrp_bom.replacement_cost_total
+
+
+    @api.model
+    def create(self, vals_list): 
+        res = super(ProductTemplate, self).create(vals_list)
+
+
+        self.env['product.margin'].create(
+            {
+                'margin' : self.env.company.default_company_margin,
+                'product_tmpl_id' : res.id,
+            }
+        )
+        
+        return res

@@ -11,3 +11,4 @@ class Brand(models.Model):
     _inherit = ['image.mixin']
 
     name = fields.Char('Name')
+    product_ids = fields.One2many('product.template', 'brand')
