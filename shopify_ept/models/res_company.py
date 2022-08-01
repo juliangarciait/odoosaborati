@@ -30,6 +30,8 @@ class ResCompany(models.Model):
     shopify_onboarding_toggle_state = fields.Selection(selection=[('open', "Open"), ('closed', "Closed")],
                                                        default='open')
 
+    default_shopify_instance_id = fields.Many2one('shopify.instance.ept', string="Default Instance")
+
     @api.model
     def action_close_shopify_instances_onboarding_panel(self):
         """ Mark the onboarding panel as closed. """
