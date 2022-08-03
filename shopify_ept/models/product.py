@@ -23,6 +23,8 @@ class ProductTemplate(models.Model):
                     shopify_templates = shopify_product_template_obj.search(
                         [('product_tmpl_id', '=', template.id), ('active', '=', False)])
                 shopify_templates.write({'active': vals.get('active')})
+        
+        res = super(ProductTemplate, self).write(vals)
 
         company_instance_id = self.env.company.default_shopify_instance_id.id
 
@@ -51,7 +53,6 @@ class ProductTemplate(models.Model):
                     else:
                         export_data.with_context({"active_ids" : [shopify_product_ept_id.id]}).manual_update_product_to_shopify()
 
-        res = super(ProductTemplate, self).write(vals)
         return res
 
     def update_product_data_in_shopify(self): 
