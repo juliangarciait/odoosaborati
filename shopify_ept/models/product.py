@@ -46,7 +46,7 @@ class ProductTemplate(models.Model):
 
             for product in self:
                 if product.detailed_type == 'product':
-                    shopify_prepare_product_id.with_context({"active_ids": [product.id]}).prepare_product_for_export()
+                    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
                     shopify_product_ept_id = self.env['shopify.product.template.ept'].search([('product_tmpl_id', '=', product.id)], limit=1)
                     if not shopify_product_ept_id.exported_in_shopify: 
                         export_data.with_context({"active_ids" : [shopify_product_ept_id.id]}).manual_export_product_to_shopify()
