@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='display_name']" position="before">
-                <field name="id" widget="char" />
+                <field name="id" widget="integer" options="{'format': 0}" />
             </xpath>
         </field>
     </record>
@@ -18,7 +18,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='website']" position="replace">
-                <field name="id" widget="char" />
+                <field name="id" widget="integer" options="{'format': 0}" />
             </xpath>
         </field>
     </record>
