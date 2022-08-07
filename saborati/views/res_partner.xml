@@ -7,8 +7,20 @@
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='display_name']" position="before">
-                <field name="id" />
+                <field name="id" widget="char" />
             </xpath>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="view_partner_form_with_id">
+        <field name="name">res.partner.form.id</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='website']" position="replace">
+                <field name="id" widget="char" />
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
