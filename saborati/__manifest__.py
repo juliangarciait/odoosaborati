@@ -31,6 +31,8 @@
         'views/brand_views.xml', 
         'views/res_company.xml',
         'views/crm_lead_views.xml',
+        'views/res_partner.xml',
+
     ], 
     'installable' : True, 
     'auto_install' : False
