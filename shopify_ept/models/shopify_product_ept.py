@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from .. import shopify
 from ..shopify.pyactiveresource.connection import ClientError
 from ..shopify.pyactiveresource.connection import ResourceNotFound
@@ -49,6 +49,7 @@ class ShopifyProductProductEpt(models.Model):
     shopify_image_ids = fields.One2many("shopify.product.image.ept", "shopify_variant_id")
     taxable = fields.Boolean(default=True)
     last_stock_update_date = fields.Datetime(readonly=True, help="It is used in export stock process.")
+    product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active')], default="draft", string="Product status")
 
     def toggle_active(self):
         """
@@ -402,12 +403,11 @@ class ShopifyProductProductEpt(models.Model):
             new_product.published_at = published_at
 
         if is_set_basic_detail:
-            if template.description:
-                new_product.body_html = template.description
-            if template.brand:
-                new_product.vendor = template.brand.name
-            new_product.product_type = template.shopify_product_category.name
-            new_product.tags = [tag.name for tag in template.tag_ids]
+            new_product.body_html = template.description if template.description else '' 
+            new_product.vendor = template.brand.name if template.brand.name else ''
+            new_product.status = template.product_status
+            new_product.product_type = template.shopify_product_category.name if template.shopify_product_category.name else ''
+            new_product.tags = [tag.name for tag in template.tag_ids] if template.tag_ids else []
             if template.template_suffix:
                 new_product.template_suffix = template.template_suffix
             new_product.title = template.name
@@ -427,7 +427,11 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_price:
             price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
-            variant_vals.update({"price": float(price), 'cost': template.replacement_cost})
+            if float(price) > 0.0: 
+                variant_vals.update({"price": float(price)})
+            else: 
+                raise ValidationError("El producto no se puede mandar a shopify porque su precio (en la lista de precio seleccionada) es de 0")
+            variant_vals.update({'cost': template.replacement_cost})
         if is_set_basic_detail:
             variant_vals = self.prepare_vals_for_product_basic_details(variant_vals, variant)
 

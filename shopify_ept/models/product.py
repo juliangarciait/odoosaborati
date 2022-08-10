@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-from odoo import models
+from odoo import models, fields
 import logging
 _logger = logging.getLogger(__name__)
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
+
+    description_sale = fields.Html()
 
     def write(self, vals):
         """
