@@ -18,7 +18,7 @@ class ProductTemplate(models.Model):
     ingredients = fields.Text('Ingredients')
     brand = fields.Many2one('brand', 'Brand*')
 
-    product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active')], default="draft", string="Product status")
+    product_general_status = fields.Boolean(default=True)
 
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 

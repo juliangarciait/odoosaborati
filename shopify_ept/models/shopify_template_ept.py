@@ -57,7 +57,7 @@ class ShopifyProductTemplateEpt(models.Model):
     shopify_product_category = fields.Many2one("product.category", "Product Category")
     active = fields.Boolean(default=True)
     shopify_image_ids = fields.One2many("shopify.product.image.ept", "shopify_template_id")
-    product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active')], default="draft", string="Product status")
+    product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], default="draft", string="Product status")
 
     @api.depends("shopify_product_ids.exported_in_shopify", "shopify_product_ids.variant_id")
     def _compute_total_sync_variants(self):
