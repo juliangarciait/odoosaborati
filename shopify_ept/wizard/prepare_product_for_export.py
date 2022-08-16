@@ -133,7 +133,7 @@ class PrepareProductForExport(models.TransientModel):
                          "tag_ids": product_template.tag_ids.ids,
                          "replacement_cost": product_template.replacement_cost, 
                          "brand": product_template.brand.id,
-                         "product_status": product_template.product_status}
+                         }
         if ir_config_parameter_obj.sudo().get_param("shopify_ept.set_sales_description"):
             template_vals.update({"description": variant.description_sale})
         return template_vals
