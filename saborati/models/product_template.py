@@ -19,7 +19,7 @@ class ProductTemplate(models.Model):
     brand = fields.Many2one('brand', 'Brand*')
 
     product_general_status = fields.Boolean(default=True)
-    product_status = fields.Integer()
+    #product_status = fields.Integer()
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 
         for record in self:
