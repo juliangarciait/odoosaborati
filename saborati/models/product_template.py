@@ -13,13 +13,16 @@ class ProductTemplate(models.Model):
 
     list_price = fields.Float(compute="_compute_price")
 
-    replacement_cost = fields.Float(compute="_compute_replacement_cost", store=True)
+    replacement_cost = fields.Float(compute="_compute_replacement_cost")
 
     ingredients = fields.Text('Ingredients')
     brand = fields.Many2one('brand', 'Brand*')
 
-    product_general_status = fields.Boolean(default=True)
-    product_status = fields.Integer()
+    product_general_status = fields.Boolean(default=True, company_dependent=True)
+    product_status = fields.Integer()  
+
+    company_ids = fields.Many2many('res.company', string="Companies")
+
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 
         for record in self:
@@ -33,7 +36,7 @@ class ProductTemplate(models.Model):
     def _compute_replacement_cost(self): 
         for record in self: 
             record.replacement_cost = 0.0
-            has_mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', record.id)])
+            has_mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', record.id)], order='write_date desc', limit=1)
             if not has_mrp_bom: 
                 record.replacement_cost = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.id)], order='create_date desc', limit=1).price
             elif has_mrp_bom: 
@@ -53,3 +56,14 @@ class ProductTemplate(models.Model):
         )
         
         return res
+
+    
+    def assign_product_margin(self): 
+        return {
+            'view_mode' : 'form', 
+            'type' : 'ir.actions.act_window', 
+            'res_model' : 'assign.margin.to.product', 
+            'target' : 'new', 
+            'view_id' : self.env.ref('saborati.assign_margin_to_product_view').id,
+            'context' : {'ids' : self.env.context.get('active_ids', [])}
+        }

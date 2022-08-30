@@ -92,4 +92,40 @@
         </field>
     </record>
 
+    <record id="product_template_fields_company_ids" model="ir.ui.view">
+        <field name="name">product.template.fields.company.ids</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product_tags.product_template_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="company_ids" widget="many2many_tags" options="{'no_create_edit' : True, 'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_fields_filter_company_ids" model="ir.ui.view">
+        <field name="name">product.template.fields.filter.company.ids</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_search_form_view_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='warehouse_id']" position="after">
+                <field name="company_ids" context="{'company' : self}" filter_domain="[('company_ids', 'ilike', self)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='real_stock_negative']" position="after">
+                <filter name="companies" string="Companies" domain="" context="{'group_by':'company_ids'}"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <!-- Server action to assign product margin to all products -->
+    <record id="product_template_action_server" model="ir.actions.server">
+        <field name="name">Asignar márgen a productos</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="binding_model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">action = model.assign_product_margin()</field>
+    </record>
+
 </odoo>
