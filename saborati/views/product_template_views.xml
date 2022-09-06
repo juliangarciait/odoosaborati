@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<odoo>
-
+<odoo>    
     <record id="product_template_no_create_tags" model="ir.ui.view">
         <field name="name">product.template.no.create.tags</field>
         <field name="model">product.template</field>
@@ -42,6 +41,7 @@
                         <field name="min_qty" optional="hidden"/>
                         <field name="delay" optional="show"/>
                         <field name="company_id" optional="hidden"/>
+                        <field name="currency_id" optional="show"/>
                     </tree>
                 </field>
             </xpath>
@@ -116,7 +116,6 @@
             </xpath>
         </field>
     </record>
-
 
 
     <!-- Server action to assign product margin to all products -->

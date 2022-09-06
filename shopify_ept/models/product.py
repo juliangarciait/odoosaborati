@@ -2,6 +2,7 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import models, fields
+from odoo.exceptions import ValidationError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class ProductTemplate(models.Model):
                     
                     if not product.product_general_status: 
                         product_instance.product_status = 'draft'
+                        raise ValidationError ('El campo estatus general del producto no está marcado')
                     if not product.active: 
                         product_instance.product_status = 'archived'
 

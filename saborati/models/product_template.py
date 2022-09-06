@@ -67,3 +67,18 @@ class ProductTemplate(models.Model):
             'view_id' : self.env.ref('saborati.assign_margin_to_product_view').id,
             'context' : {'ids' : self.env.context.get('active_ids', [])}
         }
+
+
+                
+
+
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super(ProductTemplate, self).fields_view_get(view_id=view_id, view_type=view_type,
+                                                            toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            doc = etree.XML(res['arch'])
+            nodes = doc.xpath("//field[@name='company_id']")
+            node = nodes[0] if nodes else False
+            node.set('readonly', '1')
+            res['arch'] = etree.tostring(doc)
+        return res
