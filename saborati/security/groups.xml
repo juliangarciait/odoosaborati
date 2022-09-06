@@ -2,8 +2,20 @@
 
 <odoo>
 
-    <record id="group_delete_vendor_pricelist" model="res.groups">
-        <field name="name">Delete vendor pricelist</field>
+    <record id="group_admin_in_all_companies" model="res.groups">
+        <field name="name">Admin in all companies</field>
     </record>
-    
+   
+    <record id="products_admin" model="ir.rule">
+        <field name="name">See all products</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="groups" eval="[(4, ref('saborati.group_admin_in_all_companies'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!--<record id="products_filtered_by_company" model="ir.rule">
+        <field name="name">Products filtered by company</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="domain_force">['|', ('company_ids', 'in', user.company_id.id), ('')]</field>
+    </record>-->
 </odoo>

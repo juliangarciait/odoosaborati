@@ -14,6 +14,7 @@
         'stock',
         'product_tags',
         'product_cost',
+        'crm',
     ],
     'data' : [
         'security/ir.model.access.csv',

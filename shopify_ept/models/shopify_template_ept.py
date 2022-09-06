@@ -1050,7 +1050,8 @@ class ShopifyProductTemplateEpt(models.Model):
             "exported_in_shopify": True,
             "total_variants_in_shopify": variant_length,
             "shopify_product_category": template_dict.get("shopify_product_category"),
-            "tag_ids": [(6, 0, template_dict.get("tags"))]}
+            "tag_ids": [(6, 0, template_dict.get("tags"))]
+            }
 
         if shopify_template:
             shopify_template.write(vals)
