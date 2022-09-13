@@ -9,3 +9,21 @@ class ProductPricelistItem(models.Model):
     _inherit = 'product.pricelist.item'
 
     base = fields.Selection([('list_price', 'Sales Price'), ('replacement_cost', 'Replacement Cost'), ('pricelist', 'Other Pricelist')])
+
+    def write(self, vals): 
+        res = super(ProductPricelistItem, self).write(vals)
+
+        for item in self: 
+            if item.product_tmpl_id.shopify_product_template_ids:
+                for product in item.product_tmpl_id.shopify_product_template_ids: 
+                    export_data = self.env['shopify.process.import.export'].create({
+                        'shopify_instance_id' : product.shopify_instance_id.id,
+                        'shopify_is_set_basic_detail' : True,
+                        'shopify_is_update_basic_detail' : True,
+                        'shopify_is_set_price' : True,
+                        'shopify_is_set_image' : True,
+                        'shopify_is_publish' : 'publish_product_global',
+                    })
+                    export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+
+        return res

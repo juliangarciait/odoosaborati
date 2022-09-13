@@ -38,7 +38,12 @@ class ProductTemplate(models.Model):
             record.replacement_cost = 0.0
             has_mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', record.id)], order='write_date desc', limit=1)
             if not has_mrp_bom: 
-                record.replacement_cost = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.id)], order='create_date desc', limit=1).price
+                vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.id)], order='create_date desc', limit=1)
+                if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
+                    price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
+                else: 
+                    price = vendor_pricelist.price
+                record.replacement_cost = price
             elif has_mrp_bom: 
                 record.replacement_cost = has_mrp_bom.replacement_cost_total
 
@@ -68,17 +73,3 @@ class ProductTemplate(models.Model):
             'context' : {'ids' : self.env.context.get('active_ids', [])}
         }
 
-
-                
-
-
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        res = super(ProductTemplate, self).fields_view_get(view_id=view_id, view_type=view_type,
-                                                            toolbar=toolbar, submenu=submenu)
-        if view_type == 'form':
-            doc = etree.XML(res['arch'])
-            nodes = doc.xpath("//field[@name='company_id']")
-            node = nodes[0] if nodes else False
-            node.set('readonly', '1')
-            res['arch'] = etree.tostring(doc)
-        return res

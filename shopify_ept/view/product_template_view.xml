@@ -11,6 +11,7 @@
                     <button name="%(shopify_ept.action_wizard_shopify_update_stock)d" type="action" string="Export Stock"/>
                 </header>
                 <field name="name"/>
+                <field name="product_status"/>
                 <field name="shopify_instance_id"/>
                 <field name="product_tmpl_id"/>
                 <field name="total_variants_in_shopify"/>
@@ -304,6 +305,44 @@
                 </page>
             </xpath>
         </field>
+    </record>
+
+
+    <record id="product_template_search_inherit_filter" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.filter</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_search_form_view_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='real_stock_negative']" position="after">
+                <filter name="online" string="Productos en línea" domain="[('product_status_filter', '=', 'active')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_tree_view_inherited" model="ir.ui.view">
+        <field name="name">product.template.tree.view.inherited</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="product_status_filter" invisible="1"/>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-success">product_status_filter=='active'</attribute>
+                <attribute name="decoration-warning">product_status_filter=='draft'</attribute>
+                <attribute name="decoration-danger">product_status_filter=='archived'</attribute>
+            </xpath>
+        </field>
+    </record>
+        
+
+
+    <record id="product_shopify_template_action_server" model="ir.actions.server">
+        <field name="name">Cambiar estatus de producto</field>
+        <field name="model_id" ref="model_shopify_product_template_ept"/>
+        <field name="binding_model_id" ref="model_shopify_product_template_ept"/>
+        <field name="state">code</field>
+        <field name="code">action = model.change_product_status()</field>
     </record>
 
 </odoo>

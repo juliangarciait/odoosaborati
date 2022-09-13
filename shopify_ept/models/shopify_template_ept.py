@@ -1181,3 +1181,14 @@ class ShopifyProductTemplateEpt(models.Model):
                         "log_book_id": log_book_id.id if log_book_id else False,
                         }
                 common_log_line_obj.create(vals)
+
+
+    def change_product_status(self): 
+        return {
+            'view_mode' : 'form', 
+            'type' : 'ir.actions.act_window', 
+            'res_model' : 'change.product.status', 
+            'target' : 'new', 
+            'view_id' : self.env.ref('shopify_ept.change_product_status_view').id,
+            'context' : {'ids' : self.env.context.get('active_ids', [])}
+        }

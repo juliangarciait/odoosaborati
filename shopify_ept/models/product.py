@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 import logging
 _logger = logging.getLogger(__name__)
@@ -12,6 +12,14 @@ class ProductTemplate(models.Model):
     description_sale = fields.Html()
 
     shopify_product_template_ids = fields.One2many('shopify.product.template.ept', 'product_tmpl_id')
+
+    product_status_filter = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], compute='_compute_product_status', store=True)
+
+    @api.depends('shopify_product_template_ids.product_status')
+    def _compute_product_status(self): 
+        for record in self: 
+            for template in record.shopify_product_template_ids:
+                record.product_status_filter = template.product_status
 
     def write(self, vals):
         """
@@ -39,7 +47,8 @@ class ProductTemplate(models.Model):
                     
                     if not product.product_general_status: 
                         product_instance.product_status = 'draft'
-                        raise ValidationError ('El campo estatus general del producto no está marcado')
+                    elif not product.product_general_status and product_instance.product_status == 'active': 
+                        raise ValidationError ('El campo estatus general del producto no está marcado')    
                     if not product.active: 
                         product_instance.product_status = 'archived'
 
