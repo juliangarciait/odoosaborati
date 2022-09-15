@@ -13,7 +13,7 @@ class ProductTemplate(models.Model):
 
     shopify_product_template_ids = fields.One2many('shopify.product.template.ept', 'product_tmpl_id')
 
-    product_status_filter = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], compute='_compute_product_status', store=True)
+    #product_status_filter = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], compute='_compute_product_status', store=True, company_dependent=True)
 
     @api.depends('shopify_product_template_ids.product_status')
     def _compute_product_status(self): 

@@ -319,7 +319,7 @@
         </field>
     </record>
 
-    <record id="product_template_tree_view_inherited" model="ir.ui.view">
+    <!--<record id="product_template_tree_view_inherited" model="ir.ui.view">
         <field name="name">product.template.tree.view.inherited</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
@@ -333,7 +333,7 @@
                 <attribute name="decoration-danger">product_status_filter=='archived'</attribute>
             </xpath>
         </field>
-    </record>
+    </record>-->
         
 
 
