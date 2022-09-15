@@ -308,7 +308,7 @@
     </record>
 
 
-    <record id="product_template_search_inherit_filter" model="ir.ui.view">
+    <!--<record id="product_template_search_inherit_filter" model="ir.ui.view">
         <field name="name">product.template.search.inherit.filter</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="stock.product_template_search_form_view_stock"/>
@@ -319,7 +319,7 @@
         </field>
     </record>
 
-    <!--<record id="product_template_tree_view_inherited" model="ir.ui.view">
+    <record id="product_template_tree_view_inherited" model="ir.ui.view">
         <field name="name">product.template.tree.view.inherited</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
