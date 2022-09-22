@@ -37,7 +37,7 @@
 
         'wizard/assign_margin_to_product_views.xml',
 
-        'report/shopify_report_prices.xml',
+        #'report/shopify_report_prices.xml',
     ], 
     'installable' : True, 
     'auto_install' : False
