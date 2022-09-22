@@ -24,9 +24,6 @@ class AssignMarginToProduct(models.Model):
     
                 for product_instance in product.shopify_product_template_ids:
                     
-                    if not product.product_general_status: 
-                        product_instance.product_status = 'draft'
-                        raise ValidationError ('El campo estatus general del producto no está marcado')
                     if not product.active: 
                         product_instance.product_status = 'archived'
 

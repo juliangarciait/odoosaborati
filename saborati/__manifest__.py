@@ -15,6 +15,7 @@
         'product_tags',
         'product_cost',
         'crm',
+        'report_xlsx',
     ],
     'data' : [
         'security/ir.model.access.csv',
@@ -36,6 +37,7 @@
 
         'wizard/assign_margin_to_product_views.xml',
 
+        'report/shopify_report_prices.xml',
     ], 
     'installable' : True, 
     'auto_install' : False

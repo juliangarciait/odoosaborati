@@ -14,7 +14,7 @@ class ProductPricelistItem(models.Model):
         res = super(ProductPricelistItem, self).write(vals)
 
         for item in self: 
-            if item.product_tmpl_id.shopify_product_template_ids:
+            if item.product_tmpl_id.shopify_product_template_ids and item.applied_on == '1_product':
                 for product in item.product_tmpl_id.shopify_product_template_ids: 
                     export_data = self.env['shopify.process.import.export'].create({
                         'shopify_instance_id' : product.shopify_instance_id.id,
@@ -30,7 +30,7 @@ class ProductPricelistItem(models.Model):
 
     @api.model
     def create(self, vals_list): 
-        res = super(ProductPricelistItem, self).write(vals_list)
+        res = super(ProductPricelistItem, self).create(vals_list)
 
         if res.product_tmpl_id.shopify_product_template_ids:
                 for product in res.product_tmpl_id.shopify_product_template_ids: 
@@ -45,3 +45,19 @@ class ProductPricelistItem(models.Model):
                     export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
 
         return res
+
+
+    def unlink(self): 
+        if self.product_tmpl_id.shopify_product_template_ids and self.applied_on == '1_product': 
+            for product in self.product_tmpl_id.shopify_product_template_ids: 
+                export_data = self.env['shopify.process.import.export'].create({
+                        'shopify_instance_id' : product.shopify_instance_id.id,
+                        'shopify_is_set_basic_detail' : True,
+                        'shopify_is_update_basic_detail' : True,
+                        'shopify_is_set_price' : True,
+                        'shopify_is_set_image' : True,
+                        'shopify_is_publish' : 'publish_product_global',
+                    })
+                export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+
+        return super(ProductPricelistItem, self).unlink()

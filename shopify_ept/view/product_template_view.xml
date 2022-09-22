@@ -285,11 +285,6 @@
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/notebook" position="inside">
                 <page string="Online" name="online">
-                    <group>
-                        <group>
-                            <field name="product_general_status" string="General Product Status"/>
-                        </group>
-                    </group>
                     <field name="shopify_product_template_ids">
                         <tree string="Products in shopify instances" editable="bottom" create="false" delete="false">
                             <field name="product_status"/>
@@ -308,16 +303,16 @@
     </record>
 
 
-    <record id="product_template_search_inherit_filter" model="ir.ui.view">
+    <!--<record id="product_template_search_inherit_filter" model="ir.ui.view">
         <field name="name">product.template.search.inherit.filter</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="stock.product_template_search_form_view_stock"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='real_stock_negative']" position="after">
-                <filter name="online" string="Productos en línea" domain="[('product_status_filter', '=', 'active')]"/>
+                <filter name="online" string="Productos en línea" domain="[('product_status_colors', '=', 'active')]"/>
             </xpath>
         </field>
-    </record>
+    </record>-->
 
     <record id="product_template_tree_view_inherited" model="ir.ui.view">
         <field name="name">product.template.tree.view.inherited</field>
@@ -325,12 +320,12 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//tree" position="inside">
-                <field name="product_status_filter" invisible="1"/>
+                <field name="product_status_colors" invisible="1"/>
             </xpath>
             <xpath expr="//tree" position="attributes">
-                <attribute name="decoration-success">product_status_filter=='active'</attribute>
-                <attribute name="decoration-warning">product_status_filter=='draft'</attribute>
-                <attribute name="decoration-danger">product_status_filter=='archived'</attribute>
+                <attribute name="decoration-success">product_status_colors=='active'</attribute>
+                <attribute name="decoration-warning">product_status_colors=='draft'</attribute>
+                <attribute name="decoration-danger">product_status_colors=='archived'</attribute>
             </xpath>
         </field>
     </record>
