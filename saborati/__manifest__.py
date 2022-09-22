@@ -15,7 +15,7 @@
         'product_tags',
         'product_cost',
         'crm',
-        'report_xlsx',
+        #'report_xlsx',
     ],
     'data' : [
         'security/ir.model.access.csv',
