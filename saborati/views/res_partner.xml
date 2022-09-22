@@ -23,4 +23,15 @@
         </field>
     </record>
 
+    <record id="res_partner_order" model="ir.ui.view">
+        <field name="name">res.partner.order</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">create_date desc</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

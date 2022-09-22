@@ -13,13 +13,16 @@ class ProductTemplate(models.Model):
 
     shopify_product_template_ids = fields.One2many('shopify.product.template.ept', 'product_tmpl_id')
 
-    product_status_filter = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], compute='_compute_product_status', store=True)
+    product_status_colors = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], compute='_compute_product_status')
 
     @api.depends('shopify_product_template_ids.product_status')
     def _compute_product_status(self): 
         for record in self: 
-            for template in record.shopify_product_template_ids:
-                record.product_status_filter = template.product_status
+            record.product_status_colors = False
+            if record.shopify_product_template_ids: 
+                for template in record.shopify_product_template_ids:
+                    record.product_status_colors = template.product_status
+
 
     def write(self, vals):
         """
@@ -44,11 +47,7 @@ class ProductTemplate(models.Model):
             if product.detailed_type == 'product':
 
                 for product_instance in product.shopify_product_template_ids:
-                    
-                    if not product.product_general_status: 
-                        product_instance.product_status = 'draft'
-                    elif not product.product_general_status and product_instance.product_status == 'active': 
-                        raise ValidationError ('El campo estatus general del producto no está marcado')    
+                       
                     if not product.active: 
                         product_instance.product_status = 'archived'
 
