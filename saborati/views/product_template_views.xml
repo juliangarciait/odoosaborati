@@ -98,6 +98,7 @@
         <field name="inherit_id" ref="product_tags.product_template_form_view_inherit"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="product_collection_ids" widget="many2many_tags"/>
                 <field name="company_ids" widget="many2many_tags" options="{'no_create_edit' : True, 'no_create': True}"/>
             </xpath>
         </field>
