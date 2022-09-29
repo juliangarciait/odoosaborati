@@ -13,11 +13,12 @@ class MrpBom(models.Model):
 
     @api.depends('bom_line_ids.result')  
     def _compute_total(self): 
-        total = 0
-        for line in self.bom_line_ids: 
-            total += line.result
+        for mrp in self: 
+            total = 0
+            for line in mrp.bom_line_ids: 
+                total += line.result
 
-        self.product_tmpl_id.replacement_cost = self.replacement_cost_total = total
+            mrp.replacement_cost_total = total
 
 class MrpBomLine(models.Model): 
     _inherit = 'mrp.bom.line'

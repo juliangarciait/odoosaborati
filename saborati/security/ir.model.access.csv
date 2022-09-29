@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_product_margin,product.margin,model_product_margin,,1,1,1,1
 access_brand,brand,model_brand,,1,1,1,1
 access_assign_margin_to_product,assign.margin.to.product,model_assign_margin_to_product,,1,1,1,1
+access_product_collection,product.collection,model_product_collection,,1,1,1,1

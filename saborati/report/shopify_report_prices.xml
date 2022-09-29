@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report 
+        id="shopify_report_prices_xlsx"
+        model="product.template"
+        string="Reporte de precios para shopify"
+        report_type="xlsx"
+        name="saborati.shopify_report_prices_xlsx"
+        file="saborati.shopify_report_prices_xlsx"
+    />
+</odoo>

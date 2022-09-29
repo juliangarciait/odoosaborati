@@ -345,26 +345,6 @@
                                 </div>
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="shopify_consumer_pricelist_id" string="Consumer Pricelist"/>
-                                <div class="text-muted">
-                                    1.During product sync operation, prices will be
-                                    Imported/Exported using this
-                                    Pricelist.
-                                    <br/>
-                                    2.During order sync operation, this pricelist will be set in the
-                                    order if the
-                                    order currency from store and the currency from the pricelist
-                                    set here, matches.
-                                </div>
-                                <div class="content-group">
-                                    <div class="mt16">
-                                        <field name="shopify_consumer_pricelist_id"
-                                               class="o_light_label"
-                                               attrs="{'required':[('shopify_instance_id','!=',False)]}"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="o_setting_right_pane">
                                 <label for="shopify_b2b_pricelist_id" string="B2B Pricelist"/>
                                 <div class="text-muted">
                                     1.During product sync operation, prices will be
@@ -379,6 +359,26 @@
                                 <div class="content-group">
                                     <div class="mt16">
                                         <field name="shopify_b2b_pricelist_id"
+                                               class="o_light_label"
+                                               attrs="{'required':[('shopify_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="shopify_wholesale_pricelist_id" string="Wholesale Pricelist"/>
+                                <div class="text-muted">
+                                    1.During product sync operation, prices will be
+                                    Imported/Exported using this
+                                    Pricelist.
+                                    <br/>
+                                    2.During order sync operation, this pricelist will be set in the
+                                    order if the
+                                    order currency from store and the currency from the pricelist
+                                    set here, matches.
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="shopify_wholesale_pricelist_id"
                                                class="o_light_label"
                                                attrs="{'required':[('shopify_instance_id','!=',False)]}"/>
                                     </div>

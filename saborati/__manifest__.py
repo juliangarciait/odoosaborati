@@ -15,7 +15,7 @@
         'product_tags',
         'product_cost',
         'crm',
-        #'report_xlsx',
+        'report_xlsx',
     ],
     'data' : [
         'security/ir.model.access.csv',
@@ -34,10 +34,11 @@
         'views/res_company.xml',
         'views/crm_lead_views.xml',
         'views/res_partner.xml',
+        'views/product_collection_views.xml',
 
         'wizard/assign_margin_to_product_views.xml',
 
-        #'report/shopify_report_prices.xml',
+        'report/shopify_report_prices.xml',
     ], 
     'installable' : True, 
     'auto_install' : False

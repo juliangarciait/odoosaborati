@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="product_collection_tree_view" model="ir.ui.view">
+        <field name="name">Product Collection Tree View</field>
+        <field name="model">product.collection</field>
+        <field name="arch" type="xml">
+            <tree string="Collections">
+                <field name="name" string="Name"/>
+                <field name="is_exported" string="Is Exported?"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_collection_form_view" model="ir.ui.view">
+        <field name="name">Product Collection Form View</field>
+        <field name="model">product.collection</field>
+        <field name="arch" type="xml">
+            <form string="Collections">
+                <sheet>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <notebook>
+                        <page string="Information" name="info">
+                            <group>
+                                <group>
+                                    <field name="is_exported" string="Is Exported?" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="body_html" string="Description"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Products" name="products">
+                            <field name="product_ids" context="{'default_product_collection_id': active_id}" widget="one2many_list" nolabel="1">
+                                <tree string="Products" editable="bottom" create="false">
+                                    <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                                    <field name="name" optional="show"/>
+                                    <field name="default_code" optional="show"/>
+                                    <field name="barcode" optional="hidden"/>
+                                    <field name="company_id" optional="hidden"/>
+                                    <field name="list_price" optional="show"/>
+                                    <field name="standard_price" optional="show"/>
+                                    <field name="categ_id" optional="hidden"/>
+                                    <field name="detailed_type" optional="hidden"/>
+                                    <field name="qty_available" optional="show"/>
+                                    <field name="virtual_available" optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_collection" model="ir.actions.act_window">
+        <field name="name">Collections</field>
+        <field name="res_model">product.collection</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No collections registered
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="product_collection" name="Collections" action="action_product_collection" parent="stock.menu_product_in_config_stock" sequence="6"/>
+
+</odoo>

@@ -8,4 +8,5 @@ from . import product_template
 from . import product_category
 from . import brand
 from . import res_company
-#from . import res_partner
+from . import res_partner
+from . import product_collection
