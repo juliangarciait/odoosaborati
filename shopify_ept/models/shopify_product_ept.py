@@ -265,19 +265,11 @@ class ShopifyProductProductEpt(models.Model):
 
         for template in templates:
             new_product = shopify.Product()
-            _logger.info(new_product)
 
             self.prepare_shopify_product_for_update_export(new_product, template, instance, is_set_basic_detail,
                                                            is_publish, is_set_price)
 
             result = new_product.save()
-            
-            new_collection = shopify.CustomCollection()
-
-            self.prepare_shopify_collection_for_update_export(new_collection, template)
-
-            res = new_collection.save()
-            
 
             if not result:
                 message = "Product %s not exported in Shopify Store." % template.name
