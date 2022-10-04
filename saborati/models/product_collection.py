@@ -11,3 +11,4 @@ class ProductCollection(models.Model):
     is_exported = fields.Boolean()
 
     product_ids = fields.Many2many('product.template', string="Products")
+    shopify_collection_id = fields.Char("Shopify Collection ID")

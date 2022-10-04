@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="product_collection_action_server" model="ir.actions.server">
+        <field name="name">Exportar Collections a Shopify</field>
+        <field name="model_id" ref="model_product_collection"/>
+        <field name="binding_model_id" ref="model_product_collection"/>
+        <field name="state">code</field>
+        <field name="code">action = model.export_collections()</field>
+    </record>
+
+    <record id="product_collection_update_action_server" model="ir.actions.server">
+        <field name="name">Actualizar Collections en Shopify</field>
+        <field name="model_id" ref="model_product_collection"/>
+        <field name="binding_model_id" ref="model_product_collection"/>
+        <field name="state">code</field>
+        <field name="code">action = model.update_collections_in_shopify()</field>
+    </record>
+</odoo>
