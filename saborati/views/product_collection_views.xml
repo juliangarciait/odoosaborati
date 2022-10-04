@@ -26,10 +26,10 @@
                         <page string="Information" name="info">
                             <group>
                                 <group>
-                                    <field name="is_exported" string="Is Exported?" readonly="1"/>
+                                    <field name="body_html" string="Description"/>
                                 </group>
                                 <group>
-                                    <field name="body_html" string="Description"/>
+                                    <field name="is_exported" string="Is Exported?" readonly="1"/>
                                 </group>
                             </group>
                         </page>

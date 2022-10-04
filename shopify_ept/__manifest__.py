@@ -57,6 +57,7 @@
         'wizard/instance_configuration_wizard.xml',
         'view/delivery_carrier_view.xml',
         'view/res_company_views.xml',
+        'view/product_collection_views.xml',
         'wizard/change_product_status_view.xml', 
     ],
     'demo_xml': [],
