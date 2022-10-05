@@ -3,6 +3,7 @@
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from .. import shopify
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -90,6 +91,20 @@ class ProductTemplate(models.Model):
                             export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
                         else:
                             export_data.with_context({"active_ids" : [product_instance.id]}).manual_update_product_to_shopify()
+                            
+                        #Add to collection if it has collections
+                        if product.product_collection_ids: 
+                            instance.connect_in_shopify()
+                            shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
+                            collections = shopify_product.collections()
+                            for collection in collections: 
+                                shopify_product.remove_from_collection(collection)
+                                
+                            for collection in product.product_collection_ids: 
+                                if collection.is_exported: 
+                                    collect = collection.request_collection(collection.shopify_collection_id)
+                                    shopify_product.add_to_collection(collect)
+                                
                 else: 
                     shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
                         'shopify_instance_id' : instance.id, 
