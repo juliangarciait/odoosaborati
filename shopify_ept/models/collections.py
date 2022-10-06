@@ -53,7 +53,8 @@ class ProductCollection(models.Model):
             if collect: 
                 collect.title     = collection.name
                 collect.body_html = collection.body_html
-                self.remove_products(collect)
+                if collection.is_exported: 
+                    self.remove_products(collect)
                     
                 if collection.product_ids: 
                     products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
