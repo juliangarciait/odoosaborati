@@ -24,32 +24,32 @@ class ProductTemplate(models.Model):
                 for template in record.shopify_product_template_ids:
                     record.product_status_colors = template.product_status
                     
-    @api.model
-    def create(self, vals_list): 
-        res = super(ProductTemplate, self).create(vals_list)
+    #@api.model
+    #def create(self, vals_list): 
+    #    res = super(ProductTemplate, self).create(vals_list)
         
-        if res.detailed_type == 'product' and not res.shopify_product_template_ids and res.default_code: 
-            instance = self.env['shopify.instance.ept'].search([('shopify_company_id', '=', self.env.company.id)])
-            export_data = self.env['shopify.process.import.export'].create({
-                'shopify_instance_id' : instance.id,
-                'shopify_is_set_basic_detail' : True,
-                'shopify_is_update_basic_detail' : True,
-                'shopify_is_set_price' : True,
-                'shopify_is_set_image' : True,
-                'shopify_is_publish' : 'publish_product_global',
-            })
+    #    if res.detailed_type == 'product' and not res.shopify_product_template_ids and res.default_code: 
+    #        instance = self.env['shopify.instance.ept'].search([('shopify_company_id', '=', self.env.company.id)])
+    #        export_data = self.env['shopify.process.import.export'].create({
+    #            'shopify_instance_id' : instance.id,
+    #            'shopify_is_set_basic_detail' : True,
+    #            'shopify_is_update_basic_detail' : True,
+    #            'shopify_is_set_price' : True,
+    #            'shopify_is_set_image' : True,
+    #            'shopify_is_publish' : 'publish_product_global',
+    #        })
             
-            shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
-                'shopify_instance_id' : instance.id, 
-                'export_method' : "direct",
-            })
-            shopify_prepare_product_id.with_context({"active_ids": [res.id], "lang": self.env.user.lang}).prepare_product_for_export()
-            product_instance = self.env['shopify.product.template.ept'].search([('product_tmpl_id', '=', res.id)])
-            export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
-        elif res.detailed_type == 'product' and not res.shopify_product_template_ids and not res.default_code: 
-            raise ValidationError ('El producto no tiene referencia interna, por favor coloque una antes de guardarlo')
+    #        shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
+    #            'shopify_instance_id' : instance.id, 
+    #            'export_method' : "direct",
+    #        })
+    #        shopify_prepare_product_id.with_context({"active_ids": [res.id], "lang": self.env.user.lang}).prepare_product_for_export()
+    #        product_instance = self.env['shopify.product.template.ept'].search([('product_tmpl_id', '=', res.id)])
+    #        export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
+    #    elif res.detailed_type == 'product' and not res.shopify_product_template_ids and not res.default_code: 
+    #        raise ValidationError ('El producto no tiene referencia interna, por favor coloque una antes de guardarlo')
         
-        return res
+    #    return res
 
     def write(self, vals):
         """
@@ -110,14 +110,14 @@ class ProductTemplate(models.Model):
                                     collect = collection.request_collection(collection.shopify_collection_id)
                                     shopify_product.add_to_collection(collect)
                                 
-                else: 
-                    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
-                        'shopify_instance_id' : instance.id, 
-                        'export_method' : "direct",
-                    })
-                    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-                    product_instance = self.env['shopify.product.template.ept'].search([('product_tmpl_id', '=', product.id)])
-                    export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
+                #else: 
+                #    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
+                #        'shopify_instance_id' : instance.id, 
+                #        'export_method' : "direct",
+                #    })
+                #    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
+                #    product_instance = self.env['shopify.product.template.ept'].search([('product_tmpl_id', '=', product.id)])
+                #    export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
                     
 
         shopify_templates = self.env['shopify.product.template.ept'].search(
