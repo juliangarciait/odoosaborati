@@ -22,7 +22,7 @@ class ProductTemplate(models.Model):
 
     company_ids = fields.Many2many('res.company', string="Companies")
 
-    product_collection_ids = fields.Many2many('product.collection', string="Collections")
+    product_collection_ids = fields.Many2many('shopify.product.collection', string="Collections")
 
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 
