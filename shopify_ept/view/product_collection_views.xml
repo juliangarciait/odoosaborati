@@ -39,6 +39,14 @@
 
     <!-- SHOPIFY PRODUCT COLLECTIONS-->
 
+    <record id="shopify_product_collection_update_action_server" model="ir.actions.server">
+        <field name="name">Actualizar Collections en Shopify</field>
+        <field name="model_id" ref="model_shopify_product_collection"/>
+        <field name="binding_model_id" ref="model_shopify_product_collection"/>
+        <field name="state">code</field>
+        <field name="code">action = model.update_collections_in_shopify()</field>
+    </record>
+
     <record id="shopify_product_collection_tree_view" model="ir.ui.view">
         <field name="name">Shopify Product Collection Tree View</field>
         <field name="model">shopify.product.collection</field>
@@ -58,6 +66,7 @@
             <form string="Collections">
                 <sheet>
                     <h1>
+                        <field name="image_1920" widget="image" class="oe_avatar" nolabel="1"/>
                         <field name="name"/>
                     </h1>
                     <notebook>

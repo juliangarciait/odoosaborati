@@ -2,6 +2,7 @@
 
 import time
 from odoo import models, api, _, fields
+from odoo.exceptions import ValidationError
 from xlsxwriter.utility import xl_rowcol_to_cell
 from datetime import datetime
 
@@ -14,68 +15,72 @@ class ShopifyReportPrices(models.AbstractModel):
 
     def generate_xlsx_report(self, workbook, data, objects): 
         records = []
-        
-        for product in objects:
-            b2b_record = {
-                'name'                    : '',
-                'priority'                : 0,
-                'status'                  : 'enable', 
-                'apply_to'                : 'Customer tags',
-                'customer_emails'         : '',
-                'customer_tags'           : '',
-                'product_condition_type'  : 'Specific products',
-                'product_titles'          : '', 
-                'sku'                     : '',
-                'barcode'                 : '',
-                'product_collections'     : '',
-                'product_tags'            : '',
-                'discount_type'           : 'apply a price to selected products',
-                'discount_value'          : 0.00,
-                'start_date'              : '',
-                'end_date'                : '',
-                'exc_customer_tags'       : '',
-                'exclude_from'            : 'None',
-            }
-            if product.shopify_product_template_ids: 
-                b2b_price =  product.shopify_product_template_ids.shopify_instance_id.shopify_b2b_pricelist_id.get_product_price(product, 1.0, False)
+        if product.shopify_product_template_ids.shopify_instance_id.shopify_b2b_pricelist_id: 
+            for product in objects:
+                b2b_record = {
+                    'name'                    : '',
+                    'priority'                : 0,
+                    'status'                  : 'enable', 
+                    'apply_to'                : 'Customer tags',
+                    'customer_emails'         : '',
+                    'customer_tags'           : '',
+                    'product_condition_type'  : 'Specific products',
+                    'product_titles'          : '', 
+                    'sku'                     : '',
+                    'barcode'                 : '',
+                    'product_collections'     : '',
+                    'product_tags'            : '',
+                    'discount_type'           : 'apply a price to selected products',
+                    'discount_value'          : 0.00,
+                    'start_date'              : '',
+                    'end_date'                : '',
+                    'exc_customer_tags'       : '',
+                    'exclude_from'            : 'None',
+                }
+                if product.shopify_product_template_ids: 
+                    b2b_price =  product.shopify_product_template_ids.shopify_instance_id.shopify_b2b_pricelist_id.get_product_price(product, 1.0, False)
 
-                b2b_record['name'] = 'b' + str(product.id) + '-' + product.default_code
-                b2b_record['product_titles'] = product.name
-                b2b_record['sku'] = product.default_code
-                b2b_record['customer_tags'] = 'b2b'
-                b2b_record['discount_value'] = b2b_price
-                records.append(b2b_record)
+                    b2b_record['name'] = 'b' + str(product.id) + '-' + product.default_code
+                    b2b_record['product_titles'] = product.name
+                    b2b_record['sku'] = product.default_code
+                    b2b_record['customer_tags'] = 'b2b'
+                    b2b_record['discount_value'] = b2b_price
+                    records.append(b2b_record)
 
-        for product in objects: 
-            wholesale_record = {
-                'name'                    : '',
-                'priority'                : 0,
-                'status'                  : 'enable', 
-                'apply_to'                : 'Customer tags',
-                'customer_emails'         : '',
-                'customer_tags'           : '',
-                'product_condition_type'  : 'Specific products',
-                'product_titles'          : '', 
-                'sku'                     : '',
-                'barcode'                 : '',
-                'product_collections'     : '',
-                'product_tags'            : '',
-                'discount_type'           : 'apply a price to selected products',
-                'discount_value'          : 0.00,
-                'start_date'              : '',
-                'end_date'                : '',
-                'exc_customer_tags'       : '',
-                'exclude_from'            : 'None',
-            }
-            if product.shopify_product_template_ids: 
-                wholesale_price = product.shopify_product_template_ids.shopify_instance_id.shopify_wholesale_pricelist_id.get_product_price(product, 1.0, False)
+        if product.shopify_product_template_ids.shopify_instance_id.shopify_wholesale_pricelist_id: 
+            for product in objects: 
+                wholesale_record = {
+                    'name'                    : '',
+                    'priority'                : 0,
+                    'status'                  : 'enable', 
+                    'apply_to'                : 'Customer tags',
+                    'customer_emails'         : '',
+                    'customer_tags'           : '',
+                    'product_condition_type'  : 'Specific products',
+                    'product_titles'          : '', 
+                    'sku'                     : '',
+                    'barcode'                 : '',
+                    'product_collections'     : '',
+                    'product_tags'            : '',
+                    'discount_type'           : 'apply a price to selected products',
+                    'discount_value'          : 0.00,
+                    'start_date'              : '',
+                    'end_date'                : '',
+                    'exc_customer_tags'       : '',
+                    'exclude_from'            : 'None',
+                }
+                if product.shopify_product_template_ids: 
+                    wholesale_price = product.shopify_product_template_ids.shopify_instance_id.shopify_wholesale_pricelist_id.get_product_price(product, 1.0, False)
 
-                wholesale_record['name'] = 'w' + str(product.id) + '-' + product.default_code
-                wholesale_record['product_titles'] = product.name
-                wholesale_record['sku'] = product.default_code
-                wholesale_record['customer_tags'] = 'wholesale'
-                wholesale_record['discount_value'] = wholesale_price
-                records.append(wholesale_record)
+                    wholesale_record['name'] = 'w' + str(product.id) + '-' + product.default_code
+                    wholesale_record['product_titles'] = product.name
+                    wholesale_record['sku'] = product.default_code
+                    wholesale_record['customer_tags'] = 'wholesale'
+                    wholesale_record['discount_value'] = wholesale_price
+                    records.append(wholesale_record)
+                    
+        if not product.shopify_product_template_ids.shopify_instance_id.shopify_wholesale_pricelist_id and not product.shopify_product_template_ids.shopify_instance_id.shopify_b2b_pricelist_id: 
+            raise ValidationError ("No se puede generar reporte porque no se tiene asignada listas de precio para B2B ni Wholesale")
             
         workbook.set_properties({
             'comments' : 'Created with Python and XlsxWrite from Odoo 15.0'
