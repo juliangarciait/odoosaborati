@@ -6,6 +6,7 @@ from .. import shopify
 from ..shopify.pyactiveresource.connection import ClientError
 from ..shopify.pyactiveresource.connection import ResourceNotFound
 import time
+import base64
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -22,11 +23,13 @@ class ProductCollection(models.Model):
         instances = self.env['shopify.instance.ept'].search([('shopify_company_id', '=', self.env.company.id)])
         for instance in instances: 
             shopify_product_collection_obj.create({
-                'name' : res.name, 
+                'name'                : res.name, 
                 'collection_id'       : res.id,
                 'body_html'           : res.body_html, 
                 'company_id'          : instance.shopify_company_id.id,
-                'shopify_instance_id' : instance.id
+                'shopify_instance_id' : instance.id,
+                'image_1920'          : res.image_1920,
+                'image_url'           : res.image_url
             })
 
         return res
@@ -37,8 +40,10 @@ class ProductCollection(models.Model):
         for collection in self:
             for shopify_collection in collection.shopify_product_collection_ids:
                 shopify_collection.write({
-                    'name' : collection.name, 
+                    'name'      : collection.name, 
                     'body_html' : collection.body_html,
+                    'image_1920': collection.image_1920,
+                    'image_url' : collection.image_url
                 })
         return res
     
@@ -51,12 +56,15 @@ class ProductCollection(models.Model):
         
         for collection in collections:
             for instance in instances:
-                if not collection.shopify_product_collection_ids: 
+                if not collection.shopify_product_collection_ids:
                     shopify_product_collection_obj.create({
-                        'name' : collection.name, 
-                        'collection_id' : collection.id,
-                        'body_html' : collection.body_html, 
-                        'company_id' : instance.shopify_company_id.id,
+                        'name'                : collection.name, 
+                        'collection_id'       : collection.id,
+                        'body_html'           : collection.body_html, 
+                        'company_id'          : instance.shopify_company_id.id,
+                        'shopify_instance_id' : instance.id,
+                        'image_1920'          : collection.image_1920,
+                        'image_url'           : collection.image_url
                     })
                 else: 
                     raise ValidationError (_('Error al crear collection template de shopify'))
@@ -67,8 +75,10 @@ class ProductCollection(models.Model):
         for collection in collections:
             for shopify_collection in collection.shopify_product_collection_ids:
                 shopify_collection.write({
-                    'name' : collection.name, 
+                    'name'      : collection.name, 
                     'body_html' : collection.body_html,
+                    'image_1920': collection.image_1920,
+                    'image_url' : collection.image_url
                 })
             
 
@@ -83,15 +93,15 @@ class ShopifyProductCollection(models.Model):
         res = super(ShopifyProductCollection, self).create(vals_list)
         
         instance = res.shopify_instance_id
-        _logger.info(instance)
-        _logger.info('#'*1000)
         
         instance.connect_in_shopify()
        
         new_collection = shopify.CustomCollection()
+        _logger.info(new_collection)
 
         new_collection.title           = res.name
         new_collection.body_html       = res.body_html
+        #new_collection.image           = {"src" : res.image_url, 'alt' : "test"}
         new_collection.published_scope = "web"
 
         result = new_collection.save()
@@ -114,10 +124,12 @@ class ShopifyProductCollection(models.Model):
         res = super(ShopifyProductCollection, self).write(vals)
         
         for collection in self:
+            collection.shopify_instance_id.connect_in_shopify()
             collect = self.request_collection(collection.shopify_collection_id)
             if collect: 
                 collect.title     = collection.name
                 collect.body_html = collection.body_html
+                #collect.image     = {"src" : collection.image_url}
                 if collection.is_exported: 
                     self.remove_products(collect)
                     
@@ -131,6 +143,7 @@ class ShopifyProductCollection(models.Model):
 
                 new_collection.title           = collection.name
                 new_collection.body_html       = collection.body_html
+                #new_collection.image           = {"src" : collection.image_url}
                 new_collection.published_scope = "web"
 
                 result = new_collection.save()
@@ -150,7 +163,7 @@ class ShopifyProductCollection(models.Model):
         return res
     
     def update_collections_in_shopify(self):
-        collections = self.env['product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
+        collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
         
         for collection in collections:
             collection.shopify_instance_id.connect_in_shopify()
@@ -159,7 +172,10 @@ class ShopifyProductCollection(models.Model):
                 if collect: 
                     collect.title     = collection.name
                     collect.body_html = collection.body_html
-                    self.remove_products(collect)
+                    #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
+                    
+                    if collection.is_exported: 
+                        self.remove_products(collect)
                         
                     if collection.product_ids: 
                         products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
@@ -181,15 +197,15 @@ class ShopifyProductCollection(models.Model):
         except ClientError as error: 
             if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
                 time.sleep(int(float(error.response.headers.get('Retry-After', 5))))
-                collect = shopify.CustomCollection().find(collection.shopify_collection_id)
+                collect = shopify.CustomCollection().find(collection)
         except Exception as error: 
-            _logger.info("Collection %s not found in shopify while updating it.\nError: %s" % (collection.shopify_collection_id, str(error)))
+            _logger.info("Collection %s not found in shopify while updating it.\nError: %s" % (collection, str(error)))
             return False
         return collect
     
     def unlink(self): 
         self.shopify_instance_id.connect_in_shopify()
-        _logger.info('#'*1000)
+
         if self.is_exported: 
             collect = self.request_collection(self.shopify_collection_id)
             if collect: 
