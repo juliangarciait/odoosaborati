@@ -35,7 +35,7 @@
                         <field name="create_uid" readonly="1" optional="show"/>
                         <field name="write_date" readonly="1" optional="hidden"/>
                         <field name="write_uid" readonly="1" optional="hidden"/>
-                        <field name="name" options="{'no_create_edit':True, 'no_create': True}"/>
+                        <field name="name" options="{'no_create_edit':True, 'no_create': True}" domain="['company_filter', '=', 'company']"/>
                         <field name="notes" optional="show"/>
                         <field name="price" optional="show"/>
                         <field name="min_qty" optional="hidden"/>
