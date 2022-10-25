@@ -102,8 +102,10 @@ class ProductTemplate(models.Model):
                             instance.connect_in_shopify()
                             shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
                             collections = shopify_product.collections()
-                            for collection in collections: 
-                                shopify_product.remove_from_collection(collection)
+                            _logger.info('#'*1000)
+                            if collections: 
+                                for collection in collections: 
+                                    shopify_product.remove_from_collection(collection)
                                 
                             for collection in product.product_collection_ids: 
                                 if collection.is_exported: 

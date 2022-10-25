@@ -191,7 +191,8 @@ class ShopifyProductCollection(models.Model):
             current_product = shopify.Product().find(dict_product.get('id'))
             current_product.remove_from_collection(collect)
 
-    def request_collection(self, collection): 
+    def request_collection(self, collection):
+        _logger.info('$'*1000) 
         try: 
             collect = shopify.CustomCollection().find(collection)
         except ClientError as error: 
