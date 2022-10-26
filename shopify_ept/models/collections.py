@@ -97,7 +97,6 @@ class ShopifyProductCollection(models.Model):
         instance.connect_in_shopify()
        
         new_collection = shopify.CustomCollection()
-        _logger.info(new_collection)
 
         new_collection.title           = res.name
         new_collection.body_html       = res.body_html
@@ -125,55 +124,12 @@ class ShopifyProductCollection(models.Model):
         
         for collection in self:
             collection.shopify_instance_id.connect_in_shopify()
-            collect = self.request_collection(collection.shopify_collection_id)
-            if collect: 
-                collect.title     = collection.name
-                collect.body_html = collection.body_html
-                #collect.image     = {"src" : collection.image_url}
-                if collection.is_exported: 
-                    self.remove_products(collect)
-                    
-                if collection.product_ids: 
-                    products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                    for shopify_product in products:
-                        new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                        collect.add_product(new_product)
-            else:
-                new_collection = shopify.CustomCollection()
-
-                new_collection.title           = collection.name
-                new_collection.body_html       = collection.body_html
-                #new_collection.image           = {"src" : collection.image_url}
-                new_collection.published_scope = "web"
-
-                result = new_collection.save()
-                
-                if result: 
-                    collection_info = new_collection.to_dict()
-                    collection.shopify_collection_id = collection_info.get('id')
-                    collection.is_exported = True
-                    if collection.product_ids: 
-                        products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                        for shopify_product in products:
-                            new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                            new_collection.add_product(new_product)
-                elif not result: 
-                    raise ValidationError (_('Error al crear collection en Shopify'))
-                
-        return res
-    
-    def update_collections_in_shopify(self):
-        collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
-        
-        for collection in collections:
-            collection.shopify_instance_id.connect_in_shopify()
-            if collection.is_exported:
+            if collection.company_id == self.env.company.id: 
                 collect = self.request_collection(collection.shopify_collection_id)
                 if collect: 
                     collect.title     = collection.name
                     collect.body_html = collection.body_html
-                    #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
-                    
+                    #collect.image     = {"src" : collection.image_url}
                     if collection.is_exported: 
                         self.remove_products(collect)
                         
@@ -182,6 +138,55 @@ class ShopifyProductCollection(models.Model):
                         for shopify_product in products:
                             new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
                             collect.add_product(new_product)
+                else:
+                    new_collection = shopify.CustomCollection()
+
+                    new_collection.title           = collection.name
+                    new_collection.body_html       = collection.body_html
+                    #new_collection.image           = {"src" : collection.image_url}
+                    new_collection.published_scope = "web"
+
+                    result = new_collection.save()
+                    
+                    if result: 
+                        collection_info = new_collection.to_dict()
+                        collection.shopify_collection_id = collection_info.get('id')
+                        collection.is_exported = True
+                        if collection.product_ids: 
+                            products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+                            for shopify_product in products:
+                                new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
+                                new_collection.add_product(new_product)
+                    elif not result: 
+                        raise ValidationError (_('Error al crear collection en Shopify'))
+            else:
+                raise ValidationError (_('No se puede editar esta collection porque no pertence a la compañía activa'))
+                
+        return res
+    
+    def update_collections_in_shopify(self):
+        collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
+        
+        for collection in collections:
+            if collection.company_id == self.env.company.id: 
+                collection.shopify_instance_id.connect_in_shopify()
+                if collection.is_exported:
+                    collect = self.request_collection(collection.shopify_collection_id)
+                    if collect: 
+                        collect.title     = collection.name
+                        collect.body_html = collection.body_html
+                        #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
+                        
+                        if collection.is_exported: 
+                            self.remove_products(collect)
+                            
+                        if collection.product_ids: 
+                            products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+                            for shopify_product in products:
+                                new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
+                                collect.add_product(new_product)
+            else: 
+                raise ValidationError ('Collection {} no pertenece la instancia de esta empresa'.format(collection))
                                     
     def remove_products(self, collect): 
         products = collect.products()

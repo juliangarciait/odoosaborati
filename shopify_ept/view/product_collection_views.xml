@@ -51,7 +51,7 @@
         <field name="name">Shopify Product Collection Tree View</field>
         <field name="model">shopify.product.collection</field>
         <field name="arch" type="xml">
-            <tree string="Collections">
+            <tree string="Collections" create="false">
                 <field name="name" string="Name"/>
                 <field name="shopify_instance_id" string="Instance"/>
                 <field name="is_exported" string="Is Exported?"/>
@@ -63,7 +63,7 @@
         <field name="name">Shopify Product Collection Form View</field>
         <field name="model">shopify.product.collection</field>
         <field name="arch" type="xml">
-            <form string="Collections">
+            <form string="Collections" create="false">
                 <sheet>
                     <h1>
                         <field name="image_1920" widget="image" class="oe_avatar" nolabel="1"/>
@@ -113,7 +113,6 @@
         <field name="name">Shopify Collections</field>
         <field name="res_model">shopify.product.collection</field>
         <field name="view_mode">tree,form</field>
-        <!--<field name="domain">[('company_ids', '=', allowed_company_ids[0])]</field>-->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No collections registered
