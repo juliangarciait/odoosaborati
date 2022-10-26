@@ -299,9 +299,10 @@
                     </field>
                 </page>
                 <page string="Collections">
-                    <field name="product_collection_ids" widget="many2many_list" nolabel="1">
+                    <field name="product_collection_ids" widget="many2many_list" nolabel="1" domain="[('company_id', '=', allowed_company_ids[0])]">
                         <tree string="Collections" editable="bottom" create="false">
                             <field name="is_exported" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
                             <field name="name" readonly="1"/>
                             <field name="shopify_instance_id" readonly="1"/>
                         </tree>

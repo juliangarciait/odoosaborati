@@ -43,7 +43,6 @@
         <field name="name">Collections</field>
         <field name="res_model">product.collection</field>
         <field name="view_mode">tree,form</field>
-        <!--<field name="domain">[('company_ids', '=', allowed_company_ids[0])]</field>-->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No collections registered

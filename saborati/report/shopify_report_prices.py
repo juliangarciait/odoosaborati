@@ -15,8 +15,8 @@ class ShopifyReportPrices(models.AbstractModel):
 
     def generate_xlsx_report(self, workbook, data, objects): 
         records = []
-        if product.shopify_product_template_ids.shopify_instance_id.shopify_b2b_pricelist_id: 
-            for product in objects:
+        for product in objects:
+            if product.shopify_product_template_ids.shopify_instance_id.shopify_b2b_pricelist_id: 
                 b2b_record = {
                     'name'                    : '',
                     'priority'                : 0,
@@ -47,8 +47,9 @@ class ShopifyReportPrices(models.AbstractModel):
                     b2b_record['discount_value'] = b2b_price
                     records.append(b2b_record)
 
-        if product.shopify_product_template_ids.shopify_instance_id.shopify_wholesale_pricelist_id: 
-            for product in objects: 
+        
+        for product in objects: 
+            if product.shopify_product_template_ids.shopify_instance_id.shopify_wholesale_pricelist_id: 
                 wholesale_record = {
                     'name'                    : '',
                     'priority'                : 0,
