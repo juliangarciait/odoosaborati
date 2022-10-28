@@ -159,8 +159,6 @@ class ShopifyProductCollection(models.Model):
                                 new_collection.add_product(new_product)
                     elif not result: 
                         raise ValidationError (_('Error al crear collection en Shopify'))
-            else:
-                raise ValidationError (_('No se puede editar esta collection porque no pertence a la compañía activa'))
                 
         return res
     
