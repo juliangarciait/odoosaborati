@@ -102,8 +102,6 @@ class ProductTemplate(models.Model):
                             instance.connect_in_shopify()
                             shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
                             collections = shopify_product.collections()
-                            _logger.info('#'*1000)
-                            _logger.info(product.name)
                             if collections: 
                                 for collection in collections: 
                                     shopify_product.remove_from_collection(collection)

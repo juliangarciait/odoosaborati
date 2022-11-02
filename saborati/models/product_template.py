@@ -3,6 +3,7 @@
 from odoo import fields, models, api, _ 
 from lxml import etree
 import logging
+
 _logger = logging.getLogger(__name__)
 
 
@@ -10,6 +11,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     margin_ids = fields.One2many('product.margin', 'product_tmpl_id')
+    additional_cost_ids = fields.One2many('additional.cost', 'product_tmpl_id')
 
     list_price = fields.Float(compute="_compute_price")
 
@@ -33,7 +35,7 @@ class ProductTemplate(models.Model):
                 record.list_price = record.replacement_cost / (1 - margin)
 
 
-    @api.depends('seller_ids', 'bom_ids')
+    @api.depends('seller_ids', 'bom_ids', 'additional_cost_ids')
     def _compute_replacement_cost(self): 
         for record in self: 
             record.replacement_cost = 0.0
@@ -47,12 +49,19 @@ class ProductTemplate(models.Model):
                 record.replacement_cost = price
             elif has_mrp_bom: 
                 record.replacement_cost = has_mrp_bom.replacement_cost_total
+                
+            cost = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)], order='write_date desc', limit=1).cost
+            if cost:
+                record.replacement_cost += cost
+                
+            
 
 
     @api.model
     def create(self, vals_list): 
         res = super(ProductTemplate, self).create(vals_list)
 
+        res.default_code = 'OD{}'.format(str(res.id))
 
         self.env['product.margin'].create(
             {

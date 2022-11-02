@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.tools.misc import get_lang
 import logging 
 _logger = logging.getLogger(__name__)
 
@@ -21,3 +22,12 @@ class SaleOrder(models.Model):
                 dlv_percentage += line.qty_delivered * line.price_unit
 
             record.delivery_percentage = dlv_percentage / qty_percentage if qty_percentage > 0 else 0.0
+            
+            
+class SaleOrderLine(models.Model): 
+    _inherit = 'sale.order.line'
+    
+    @api.onchange('product_id')
+    def _get_description_(self): 
+        self.name = self.product_id.product_tmpl_id.name
+        _logger.info('#'*10000)
