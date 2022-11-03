@@ -107,7 +107,7 @@ class ProductTemplate(models.Model):
                                     shopify_product.remove_from_collection(collection)
                                 
                             for collection in product.product_collection_ids: 
-                                if collection.is_exported: 
+                                if collection.is_exported and collection.company_id.id == self.env.company.id: 
                                     collect = collection.request_collection(collection.shopify_collection_id)
                                     shopify_product.add_to_collection(collect)
                                 
