@@ -35,8 +35,10 @@
         'views/crm_lead_views.xml',
         'views/res_partner.xml',
         'views/product_collection_views.xml',
+        #'views/product_pricelist_views.xml',
 
         'wizard/assign_margin_to_product_views.xml',
+        'wizard/assign_collection_to_product_views.xml',
 
         'report/shopify_report_prices.xml',
     ], 

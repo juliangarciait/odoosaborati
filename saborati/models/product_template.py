@@ -82,4 +82,14 @@ class ProductTemplate(models.Model):
             'view_id' : self.env.ref('saborati.assign_margin_to_product_view').id,
             'context' : {'ids' : self.env.context.get('active_ids', [])}
         }
+        
+    def assign_product_collection(self): 
+        return {
+            'view_mode' : 'form', 
+            'type'      : 'ir.actions.act_window', 
+            'res_model' : 'assign.collection.to.product',
+            'target'    : 'new', 
+            'view_id'   : self.env.ref('saborati.assign_collection_to_product_view').id,
+            'context'   : {'ids' : self.env.context.get('active_ids', [])}
+        }
 

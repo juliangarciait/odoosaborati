@@ -59,6 +59,21 @@ class ShopifyProductTemplateEpt(models.Model):
     shopify_image_ids = fields.One2many("shopify.product.image.ept", "shopify_template_id")
     product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], default="draft", string="Product status")
 
+    def cron_update_products_in_shopify(self): 
+        products = self.search([])
+        
+        for product in products: 
+            if product.exported_in_shopify:
+                export_data = self.env['shopify.process.import.export'].create({
+                    'shopify_instance_id'            : product.shopify_instance_id.id,
+                    'shopify_is_set_basic_detail'    : True,
+                    'shopify_is_update_basic_detail' : True,
+                    'shopify_is_set_price'           : True,
+                    'shopify_is_set_image'           : True,
+                    'shopify_is_publish'             : 'publish_product_global',
+                })
+                export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+    
     @api.depends("shopify_product_ids.exported_in_shopify", "shopify_product_ids.variant_id")
     def _compute_total_sync_variants(self):
         """ This method used to compute the total sync variants.
