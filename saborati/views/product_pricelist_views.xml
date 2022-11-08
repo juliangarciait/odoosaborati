@@ -6,14 +6,9 @@
         <field name="name">product.pricelist.item.tree.view.saborati</field>
         <field name="model">product.pricelist.item</field>
         <field name="arch" type="xml">
-            <tree create="false">
+            <tree>
                 <field name="pricelist_id"/>
-                <field name="name" string="Applied On"/>
-                <field name="price"/>
                 <field name="min_quantity" colspan="4"/>
-                <field name="date_start" optional="hide"/>
-                <field name="date_end" optional="hide"/>
-                <field name="company_id" groups="base.group_multi_company" optional="show"/>
             </tree>
         </field>
     </record>
