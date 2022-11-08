@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <record id="product_template_tree_view_inherited" model="ir.ui.view">
+        <field name="name">product.template.tree.view.inherited</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="product_collection_ids" widget="many2many_tags" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
     <record id="product_template_no_create_tags" model="ir.ui.view">
         <field name="name">product.template.no.create.tags</field>
         <field name="model">product.template</field>
@@ -191,4 +202,11 @@
         <field name="code">action = model.assign_product_margin()</field>
     </record>
 
+    <record id="product_template_action_server_collections" model="ir.actions.server">
+        <field name="name">Asignar colección a productos</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="binding_model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">action = model.assign_product_collection()</field>
+    </record>
 </odoo>
