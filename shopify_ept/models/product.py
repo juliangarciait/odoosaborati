@@ -99,8 +99,8 @@ class ProductTemplate(models.Model):
                             
                 #Add to collection if it has collections
                 if product.product_collection_ids: 
-                    for collection in product.product_collection_ids: 
-                        collection.shopify_instance_id.shopify_instance_id.connect_in_shopify()
+                    for product_collection in product.product_collection_ids: 
+                        product_collection.shopify_instance_id.connect_in_shopify()
                         shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
                         collections = shopify_product.collections()
                         
@@ -108,8 +108,8 @@ class ProductTemplate(models.Model):
                             for collection in collections: 
                                 shopify_product.remove_from_collection(collection)
                                 
-                        if collection.is_exported and collection.company_id.id == self.env.company.id: 
-                            collect = collection.request_collection(collection.shopify_collection_id)
+                        if product_collection.is_exported and product_collection.company_id.id == self.env.company.id: 
+                            collect = product_collection.request_collection(product_collection.shopify_collection_id)
                             shopify_product.add_to_collection(collect)
                                 
                 #else: 
