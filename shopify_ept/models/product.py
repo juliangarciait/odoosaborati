@@ -97,20 +97,20 @@ class ProductTemplate(models.Model):
                         else:
                             export_data.with_context({"active_ids" : [product_instance.id]}).manual_update_product_to_shopify()
                             
-                #Add to collection if it has collections
-                if product.product_collection_ids: 
-                    for product_collection in product.product_collection_ids: 
-                        product_collection.shopify_instance_id.connect_in_shopify()
-                        shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
-                        collections = shopify_product.collections()
-                        
-                        if collections: 
-                            for collection in collections: 
-                                shopify_product.remove_from_collection(collection)
+                        #Add to collection if it has collections
+                        if product.product_collection_ids: 
+                            for product_collection in product.product_collection_ids: 
+                                product_collection.shopify_instance_id.connect_in_shopify()
+                                shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
+                                collections = shopify_product.collections()
                                 
-                        if product_collection.is_exported and product_collection.company_id.id == self.env.company.id: 
-                            collect = product_collection.request_collection(product_collection.shopify_collection_id)
-                            shopify_product.add_to_collection(collect)
+                                if collections: 
+                                    for collection in collections: 
+                                        shopify_product.remove_from_collection(collection)
+                                        
+                                if product_collection.is_exported and product_collection.company_id.id == self.env.company.id: 
+                                    collect = product_collection.request_collection(product_collection.shopify_collection_id)
+                                    shopify_product.add_to_collection(collect)
                                 
                 #else: 
                 #    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
