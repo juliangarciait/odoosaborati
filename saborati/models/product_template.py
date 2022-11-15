@@ -25,6 +25,31 @@ class ProductTemplate(models.Model):
     company_ids = fields.Many2many('res.company', string="Companies")
 
     product_collection_ids = fields.Many2many('shopify.product.collection', string="Collections")
+    
+    first_product_pricelist_id = fields.Many2one('product.pricelist', '1. Lista de Precios')
+    first_product_price = fields.Float('Precio', readonly="1", store=True)
+    
+    second_product_pricelist_id = fields.Many2one('product.pricelist', '2. Lista de Precios')
+    second_product_price = fields.Float('Precio', readonly="1", store=True)
+    
+    third_product_pricelist_id = fields.Many2one('product.pricelist', '3. Lista de Precios')
+    third_product_price = fields.Float('Precio', readonly="1", store=True)
+    
+    @api.onchange('first_product_pricelist_id')
+    def _onchange_first_product_pricelist(self): 
+        for record in self: 
+            record.first_product_price = record.first_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
+        
+    @api.onchange('second_product_pricelist_id')
+    def _onchange_second_product_pricelist(self): 
+        for record in self: 
+            record.second_product_price = record.second_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
+        
+    @api.onchange('third_product_pricelist_id')
+    def _onchange_third_product_pricelist(self): 
+        for record in self:    
+            record.third_product_price = record.third_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
+
 
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 
@@ -50,9 +75,10 @@ class ProductTemplate(models.Model):
             elif has_mrp_bom: 
                 record.replacement_cost = has_mrp_bom.replacement_cost_total
                 
-            cost = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)], order='write_date desc', limit=1).cost
-            if cost:
-                record.replacement_cost += cost
+            costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)])
+            if costs:
+                for cost in costs: 
+                    record.replacement_cost += cost.cost
                 
             
 
