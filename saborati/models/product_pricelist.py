@@ -10,6 +10,19 @@ class ProductPricelistItem(models.Model):
 
     base = fields.Selection([('list_price', 'Sales Price'), ('replacement_cost', 'Replacement Cost'), ('pricelist', 'Other Pricelist')])
 
+    replacement_cost = fields.Char('Costo de reposición', compute="_compute_replacement_cost")
+    
+    @api.depends('applied_on')
+    def _compute_replacement_cost(self):
+        for item in self: 
+            if item.applied_on == '1_product': 
+                item.replacement_cost = str(item.product_tmpl_id.replacement_cost)
+            elif item.applied_on == '0_product_variant': 
+                item.replacement_cost = str(item.product_id.product_tmpl_id.replacement_cost)
+            else: 
+                item.replacement_cost = 'No aplica'
+            
+
     def write(self, vals): 
         res = super(ProductPricelistItem, self).write(vals)
 
@@ -25,7 +38,6 @@ class ProductPricelistItem(models.Model):
                         'shopify_is_publish' : 'publish_product_global',
                     })
                     export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
-
         return res
 
     @api.model
@@ -48,6 +60,7 @@ class ProductPricelistItem(models.Model):
 
 
     def unlink(self):
+        res = super(ProductPricelistItem, self).unlink()
         for item in self: 
             if item.product_tmpl_id.shopify_product_template_ids and item.applied_on == '1_product': 
                 for product in item.product_tmpl_id.shopify_product_template_ids: 
@@ -60,5 +73,4 @@ class ProductPricelistItem(models.Model):
                             'shopify_is_publish' : 'publish_product_global',
                         })
                     export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
-
-        return super(ProductPricelistItem, self).unlink()
+        return res

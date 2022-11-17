@@ -16,6 +16,8 @@ class ProductTemplate(models.Model):
     list_price = fields.Float(compute="_compute_price")
 
     replacement_cost = fields.Float(compute="_compute_replacement_cost")
+    
+    total_additional_cost = fields.Float(compute="_compute_total_addional_cost")
 
     ingredients = fields.Text('Ingredients')
     brand = fields.Many2one('brand', 'Brand*')
@@ -80,7 +82,14 @@ class ProductTemplate(models.Model):
                 for cost in costs: 
                     record.replacement_cost += cost.cost
                 
-            
+    @api.depends('additional_cost_ids.cost')
+    def _compute_total_addional_cost(self): 
+        for product in self: 
+            total = 0 
+            for cost_id in product.additional_cost_ids: 
+                total += cost_id.cost
+                
+            product.total_additional_cost = total
 
 
     @api.model

@@ -18,7 +18,7 @@ from odoo import models, fields, api, _
 from .. import shopify
 from ..shopify.pyactiveresource.connection import ClientError
 
-_logger = logging.getLogger("Shopify Operations")
+_logger = logging.getLogger("SHOPIFY OPERATIONS")
 
 
 class ShopifyProcessImportExport(models.TransientModel):
@@ -466,6 +466,7 @@ class ShopifyProcessImportExport(models.TransientModel):
                 shopify_product_obj.with_context(is_process_from_selected_product=True).export_stock_in_shopify(
                     instance, odoo_product_ids)
         return True
+    
 
     def import_stock_in_odoo(self):
         """
