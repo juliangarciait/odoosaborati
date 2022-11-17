@@ -97,6 +97,25 @@
                             <field name="write_uid" readonly="1" optional="show"/>
                         </tree>
                     </field>
+                    <group>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="total_additional_cost" readonly="1" colspan="2"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Precios">
+                    <group>
+                        <group>
+                            <field name="first_product_pricelist_id"/>
+                            <field name="second_product_pricelist_id"/>
+                            <field name="third_product_pricelist_id"/>
+                        </group>
+                        <group>
+                            <field name="first_product_price" force_save = "1"/>
+                            <field name="second_product_price" force_save = "1"/>
+                            <field name="third_product_price" force_save = "1"/>
+                        </group>
+                    </group>
                 </page>
             </xpath>
         </field>
