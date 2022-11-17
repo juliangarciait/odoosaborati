@@ -40,17 +40,20 @@ class ProductTemplate(models.Model):
     @api.onchange('first_product_pricelist_id')
     def _onchange_first_product_pricelist(self): 
         for record in self: 
-            record.first_product_price = record.first_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
+            if record.first_product_pricelist_id: 
+                record.first_product_price = record.first_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
         
     @api.onchange('second_product_pricelist_id')
     def _onchange_second_product_pricelist(self): 
-        for record in self: 
-            record.second_product_price = record.second_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
+        for record in self:
+            if record.second_product_pricelist_id:  
+                record.second_product_price = record.second_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
         
     @api.onchange('third_product_pricelist_id')
     def _onchange_third_product_pricelist(self): 
         for record in self:    
-            record.third_product_price = record.third_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
+            if record.third_product_pricelist_id: 
+                record.third_product_price = record.third_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)
 
 
     @api.depends('margin_ids', 'replacement_cost')
