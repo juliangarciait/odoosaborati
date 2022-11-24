@@ -16,6 +16,8 @@
         'product_cost',
         'crm',
         'report_xlsx',
+        'sale',
+        'sale_management',
     ],
     'data' : [
         'security/ir.model.access.csv',
@@ -42,6 +44,7 @@
         'wizard/assign_collection_to_product_views.xml',
 
         'report/shopify_report_prices.xml',
+        'report/sale_report_templates.xml',
     ], 
     'installable' : True, 
     'auto_install' : False
