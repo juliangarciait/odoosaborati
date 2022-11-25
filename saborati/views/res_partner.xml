@@ -38,7 +38,7 @@
         </field>
     </record>
 
-    <!--<record id="change_field_names" model="ir.ui.view">
+    <record id="change_field_names" model="ir.ui.view">
         <field name="name">change.field.names</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base_address_extended.view_partner_structured_form"/>
@@ -50,6 +50,6 @@
                 <attribute name="string">Interior</attribute>
             </xpath>
         </field>
-    </record>-->
+    </record>
 
 </odoo>
