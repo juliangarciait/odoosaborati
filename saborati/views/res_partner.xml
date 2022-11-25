@@ -20,6 +20,10 @@
             <xpath expr="//field[@name='website']" position="replace">
                 <field name="id" widget="integer" options="{'format': 0}" />
             </xpath>
+
+            <xpath expr="//form/sheet/group/group/div[@class='o_address_format']" position="inside">
+                <field name="address_reference" placeholder="Referencias"/>
+            </xpath>
         </field>
     </record>
 
@@ -30,6 +34,20 @@
         <field name="arch" type="xml">
             <xpath expr="//tree" position="attributes">
                 <attribute name="default_order">create_date desc</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="change_field_names" model="ir.ui.view">
+        <field name="name">change.field.names</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_address_extended.view_partner_structured_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='street_number']" position="attributes">
+                <attribute name="string">No.</attribute>
+            </xpath>
+            <xpath expr="//label[@for='street_number2']" position="attributes">
+                <attribute name="string">Interior</attribute>
             </xpath>
         </field>
     </record>

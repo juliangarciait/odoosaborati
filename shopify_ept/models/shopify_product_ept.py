@@ -50,6 +50,39 @@ class ShopifyProductProductEpt(models.Model):
     taxable = fields.Boolean(default=True)
     last_stock_update_date = fields.Datetime(readonly=True, help="It is used in export stock process.")
     product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active')], default="draft", string="Product status")
+    to_shopify = fields.Boolean(default=True)
+
+                        
+    def write(self, vals): 
+        res = super(ShopifyProductProductEpt, self).write(vals)
+        
+        for product in self:
+            product.shopify_instance_id.connect_in_shopify() 
+            if not product.to_shopify: 
+                shopify_product = shopify.Product().find(product.shopify_template_id.shopify_tmpl_id)
+                for variant in shopify_product.variants: 
+                    product_dict = variant.to_dict()
+                    if str(product_dict.get('id')) == str(product.variant_id): 
+                        variant.destroy()
+                        product.exported_in_shopify = False 
+                        _logger.info(product.exported_in_shopify)
+            elif not product.exported_in_shopify and product.to_shopify: 
+                product_variant = self.env['product.product'].search([('id', '=', product.product_id.id)])
+                product.unlink()
+                product_variant.write({})
+                
+        return res
+    
+    #def unlink(self): 
+    #    for product in self: 
+    #        product.shopify_instance_id.connect_in_shopify()
+    #        shopify_product = shopify.Product().find(product.shopify_template_id.shopify_tmpl_id)
+    #        for variant in shopify_product.variants: 
+    #            product_dict = variant.to_dict()
+    #            if str(product_dict.get('id')) == str(product.variant_id): 
+    #                variant.destroy()
+
+    #    return super(ShopifyProductProductEpt, self).unlink()
 
     def toggle_active(self):
         """
@@ -237,7 +270,7 @@ class ShopifyProductProductEpt(models.Model):
             variants = []
             for variant in template.shopify_product_ids:
                 variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
-                                                                 is_set_basic_detail)
+                                                                is_set_basic_detail)
                 variants.append(variant_vals)
             new_product.variants = variants
         if is_set_basic_detail:
