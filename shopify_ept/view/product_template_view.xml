@@ -312,6 +312,26 @@
         </field>
     </record>
 
+    <record id="product_inherited_form" model="ir.ui.view">
+        <field name="name">product.inherited.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Online" name="online">
+                    <field name="shopify_product_ids">
+                        <tree string="Product variants in shopify instances" editable="bottom" create="false">
+                            <field name="to_shopify" string="To Shopify?"/>
+                            <field name="name" readonly="1"/>
+                            <field name="shopify_instance_id" readonly="1"/>
+                            <field name="product_id" readonly="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
 
     <!--<record id="product_template_search_inherit_filter" model="ir.ui.view">
         <field name="name">product.template.search.inherit.filter</field>

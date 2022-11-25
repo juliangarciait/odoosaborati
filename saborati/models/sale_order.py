@@ -10,6 +10,8 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     delivery_percentage = fields.Float('Delivery %', compute='_compute_deliver_percentage')
+    
+    colony = fields.Char('Colonia', related="partner_id.l10n_mx_edi_colony")
 
     @api.depends('order_line.product_uom_qty', 'order_line.qty_delivered', 'order_line.price_unit')
     def _compute_deliver_percentage(self): 
