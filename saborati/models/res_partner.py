@@ -9,7 +9,7 @@ class ResPartner(models.Model):
         selection=[('person', 'Individual'), ('company', 'Company')],
         compute='_compute_company_filter', store=True)
     
-    #address_reference = fields.Text('Referencia')
+    address_reference = fields.Text('Referencia')
     
     @api.depends('company_type')
     def _compute_company_filter(self): 
