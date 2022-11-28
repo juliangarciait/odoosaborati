@@ -160,6 +160,21 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
+            
+            if product_variant.shopify_product_ids: 
+                for shopify_product_variant in product_variant.shopify_product_ids: 
+                    shopify_product_variant.shopify_instance_id.connect_in_shopify() 
+                    if not shopify_product_variant.to_shopify: 
+                        shopify_product = shopify.Product().find(shopify_product_variant.shopify_template_id.shopify_tmpl_id)
+                        for variant in shopify_product.variants: 
+                            product_dict = variant.to_dict()
+                            if str(product_dict.get('id')) == str(shopify_product_variant.variant_id): 
+                                variant.destroy()
+                                shopify_product_variant.exported_in_shopify = False 
+                                _logger.info(shopify_product_variant.exported_in_shopify)
+                    elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
+                        shopify_product_variant.unlink() 
+            
             for product in product_variant.product_tmpl_id: 
                 if product.detailed_type == 'product':
                     for product_instance in product.shopify_product_template_ids:
@@ -184,5 +199,4 @@ class ProductProduct(models.Model):
                             export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
                         else:
                             export_data.with_context({"active_ids" : [product_instance.id]}).manual_update_product_to_shopify()
-        
         return res

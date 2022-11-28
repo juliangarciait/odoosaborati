@@ -28,16 +28,8 @@ class ProductPricelistItem(models.Model):
 
         for item in self: 
             if item.product_tmpl_id.shopify_product_template_ids and item.applied_on == '1_product':
-                for product in item.product_tmpl_id.shopify_product_template_ids: 
-                    export_data = self.env['shopify.process.import.export'].create({
-                        'shopify_instance_id' : product.shopify_instance_id.id,
-                        'shopify_is_set_basic_detail' : True,
-                        'shopify_is_update_basic_detail' : True,
-                        'shopify_is_set_price' : True,
-                        'shopify_is_set_image' : True,
-                        'shopify_is_publish' : 'publish_product_global',
-                    })
-                    export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+                item.product_tmpl_id.write({})
+                
         return res
 
     @api.model
@@ -60,7 +52,6 @@ class ProductPricelistItem(models.Model):
 
 
     def unlink(self):
-        res = super(ProductPricelistItem, self).unlink()
         for item in self: 
             if item.product_tmpl_id.shopify_product_template_ids and item.applied_on == '1_product': 
                 for product in item.product_tmpl_id.shopify_product_template_ids: 
@@ -73,4 +64,4 @@ class ProductPricelistItem(models.Model):
                             'shopify_is_publish' : 'publish_product_global',
                         })
                     export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
-        return res
+        return super(ProductPricelistItem, self).unlink()
