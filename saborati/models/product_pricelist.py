@@ -60,7 +60,6 @@ class ProductPricelistItem(models.Model):
 
 
     def unlink(self):
-        res = super(ProductPricelistItem, self).unlink()
         for item in self: 
             if item.product_tmpl_id.shopify_product_template_ids and item.applied_on == '1_product': 
                 for product in item.product_tmpl_id.shopify_product_template_ids: 
@@ -73,4 +72,4 @@ class ProductPricelistItem(models.Model):
                             'shopify_is_publish' : 'publish_product_global',
                         })
                     export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
-        return res
+        return super(ProductPricelistItem, self).unlink()
