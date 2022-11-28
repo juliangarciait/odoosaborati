@@ -166,8 +166,6 @@ class ProductProduct(models.Model):
                     shopify_product_variant.shopify_instance_id.connect_in_shopify() 
                     if not shopify_product_variant.to_shopify: 
                         shopify_product_tmpl = shopify.Product().find(shopify_product_variant.shopify_template_id.shopify_tmpl_id)
-                        _logger.info(shopify_product_tmpl.variants)
-                        _logger.info('$'*100)
                         for variant in shopify_product_tmpl.variants: 
                             product_dict = variant.to_dict()
                             if str(product_dict.get('id')) == str(shopify_product_variant.variant_id): 
