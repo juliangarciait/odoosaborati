@@ -53,25 +53,25 @@ class ShopifyProductProductEpt(models.Model):
     to_shopify = fields.Boolean(default=True)
 
                         
-    def write(self, vals): 
-        res = super(ShopifyProductProductEpt, self).write(vals)
-        
-        for product in self:
-            product.shopify_instance_id.connect_in_shopify() 
-            if not product.to_shopify: 
-                shopify_product = shopify.Product().find(product.shopify_template_id.shopify_tmpl_id)
-                for variant in shopify_product.variants: 
-                    product_dict = variant.to_dict()
-                    if str(product_dict.get('id')) == str(product.variant_id): 
-                        variant.destroy()
-                        product.exported_in_shopify = False 
-                        _logger.info(product.exported_in_shopify)
-            elif not product.exported_in_shopify and product.to_shopify: 
-                product_variant = self.env['product.product'].search([('id', '=', product.product_id.id)])
-                product.unlink()
-                product_variant.write({})
+    #def write(self, vals): 
+    #    res = super(ShopifyProductProductEpt, self).write(vals)
+    #    
+    #    for product in self:
+    #        product.shopify_instance_id.connect_in_shopify() 
+    #        if not product.to_shopify: 
+    #            shopify_product = shopify.Product().find(product.shopify_template_id.shopify_tmpl_id)
+    #            for variant in shopify_product.variants: 
+    ##                product_dict = variant.to_dict()
+    #                if str(product_dict.get('id')) == str(product.variant_id): 
+    #                    variant.destroy()
+    #                    product.exported_in_shopify = False 
+    #                    _logger.info(product.exported_in_shopify)
+    #        elif not product.exported_in_shopify and product.to_shopify: 
+    #            product_variant = self.env['product.product'].search([('id', '=', product.product_id.id)])
+    #            product.unlink()
+    #            product_variant.write({})
                 
-        return res
+    #    return res
     
     #def unlink(self): 
     #    for product in self: 
