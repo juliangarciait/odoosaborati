@@ -102,7 +102,8 @@ class ProductTemplate(models.Model):
     def create(self, vals_list): 
         res = super(ProductTemplate, self).create(vals_list)
 
-        res.default_code = 'OD{}'.format(str(res.id))
+        if not res.default_code: 
+            res.default_code = 'OD{}'.format(str(res.id))
 
         self.env['product.margin'].create(
             {
