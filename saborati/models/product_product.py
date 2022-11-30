@@ -12,6 +12,9 @@ class ProductProduct(models.Model):
     
     replacement_cost = fields.Float(compute="_compute_replacement_cost")
     
+    purchase_ok = fields.Boolean('Can be Purchased', default=True)
+    sale_ok = fields.Boolean('Can be Sold', default=True)
+    
     @api.depends('seller_ids', 'bom_ids')
     def _compute_replacement_cost(self): 
         for record in self: 
