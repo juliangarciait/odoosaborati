@@ -6,3 +6,4 @@ access_product_collection,product.collection,model_product_collection,,1,1,1,1
 access_shopify_product_collection,shopify.product.collection,model_shopify_product_collection,,1,1,1,1
 access_additional_cost,additional.cost,model_additional_cost,,1,1,1,1
 access_assign_collection_to_product,assign.collection.to.product,model_assign_collection_to_product,,1,1,1,1
+access_product_prices,product.prices,model_product_prices,,1,1,1,1
