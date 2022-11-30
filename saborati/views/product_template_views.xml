@@ -105,16 +105,12 @@
                 </page>
                 <page string="Precios">
                     <group>
-                        <group>
-                            <field name="first_product_pricelist_id"/>
-                            <field name="second_product_pricelist_id"/>
-                            <field name="third_product_pricelist_id"/>
-                        </group>
-                        <group>
-                            <field name="first_product_price" force_save = "1"/>
-                            <field name="second_product_price" force_save = "1"/>
-                            <field name="third_product_price" force_save = "1"/>
-                        </group>
+                        <field name="product_prices_ids" context="{'default_product_tmpl_id': active_id}" widget="one2many_list" nolabel="1">
+                            <tree string="Precios" editable="bottom" default_order="create_date desc">
+                                <field name="product_pricelist_id"/>
+                                <field name="price"/>
+                            </tree>
+                        </field>
                     </group>
                 </page>
             </xpath>
