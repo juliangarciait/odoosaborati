@@ -29,37 +29,6 @@ class ProductTemplate(models.Model):
     product_collection_ids = fields.Many2many('shopify.product.collection', string="Collections")
     
     product_prices_ids = fields.One2many('product.prices', 'product_tmpl_id')
-    
-    first_product_pricelist_id = fields.Many2one('product.pricelist', '1. Lista de Precios')
-    first_product_price = fields.Char('Precio', readonly="1", store=True, compute='_compute_first_product_pricelist')
-    
-    second_product_pricelist_id = fields.Many2one('product.pricelist', '2. Lista de Precios')
-    second_product_price = fields.Char('Precio', readonly="1", store=True, compute='_compute_second_product_pricelist')
-    
-    third_product_pricelist_id = fields.Many2one('product.pricelist', '3. Lista de Precios')
-    third_product_price = fields.Char('Precio', readonly="1", store=True, compute='_compute_third_product_pricelist')
-    
-    @api.depends('first_product_pricelist_id', 'first_product_pricelist_id.item_ids')
-    def _compute_first_product_pricelist(self): 
-        for record in self: 
-            if record.first_product_pricelist_id: 
-                price_with_tax = record.taxes_id.compute_all(float(record.first_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)), product=record, partner=self.env['res.partner'])
-                record.first_product_price = str(record.first_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)) + " (" + str(float(price_with_tax['total_included'])) + " con impuestos)"
-        
-    @api.depends('second_product_pricelist_id', 'second_product_pricelist_id.item_ids')
-    def _compute_second_product_pricelist(self): 
-        for record in self:
-            if record.second_product_pricelist_id:  
-                price_with_tax = record.taxes_id.compute_all(float(record.second_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)), product=record, partner=self.env['res.partner'])
-                record.second_product_price = str(record.second_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)) + " (" + str(float(price_with_tax['total_included'])) + " con impuestos)"
-        
-    @api.depends('third_product_pricelist_id', 'third_product_pricelist_id.item_ids')
-    def _compute_third_product_pricelist(self): 
-        for record in self:    
-            if record.third_product_pricelist_id:
-                price_with_tax = record.taxes_id.compute_all(float(record.third_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)), product=record, partner=self.env['res.partner'])
-                record.third_product_price = str(record.third_product_pricelist_id.get_product_price(record.product_variant_id, 1.0, partner=False, uom_id=record.product_variant_id.uom_id.id)) + " (" + str(float(price_with_tax['total_included'])) + " con impuestos)"
-
 
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 
