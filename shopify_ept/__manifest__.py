@@ -58,7 +58,8 @@
         'view/delivery_carrier_view.xml',
         'view/res_company_views.xml',
         'view/product_collection_views.xml',
-        'wizard/change_product_status_view.xml', 
+        'wizard/change_product_status_view.xml',
+        'wizard/assign_collection_to_product.xml',
     ],
     'demo_xml': [],
     # cloc settings

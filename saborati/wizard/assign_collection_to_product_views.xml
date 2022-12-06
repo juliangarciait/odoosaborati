@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="collection_ids" string="Colecciones:" widget="many2many_tags" domain="[('company_id', '=', allowed_company_ids[0])]"/>
+                    <field name="collection_ids" string="Colecciones:" widget="many2many_tags" domain="[('company_id', '=', allowed_company_ids[0])]" options="{'no_create_edit':True, 'no_create': True}"/>
                 </group>
                 <footer>
                     <button name="apply" string="Aplicar" type="object" class="oe_highlight"/>

@@ -15,9 +15,13 @@ class MrpBom(models.Model):
 
         total = 0 
         for bom_line in bill.bom_line_ids: 
-            total += bom_line.product_id.product_tmpl_id.replacement_cost * bom_line.product_qty
+            total += bom_line.product_id.replacement_cost * bom_line.product_qty
 
-        bill.product_tmpl_id.replacement_cost = total
+        if bill.product_tmpl_id: 
+            bill.product_tmpl_id.replacement_cost = total
+            
+        if bill.product_id: 
+            bill.product_id.replacement_cost = total
 
         return bill
 
@@ -27,9 +31,13 @@ class MrpBom(models.Model):
         for bill in self: 
             total = 0
             for bom_line in bill.bom_line_ids: 
-                total += bom_line.product_id.product_tmpl_id.replacement_cost * bom_line.product_qty
+                total += bom_line.product_id.replacement_cost * bom_line.product_qty
 
-            bill.product_tmpl_id.replacement_cost = total
+            if bill.product_tmpl_id:
+                bill.product_tmpl_id.replacement_cost = total
+            
+            if bill.product_id: 
+                bill.product_id.replacement_cost = total
 
         return res     
 
@@ -38,4 +46,4 @@ class MrpBomLine(models.Model):
     _inherit = 'mrp.bom.line'
 
 
-    replacement_cost = fields.Float('Replacement Cost', related='product_id.product_tmpl_id.replacement_cost')
+    replacement_cost = fields.Float('Replacement Cost', related='product_id.replacement_cost')
