@@ -8,3 +8,4 @@ from . import cancel_refund_order_wizard
 from . import prepare_product_for_export
 from . import shopify_onboarding_confirmation_ept
 from . import change_product_status
+from . import assign_collection_to_product
