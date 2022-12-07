@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="export_collection_to_shopify_wizard" model="ir.ui.view">
+        <field name="name">export.collection.to.shopify.wizard</field>
+        <field name="model">export.collection.to.shopify</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="instance_id" string="Instancia:"/>
+                </group>
+                <footer>
+                    <button name="apply" string="Confirmar" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
