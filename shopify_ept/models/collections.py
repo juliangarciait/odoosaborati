@@ -47,27 +47,16 @@ class ProductCollection(models.Model):
                 })
         return res
     
-    def export_collections(self): 
-        collections = self.env['product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
+    def export_collections(self):
+        return {
+            'view_mode' : 'form', 
+            'type'      : 'ir.actions.act_window', 
+            'res_model' : 'export.collection.to.shopify', 
+            'target'    : 'new', 
+            'view_id'   : self.env.ref('shopify_ept.export_collection_to_shopify_wizard').id, 
+            'context'   : {'ids' : self.env.context.get('active_ids', [])}
+        }
         
-        shopify_product_collection_obj = self.env['shopify.product.collection']
-
-        instances = self.env['shopify.instance.ept'].search([('shopify_company_id', '=', self.env.company.id)])
-        
-        for collection in collections:
-            for instance in instances:
-                if not collection.shopify_product_collection_ids:
-                    shopify_product_collection_obj.create({
-                        'name'                : collection.name, 
-                        'collection_id'       : collection.id,
-                        'body_html'           : collection.body_html, 
-                        'company_id'          : instance.shopify_company_id.id,
-                        'shopify_instance_id' : instance.id,
-                        'image_1920'          : collection.image_1920,
-                        'image_url'           : collection.image_url
-                    })
-                else: 
-                    raise ValidationError (_('Error al crear collection template de shopify'))
                 
     def update_collections_in_shopify(self):
         collections = self.env['product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
