@@ -35,8 +35,6 @@
             </xpath>
         </field>
     </record>
-
-
     <!-- SHOPIFY PRODUCT COLLECTIONS-->
 
     <record id="shopify_product_collection_update_action_server" model="ir.actions.server">

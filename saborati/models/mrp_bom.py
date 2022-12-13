@@ -26,7 +26,7 @@ class MrpBomLine(models.Model):
 
     result = fields.Float('Result', readonly=True, compute='_compute_result', store=True)
 
-    @api.depends('replacement_cost', 'product_qty')
+    @api.depends('product_id.replacement_cost', 'product_qty')
     def _compute_result(self): 
         for line in self:
             line.result = line.replacement_cost * line.product_qty
