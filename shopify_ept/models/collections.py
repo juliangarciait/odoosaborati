@@ -69,6 +69,14 @@ class ProductCollection(models.Model):
                     'image_1920': collection.image_1920,
                     'image_url' : collection.image_url
                 })
+                
+                
+    def unlink(self): 
+        for collection in self: 
+            for shopify_collection in collection.shopify_product_collection_ids: 
+                shopify_collection.unlink()
+                
+        return super(ProductCollection, self).unlink()
             
 
 
@@ -192,7 +200,7 @@ class ShopifyProductCollection(models.Model):
 
     def request_collection(self, collection):
         try: 
-            collect = shopify.CustomCollection().find(collection)
+            return shopify.CustomCollection().find(collection)
         except ClientError as error: 
             if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
                 time.sleep(int(float(error.response.headers.get('Retry-After', 5))))
@@ -200,15 +208,19 @@ class ShopifyProductCollection(models.Model):
         except Exception as error: 
             _logger.info("Collection %s not found in shopify while updating it.\nError: %s" % (collection, str(error)))
             return False
-        return collect
+        #if collect: 
+        #    return collect
+        #else: return False
     
     def unlink(self): 
-        self.shopify_instance_id.connect_in_shopify()
+        for collection in self: 
+            collection.shopify_instance_id.connect_in_shopify()
 
-        if self.is_exported: 
-            collect = self.request_collection(self.shopify_collection_id)
-            if collect: 
-                collect.destroy()
+            if collection.is_exported:
+                _logger.info(collection.shopify_collection_id)
+                collect = self.request_collection(collection.shopify_collection_id)
+                if collect: 
+                    collect.destroy()
         
         return super(ShopifyProductCollection, self).unlink()
     

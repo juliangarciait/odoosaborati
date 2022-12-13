@@ -176,6 +176,7 @@ class ProductProduct(models.Model):
                     if not product_instance.exported_in_shopify:
                         export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_export_product_to_shopify()
                     else:
+                        _logger.info('UPDAT'*100)
                         export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                         
 
@@ -207,7 +208,7 @@ class ProductProduct(models.Model):
                         else: 
                             raise ValidationError('Las variantes no están exportadas en Shopify.')
                     elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
-                        shopify_product_variant.unlink() 
+                        shopify_product_variant.unlink()
             
             self.export_variant_to_shopify(product_variant.product_tmpl_id)
             

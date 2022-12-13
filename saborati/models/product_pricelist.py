@@ -18,7 +18,7 @@ class ProductPricelistItem(models.Model):
             if item.applied_on == '1_product': 
                 item.replacement_cost = str(item.product_tmpl_id.replacement_cost)
             elif item.applied_on == '0_product_variant': 
-                item.replacement_cost = str(item.product_id.product_tmpl_id.replacement_cost)
+                item.replacement_cost = str(item.product_id.replacement_cost)
             else: 
                 item.replacement_cost = 'No aplica'
             
