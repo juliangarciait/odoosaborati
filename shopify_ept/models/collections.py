@@ -210,7 +210,9 @@ class ShopifyProductCollection(models.Model):
                                     collect.add_product(new_product)
                     except ClientError as error: 
                         if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
-                            time.sleep(int(float(error.response.headers.get('Retry-After', 5))))
+                            _logger.info(error.response.code)
+                            _logger.info('^'*10)
+                            time.sleep(int(float(error.response.headers.get('Retry-After', 60))))
                             collect = self.request_collection(collection.shopify_collection_id)
                             if collect: 
                                 collect.title     = collection.name
