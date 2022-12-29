@@ -134,7 +134,7 @@ class ShopifyProductCollection(models.Model):
                         self.remove_products(collect)
                     
                     _logger.info('ANTESsssssssssssssSSsssS')
-                    time.sleep(10)
+                    time.sleep(30)
                     _logger.info('DESPUESsssSSSSSSSSSss')
                     if collection.product_ids: 
                         self.add_products(collect, collection)
@@ -198,7 +198,7 @@ class ShopifyProductCollection(models.Model):
             current_product.remove_from_collection(collect)
             if n == 10: 
                 n = 0
-                time.sleep(10)
+                time.sleep(5)
 
     def request_collection(self, collection):
         try: 
