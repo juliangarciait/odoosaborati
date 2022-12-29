@@ -134,7 +134,7 @@ class ShopifyProductCollection(models.Model):
                         self.remove_products(collect)
                     
                     _logger.info('ANTESsssssssssssssSSsssS')
-                    time.sleep(30)
+                    time.sleep(10)
                     _logger.info('DESPUESsssSSSSSSSSSss')
                     if collection.product_ids: 
                         self.add_products(collect, collection)
@@ -188,20 +188,17 @@ class ShopifyProductCollection(models.Model):
             else: 
                 raise ValidationError ('Collection {} no pertenece la instancia de esta empresa'.format(collection))
                                     
-    def remove_products(self, collect):
-        products = collect.products() 
-        try: 
-            for product in products:
-                dict_product = product.to_dict()
-                current_product = shopify.Product().find(dict_product.get('id'))
-                current_product.remove_from_collection(collect)
-        except ClientError as error: 
-            if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
-                time.sleep(int(float(error.response.headers.get('Retry-After', 10))))
-                for product in products:
-                    dict_product = product.to_dict()
-                    current_product = shopify.Product().find(dict_product.get('id'))
-                    current_product.remove_from_collection(collect)
+    def remove_products(self, collect): 
+        products = collect.products()
+        n = 0 
+        for product in products:
+            n += 1
+            dict_product = product.to_dict()
+            current_product = shopify.Product().find(dict_product.get('id'))
+            current_product.remove_from_collection(collect)
+            if n == 10: 
+                n = 0
+                time.sleep(5)
 
     def request_collection(self, collection):
         try: 
