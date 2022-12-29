@@ -198,7 +198,7 @@ class ShopifyProductCollection(models.Model):
             current_product.remove_from_collection(collect)
             if n == 10: 
                 n = 0
-                time.sleep(5)
+                time.sleep(10)
 
     def request_collection(self, collection):
         try: 
