@@ -13,4 +13,14 @@
         </field>
     </record>
 
+    <record id="product_pricelist_item_tree_view_from_product_inherit" model="ir.ui.view">
+        <field name="name">product.pricelist.item.tree.view.from.product.inherit</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_tree_view_from_product"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='min_quantity']" position="after">
+                <field name="percent_price" attrs="{'invisible': [('percent_price', '=', 0)]}" optional="show"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

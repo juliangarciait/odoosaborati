@@ -37,3 +37,4 @@ from . import data_queue_mixin_ept
 from . import order_payment_ept
 from . import queue_line_dashboard
 from . import collections
+from . import product_pricelist

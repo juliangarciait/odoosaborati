@@ -122,42 +122,22 @@ class ShopifyProductCollection(models.Model):
         for collection in self:
             collection.shopify_instance_id.connect_in_shopify()
             if collection.company_id.id == self.env.company.id:
-                try: 
-                    collect = self.request_collection(collection.shopify_collection_id)
-                    if collect: 
-                        collect.title     = collection.name
-                        collect.body_html = collection.body_html
-                        #collect.image     = {"src" : collection.image_url}
-                        
-                        result = collect.save()
-                        
-                        if collection.is_exported: 
-                            self.remove_products(collect)
-                            
-                        if collection.product_ids: 
-                            products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                            for shopify_product in products:
-                                new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                                collect.add_product(new_product)
-                except ClientError as error: 
-                    if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
-                        time.sleep(int(float(error.response.headers.get('Retry-After', 5))))
-                        collect = self.request_collection(collection.shopify_collection_id)
-                        if collect: 
-                            collect.title     = collection.name
-                            collect.body_html = collection.body_html
-                            #collect.image     = {"src" : collection.image_url}
-                            
-                            result = collect.save()
-                            
-                            if collection.is_exported: 
-                                self.remove_products(collect)
-                                
-                            if collection.product_ids: 
-                                products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                                for shopify_product in products:
-                                    new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                                    collect.add_product(new_product)
+                collect = self.request_collection(collection.shopify_collection_id)
+                if collect: 
+                    collect.title     = collection.name
+                    collect.body_html = collection.body_html
+                    #collect.image     = {"src" : collection.image_url}
+                    
+                    result = collect.save()
+                    
+                    if collection.is_exported: 
+                        self.remove_products(collect)
+                    
+                    _logger.info('ANTESsssssssssssssSSsssS')
+                    time.sleep(30)
+                    _logger.info('DESPUESsssSSSSSSSSSss')
+                    if collection.product_ids: 
+                        self.add_products(collect, collection)
             else:
                 new_collection = shopify.CustomCollection()
 
@@ -184,6 +164,19 @@ class ShopifyProductCollection(models.Model):
                 
         return res
     
+    def add_products(self, collect, collection): 
+        products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+        n = 0
+        for shopify_product in products:
+            n += 1
+            _logger.info(shopify_product.product_tmpl_id.name)
+            _logger.info('$'*1000)
+            new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
+            collect.add_product(new_product)
+            if n == 10:
+                n = 0
+                time.sleep(5)
+    
     def update_collections_in_shopify(self):
         collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
         
@@ -191,51 +184,13 @@ class ShopifyProductCollection(models.Model):
             if collection.company_id.id == self.env.company.id: 
                 collection.shopify_instance_id.connect_in_shopify()
                 if collection.is_exported:
-                    try: 
-                        collect = self.request_collection(collection.shopify_collection_id)
-                        if collect: 
-                            collect.title     = collection.name
-                            collect.body_html = collection.body_html
-                            
-                            result = collect.save()
-                            #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
-                            
-                            if collection.is_exported: 
-                                self.remove_products(collect)
-                                
-                            if collection.product_ids: 
-                                products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                                for shopify_product in products:
-                                    new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                                    collect.add_product(new_product)
-                    except ClientError as error: 
-                        if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
-                            _logger.info(error.response.code)
-                            _logger.info('^'*10)
-                            time.sleep(int(float(error.response.headers.get('Retry-After', 60))))
-                            collect = self.request_collection(collection.shopify_collection_id)
-                            if collect: 
-                                collect.title     = collection.name
-                                collect.body_html = collection.body_html
-                                
-                                result = collect.save()
-                                #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
-                                
-                                if collection.is_exported: 
-                                    self.remove_products(collect)
-                                    
-                                if collection.product_ids: 
-                                    products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                                    for shopify_product in products:
-                                        new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                                        collect.add_product(new_product)
+                    self.export_collections(collection)
             else: 
                 raise ValidationError ('Collection {} no pertenece la instancia de esta empresa'.format(collection))
                                     
     def remove_products(self, collect): 
         products = collect.products()
-        
-        for product in products: 
+        for product in products:
             dict_product = product.to_dict()
             current_product = shopify.Product().find(dict_product.get('id'))
             current_product.remove_from_collection(collect)
@@ -278,7 +233,46 @@ class ShopifyProductCollection(models.Model):
                     if collect: 
                         collect.destroy()
                         collection.is_exported = False
-    
+                        
+                        
+    def export_collections(self, collection): 
+        try: 
+            collect = self.request_collection(collection.shopify_collection_id)
+            if collect: 
+                collect.title     = collection.name
+                collect.body_html = collection.body_html
+                
+                result = collect.save()
+                #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
+                
+                if collection.is_exported: 
+                    self.remove_products(collect)
+                    
+                if collection.product_ids: 
+                    products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+                    for shopify_product in products:
+                        new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
+                        collect.add_product(new_product)
+        except ClientError as error: 
+            if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
+                time.sleep(int(float(error.response.headers.get('Retry-After', 60))))
+                collect = self.request_collection(collection.shopify_collection_id)
+                if collect: 
+                    collect.title     = collection.name
+                    collect.body_html = collection.body_html
+                    
+                    result = collect.save()
+                    #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
+                    
+                    if collection.is_exported: 
+                        self.remove_products(collect)
+                        
+                    if collection.product_ids: 
+                        products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+                        for shopify_product in products:
+                            new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
+                            collect.add_product(new_product)
+
     
     
                  
