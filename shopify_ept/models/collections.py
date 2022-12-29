@@ -175,7 +175,7 @@ class ShopifyProductCollection(models.Model):
             collect.add_product(new_product)
             if n == 10:
                 n = 0
-                time.sleep(16)
+                time.sleep(5)
     
     def update_collections_in_shopify(self):
         collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
