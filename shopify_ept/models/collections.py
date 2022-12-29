@@ -134,7 +134,7 @@ class ShopifyProductCollection(models.Model):
                         self.remove_products(collect)
                     
                     _logger.info('ANTESsssssssssssssSSsssS')
-                    time.sleep(60)
+                    time.sleep(5)
                     _logger.info('DESPUESsssSSSSSSSSSss')
                     if collection.product_ids: 
                         self.add_products(collect, collection)
