@@ -19,8 +19,6 @@ class StockQuant(models.Model):
                 
             })
             process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
-        
-        #attrs="{'invisible': [('inventory_quantity_set', '=', False)]}"
 
-        return res
+        return res        
         

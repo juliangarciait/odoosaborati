@@ -69,7 +69,6 @@ class ProductTemplate(models.Model):
         
         res = super(ProductTemplate, self).write(vals)
 
-
         for product in self:
             if product.detailed_type == 'product':
                 for product_instance in product.shopify_product_template_ids:
