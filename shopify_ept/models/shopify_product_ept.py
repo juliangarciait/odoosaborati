@@ -660,7 +660,6 @@ class ShopifyProductProductEpt(models.Model):
         common_log_line_obj = self.env["common.log.lines.ept"]
         product_obj = self.env["product.product"]
         sale_order_obj = self.env["sale.order"]
-        _logger.info('^'*1000)
         log_line_array = []
         model = "shopify.product.product.ept"
         model_id = common_log_line_obj.get_model_id(model)

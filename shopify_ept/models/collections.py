@@ -243,42 +243,21 @@ class ShopifyProductCollection(models.Model):
                         
                         
     def export_collections(self, collection): 
-        try: 
-            collect = self.request_collection(collection.shopify_collection_id)
-            if collect: 
-                collect.title     = collection.name
-                collect.body_html = collection.body_html
+        collect = self.request_collection(collection.shopify_collection_id)
+        if collect: 
+            collect.title     = collection.name
+            collect.body_html = collection.body_html
+            
+            result = collect.save()
+            #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
+            
+            if collection.is_exported: 
+                self.remove_products(collect, collection)
                 
-                result = collect.save()
-                #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
+            time.sleep(30)
                 
-                if collection.is_exported: 
-                    self.remove_products(collect)
-                    
-                if collection.product_ids: 
-                    products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                    for shopify_product in products:
-                        new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                        collect.add_product(new_product)
-        except ClientError as error: 
-            if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
-                time.sleep(int(float(error.response.headers.get('Retry-After', 60))))
-                collect = self.request_collection(collection.shopify_collection_id)
-                if collect: 
-                    collect.title     = collection.name
-                    collect.body_html = collection.body_html
-                    
-                    result = collect.save()
-                    #collect.image     = {"attachment" : collection.image_1920.decode("utf-8")}
-                    
-                    if collection.is_exported: 
-                        self.remove_products(collect)
-                        
-                    if collection.product_ids: 
-                        products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                        for shopify_product in products:
-                            new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                            collect.add_product(new_product)
+            if collection.product_ids: 
+                self.add_products(collect, collection)
 
     
     
