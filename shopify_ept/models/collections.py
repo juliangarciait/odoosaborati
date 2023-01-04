@@ -106,11 +106,6 @@ class ShopifyProductCollection(models.Model):
             collection_info = new_collection.to_dict()
             res.shopify_collection_id = collection_info.get('id')
             res.is_exported = True
-            if res.product_ids: 
-                products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', res.product_ids.ids)])
-                for shopify_product in products:
-                    new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                    new_collection.add_product(new_product)
         elif not result: 
             raise ValidationError (_('Error al crear collection en Shopify'))
 
@@ -133,9 +128,8 @@ class ShopifyProductCollection(models.Model):
                     if collection.is_exported: 
                         self.remove_products(collect, collection)
                     
-                    time.sleep(30)
-                    
-                    if collection.product_ids: 
+                    if collection.product_ids:
+                        time.sleep(30)
                         self.add_products(collect, collection)
             else:
                 new_collection = shopify.CustomCollection()
