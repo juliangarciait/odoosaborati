@@ -109,8 +109,6 @@ class ProductTemplate(models.Model):
                             product_collection.shopify_instance_id.connect_in_shopify()     
                             if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
                                 collect = product_collection.request_collection(product_collection.shopify_collection_id)
-                                _logger.info(collect)
-                                _logger.info('#'*100)
                                 if collect:
                                     shopify_product.add_to_collection(collect)  
                             
