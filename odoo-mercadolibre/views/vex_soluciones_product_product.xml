@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="product_template_variants_meli" model="ir.actions.act_window">
+        <field name="name">Product Variant</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('conector','=', 'meli'),'|',('active','!=', False),('active','!=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Product Template
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_product_variants_template_meli" action="product_template_variants_meli"
+              parent="odoo-mercadolibre.meli_main_list_sync" name="Products Variants"/>
+</odoo>

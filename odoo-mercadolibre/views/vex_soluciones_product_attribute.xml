@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<!-- Inicio Vistas attributes -->
+    <record id="attributes_meli" model="ir.actions.act_window">
+        <field name="name">Product Attribute</field>
+        <field name="res_model">product.attribute</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('conector','=', 'meli')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Atribute
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_meli_patribu_confi" action="attributes_meli"
+              parent="odoo-mercadolibre.meli_main_list_sync" name="Product Atributes"/>
+
+</odoo>

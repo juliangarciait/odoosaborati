@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+questions,questions,model_meli_questions,,1,1,1,1
+export,export,model_meli_export,,1,1,1,1
+exportunit,exportunit,model_meli_export_unite,,1,1,1,1
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+    <record id="producto_vex_tree_herencias" model="ir.ui.view" >
+           <field name="name">Product.view</field>
+           <field name="model">product.template</field>
+           <field name="inherit_id" ref="product.product_template_tree_view"/>
+           <field name="arch" type="xml">
+
+              <xpath expr="//field[@name='name']" position="after">
+                   <field name="active_meli"  invisible="1" />
+              </xpath>
+              <xpath expr="//tree" position="attributes">
+                   <attribute name="decoration-danger">active_meli==False</attribute>
+               </xpath>
+           </field>
+    </record>
+
+    <record id="Producto_meli_kanvan_herencia" model="ir.ui.view">
+        <field name="name">Product.Kanvan.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_kanban_details']" position="after">
+                <div t-if="record.server_vex.value">
+                    <field name="active_meli"  invisible="1"/>
+                    <small  t-if="record.product_condition.value">[<field name="product_condition"/>]</small>
+                    <span class="text-danger" attrs="{'invisible': [('active_meli', '!=', False)]}">Archived</span>
+                 </div>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <record id="Personal_meli_FORM_herenciaX2" model="ir.ui.view">
+           <field name="name">Product.Form</field>
+           <field name="model">product.template</field>
+           <field name="inherit_id" ref="product.product_template_only_form_view"/>
+           <field name="arch" type="xml">
+
+           	   <xpath expr="//field[@name='permalink']" position="after">
+
+
+                           <field name="server_vex" string="Meli Server"
+                           attrs="{'readonly': [('edit_id', '!=', True)]}"/>
+                           <field name="description" string="Description"  />
+                           <!-- <field name="brand" string="Product Brand"   /> -->
+                           <field name="public_categ_ids"    widget="many2many_tags"  />
+                           <field name="product_condition" string="Product Condition"   />
+                           <field name="url_image" string="Image URL" widget="url"  />
+
+	           </xpath>
+
+           </field>
+    </record>
+
+
+
+
+
+    <record id="product_template_meli" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('conector','=', 'meli'),('type','!=', 'service')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Product Template
+            </p>
+        </field>
+    </record>
+
+
+
+    <menuitem id="menu_product_template_confi_meli" action="product_template_meli"
+              parent="odoo-mercadolibre.meli_main_list_sync" name="Products"/>
+
+    <record id="products_fee_meli" model="ir.actions.act_window">
+        <field name="name">Fee</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('conector','=', 'meli'),('type','=', 'service')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Fee
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_product_fee_confi_meli" action="products_fee_meli"
+              parent="odoo-mercadolibre.meli_main_list_sync" name="Fee"/>
+
+
+</odoo>
