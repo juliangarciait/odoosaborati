@@ -9,6 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/notebook/page/group/group/field[@name='currency_id']" position="after">
                 <field name="default_company_margin" widget="percentage"/>
+                <field name="medium_id" options="{'no_create_edit':True, 'no_create': True}"/>
             </xpath>
         </field>
     </record>
