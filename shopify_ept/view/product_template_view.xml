@@ -321,7 +321,7 @@
                 <page string="Online" name="online">
                     <field name="shopify_product_ids">
                         <tree string="Product variants in shopify instances" editable="bottom" create="false" delete="false">
-                            <field name="exported_in_shopify" string="Is Exported?"/>
+                            <field name="exported_in_shopify" string="Is Exported?" readonly="1"/>
                             <field name="to_shopify" string="To Shopify?"/>
                             <field name="name" readonly="1"/>
                             <field name="shopify_instance_id" readonly="1"/>

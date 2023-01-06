@@ -23,6 +23,20 @@ class StockPicking(models.Model):
         
         return res
     
+    def action_set_quantities_to_reservation(self): 
+        res = super(StockPicking, self).action_set_quantities_to_reservation()
+        
+        for line in self.move_ids_without_package: 
+            line.quantity_done = line.product_uom_qty
+        
+        return res
+    
+class StockMove(models.Model): 
+    _inherit = 'stock.move'
+
+               
+    
+    
 class StockReturnPicking(models.TransientModel): 
     _inherit = 'stock.return.picking'
     
