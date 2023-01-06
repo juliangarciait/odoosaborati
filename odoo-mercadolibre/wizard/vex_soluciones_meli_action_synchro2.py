@@ -320,6 +320,7 @@ class MeliActionSynchro(models.TransientModel):
                     'conector': "'meli'",
                     'server_vex': server.id,
                     'id_vex': "'" + str(data['id']) + "'",
+                    'client_order_ref': "'" + str(data['id']) + "'",
                     'name': "'" + str(seq) + "'",
                     'partner_id': customer['customer'].id,
                     'partner_invoice_id': customer['invoice'].id,
@@ -341,6 +342,7 @@ class MeliActionSynchro(models.TransientModel):
                 }
                 write = {
                     'state': "''".format(state),
+                    'client_order_ref': "'" + str(data['id']) + "'",
                 }
             if query == "categories":
                 create = {
@@ -379,7 +381,9 @@ class MeliActionSynchro(models.TransientModel):
                 for d in data:
                     #raise ValidationError(str(d['body']))
 
-                    if d['body']['status'] == 'active':
+
+                    #if d['body']['status'] == 'active':
+                    if 1 == 1:
                         id_vex = d['body']['id']
                         queryx += self.synchro(d, query, server, str(accion.model), accion, id_vex, None)
                         pro = self.env['product.template'].search([('id_vex', '=', str(id_vex))])
@@ -558,6 +562,7 @@ class MeliActionSynchro(models.TransientModel):
 
             if query == 'orders':
                 if not  exist.order_line :
+                    #raise   ValidationError('whatss')
 
                     self.insert_lines(dr['order_items'], server, exist, accion)
                     if server.discount_fee:

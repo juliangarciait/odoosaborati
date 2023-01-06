@@ -424,7 +424,7 @@ class WooSynchro(models.TransientModel):
                     add_id_server = ''
 
                 query_updatex = f"UPDATE {tablec} SET  conector = '{conector}' , id_vex = '{str(id_vex)}' {add_id_server}  WHERE default_code = '{default_code}' ;"
-                query_updatex += f"UPDATE product_product SET id_vex_varition = '{str(id_vex)}'  WHERE product_tmpl_id = {exist.id} ;"
+                query_updatex += f"UPDATE product_product SET id_vex_varition = '{str(id_vex)}' , base_unit_count = 0 WHERE product_tmpl_id = {exist.id} ;"
                 sql_fields['write'] =  query_updatex
 
 
@@ -702,7 +702,7 @@ class WooSynchro(models.TransientModel):
                             'type': "'service'",
                             'conector': "'" + str(server.conector) + "'",
                             'categ_id': server.categ_id.id,
-                            'base_line_count': 0 ,
+                            #'base_line_count': 0 ,
                             'sale_line_warn': "'no-message'",
                             'detailed_type': "'service'" ,
                             'base_unit_count': 0
@@ -726,32 +726,35 @@ class WooSynchro(models.TransientModel):
                         }
                         self.json_execute_create('product.product', crea)
                     pp = self.env['product.product'].search([('product_tmpl_id', '=', ppf.id)], limit=1)
+
+                    #raise   ValidationError(str(f))
                     # raise ValidationError(pp)
 
                     new_line = {
                         # 'name':str(existe.name),
                         'name': "'" + str(pp.name) + "'",
                         'product_id': pp.id,
-                        'product_uom_qty': 1,
+                        'product_uom_qty': f['quantity'],
                         'price_unit': float(f[key_total] * sg),
-                        'price_reduce': float(f[key_total] * sg),
-                        'price_reduce_taxinc': float(f[key_total] * sg),
-                        'price_reduce_taxexcl': float(f[key_total] * sg),
+                        #'price_reduce': float(f[key_total] * sg),
+                        #'price_reduce_taxinc': float(f[key_total] * sg),
+                        #'price_reduce_taxexcl': float(f[key_total] * sg),
                         'order_id': creado.id,
-                        'price_subtotal': float(f[key_total] * sg),
-                        'price_total': float(f[key_total] * sg),
-                        'price_tax': 0.0,
+                        #'price_subtotal': float(f[key_total] * sg),
+                        #'price_total': float(f[key_total] * sg),
+                        #'price_tax': 0.0,
                         # campos requeridos
-                        'customer_lead': 1.0,
-                        'invoice_status': "'no'",
+                        #'customer_lead': 1.0,
+                        #'invoice_status': "'no'",
                         'company_id': server.company.id,
                         'currency_id': server.pricelist.currency_id.id,
                         'product_uom': 1,
                         'discount': 0
 
                     }
+                    self.env['sale.order.line'].create(new_line)
 
-                    self.json_execute_create('sale.order.line', new_line)
+                    #self.json_execute_create('sale.order.line', new_line)
 
         return total_fee
 
@@ -763,6 +766,7 @@ class WooSynchro(models.TransientModel):
 
             p_id = existe.id
             if not p_id:
+
                 # no se encontro elproducto por alguna razon
                 # crear producto temporal
                 temp = self.env['product.product'].search([('id_vex_varition', '=', 'tmp')])
@@ -797,22 +801,29 @@ class WooSynchro(models.TransientModel):
                 'product_id': p_id,
                 'product_uom_qty': int(p['quantity']),
                 'price_unit': float(p['unit_price']),
-                'price_reduce': float(p['unit_price']),
-                'price_reduce_taxinc': float(p['unit_price']),
-                'price_reduce_taxexcl': float(p['unit_price']),
+                #'price_reduce': float(p['unit_price']),
+                #'price_reduce_taxinc': float(p['unit_price']),
+                #'price_reduce_taxexcl': float(p['unit_price']),
                 'order_id': creado.id,
-                'price_subtotal': float(p['unit_price']) * int(p['quantity']),
-                'price_total': float(p['unit_price']) * int(p['quantity']),
-                'price_tax': 0.0,
+                #'price_subtotal': float(p['unit_price']) * int(p['quantity']),
+                #'price_total': float(p['unit_price']) * int(p['quantity']),
+                #'price_tax': 0.0,
                 # campos requeridos
                 'customer_lead': 1.0,
-                'invoice_status': "'no'",
+                #'invoice_status': "'no'",
                 'company_id': server.company.id,
                 'currency_id': server.pricelist.currency_id.id,
                 'product_uom': 1,
-                'discount': 0
+                #'discount': 0
 
             }
+            if server.tax_id:
+                new_line['tax_id'] = [(6,0,[server.tax_id.id])]
+
+
+            self.env['sale.order.line'].create(new_line)
+
+            '''
 
             try:
                 self.json_execute_create('sale.order.line', new_line)
@@ -831,13 +842,14 @@ class WooSynchro(models.TransientModel):
                 }
 
                 self.json_execute_create('vex.logs', dx)
+            '''
 
     def check_product_order(self, p, server, accion):
 
 
 
 
-        # raise ValidationError(str(p))
+        #raise ValidationError(str(p))
         pp = None
         atributo = p['variation_id']
         # condicion para verificar si es un atributo
@@ -1002,6 +1014,7 @@ class WooSynchro(models.TransientModel):
         return pro_id
 
     def check_produc_sku(self, id, server, accion):
+        #raise ValidationError('llega qui')
         pro_id = None
         dmx = [('default_code', '=', str(id)), (server_api, '=', int(server.id))]
         if server.share_multi_instances:
