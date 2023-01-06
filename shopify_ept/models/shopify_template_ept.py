@@ -101,7 +101,7 @@ class ShopifyProductTemplateEpt(models.Model):
                           shopify_template.shopify_instance_id.id),
                          ("active", "=", False)])
                     shopify_variants.write({"active": vals.get("active")})
-        res = super(ShopifyProductTemplateEpt, self).write(vals)
+        res = super(ShopifyProductTemplateEpt, self).write(vals)        
         return res
 
     @api.model

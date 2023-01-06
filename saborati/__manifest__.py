@@ -39,6 +39,7 @@
         'views/product_collection_views.xml',
         'views/product_pricelist_views.xml',
         'views/purchase_order_views.xml',
+        'views/utm_medium_views.xml',
 
         'wizard/assign_margin_to_product_views.xml',
         'wizard/assign_collection_to_product_views.xml',

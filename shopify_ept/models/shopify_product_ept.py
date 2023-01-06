@@ -601,31 +601,42 @@ class ShopifyProductProductEpt(models.Model):
         if not shopify_template.shopify_image_ids:
             return False
         shopify_images = self.request_for_shopify_product_images(shopify_template)
+        for shop_image in shopify_images:
+            shop_image.destroy()
         position = 0
         for image in shopify_template.shopify_image_ids:
             position += 1
-            if not image.shopify_image_id:
-                shopify_image = shopify.Image()
-                shopify_image.product_id = shopify_template.shopify_tmpl_id
-                shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
-                shopify_image.position = position
-                if image.shopify_variant_id:
-                    shopify_image.variant_ids = [int(image.shopify_variant_id.variant_id)]
-                result = shopify_image.save()
-                if result:
-                    image.write({"shopify_image_id": shopify_image.id})
-            else:
+            shopify_image = shopify.Image()
+            shopify_image.product_id = shopify_template.shopify_tmpl_id
+            shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
+            shopify_image.position = position
+            if image.shopify_variant_id:
+                shopify_image.variant_ids = [int(image.shopify_variant_id.variant_id)]
+            result = shopify_image.save()
+            if result:
+                image.write({"shopify_image_id": shopify_image.id})
+            #if not image.shopify_image_id:
+            #    shopify_image = shopify.Image()
+            #    shopify_image.product_id = shopify_template.shopify_tmpl_id
+            #    shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
+            #    shopify_image.position = position
+            #    if image.shopify_variant_id:
+            #        shopify_image.variant_ids = [int(image.shopify_variant_id.variant_id)]
+            #    result = shopify_image.save()
+            #    if result:
+            #        image.write({"shopify_image_id": shopify_image.id})
+            #else:
                 ############################################
                 # Need to discuss update binary data or not
                 ############################################
-                if not shopify_images:
-                    continue
-                for shop_image in shopify_images:
-                    if int(image.shopify_image_id) == shop_image.id:
-                        shopify_image = shop_image
-                        shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
-                        shopify_image.position = position
-                        shopify_image.save()
+            #    if not shopify_images:
+            #        continue
+                
+                    #if int(image.shopify_image_id) == shop_image.id:
+                    #    shopify_image = shop_image
+                    #    shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
+                    #    shopify_image.position = position
+                    #    shopify_image.save()
         return True
 
     def request_for_shopify_product_images(self, shopify_template):
