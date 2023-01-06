@@ -9,6 +9,7 @@ class ResCompany(models.Model):
 
     default_company_margin = fields.Float('Default Margin')
 
+    medium_id = fields.Many2one('utm.medium', string='Medio')
 
 
     
