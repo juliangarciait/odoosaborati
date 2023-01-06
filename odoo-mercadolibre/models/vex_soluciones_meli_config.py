@@ -10,7 +10,7 @@ INFO_URL = 'https://api.mercadolibre.com/users/me'
 #('MLM', 'Mexico'),,
 #('MMX', 'Mexico'),
 COUNTRIES = [
-    ('MLM', 'Mexico')
+    ('MLM', 'Mexico'),
     ('MLV', 'Venezuela'),
     ('MLB', 'Brasil'),
     ('MPE', 'Perú'),
