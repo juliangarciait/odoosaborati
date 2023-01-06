@@ -8,8 +8,9 @@ API_URL  = 'https://api.mercadolibre.com'
 AUTH_URL = 'https://auth.mercadopago.com.pe'
 INFO_URL = 'https://api.mercadolibre.com/users/me'
 #('MLM', 'Mexico'),,
+#('MMX', 'Mexico'),
 COUNTRIES = [
-    ('MMX', 'Mexico'),
+    ('MLM', 'Mexico')
     ('MLV', 'Venezuela'),
     ('MLB', 'Brasil'),
     ('MPE', 'Perú'),
