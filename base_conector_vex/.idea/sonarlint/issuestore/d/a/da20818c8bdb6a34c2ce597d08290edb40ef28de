@@ -1,0 +1,90 @@
+
+ipython:S1192 "QDefine a constant instead of duplicating this literal 'vex.web.services' 3 times.(íñšx
+qpython:S1192ö"XDefine a constant instead of duplicating this literal 'product.attribute.value' 3 times.(·¨Üş
+ipython:S1192©"PDefine a constant instead of duplicating this literal 'vexlines.import' 3 times.(®ù‡§
+jpython:S1192Ò"QDefine a constant instead of duplicating this literal 'ir.module.module' 4 times.(øèû
+jpython:S1192Ö"LDefine a constant instead of duplicating this literal 'res.partner' 3 times.(ğşßœúÿÿÿÿ
+epython:S1192{"MDefine a constant instead of duplicating this literal "'no-message'" 6 times.(¦ÍïÅ
+_python:S1192z"GDefine a constant instead of duplicating this literal "'none'" 3 times.(è‹œÔ
+opython:S1192j"RDefine a constant instead of duplicating this literal 'product.template' 17 times.(ÌÄ¯÷úÿÿÿÿ
+bpython:S1192÷"IDefine a constant instead of duplicating this literal 'vex.logs' 4 times.(ûôşØ
+epython:S1192|"HDefine a constant instead of duplicating this literal "'order'" 3 times.(ØÑÎÑùÿÿÿÿ
+jpython:S1192è"QDefine a constant instead of duplicating this literal 'product.product' 13 times.(•¦û‰
+ppython:S1192‘	"RDefine a constant instead of duplicating this literal 'product.attribute' 3 times.(øŸí‘ùÿÿÿÿ
+6python:S125"Remove this commented out code.(çõ˜ì
+6python:S125"Remove this commented out code.(»¨ÙÉ
+;python:S125	"Remove this commented out code.(Ğ”ãñşÿÿÿÿ
+;python:S125"Remove this commented out code.(¾Ûöøÿÿÿÿ
+6python:S125"Remove this commented out code.(Èå¶ì
+;python:S125"Remove this commented out code.(ÉïŠ­úÿÿÿÿ
+;python:S1252"Remove this commented out code.(­èìûÿÿÿÿ
+;python:S125D"Remove this commented out code.(Éâ‘ÿÿÿÿÿ
+;python:S125H"Remove this commented out code.(¾«§ìıÿÿÿÿ
+;python:S125p"Remove this commented out code.(×ŒŒøÿÿÿÿ
+<python:S125—"Remove this commented out code.(ûŠ˜½şÿÿÿÿ
+7python:S125”"Remove this commented out code.(Ÿÿ†
+7python:S125"Remove this commented out code.(ÃÓôÅ
+epython:S1763É"GDelete this unreachable code or refactor the code to make it reachable.(í—Üşÿÿÿÿ
+6python:S125±"Remove this commented out code.(ÂŞÒr
+<python:S125µ"Remove this commented out code.(Œµ“îúÿÿÿÿ
+<python:S125·"Remove this commented out code.(ÚØÇäøÿÿÿÿ
+Upython:S5754ç"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+<python:S125"Remove this commented out code.(¿êäşÿÿÿÿ
+<python:S125ˆ"Remove this commented out code.(†ÃßŒùÿÿÿÿ
+<python:S125Œ"Remove this commented out code.(÷ÿ¤Öıÿÿÿÿ
+<python:S125"Remove this commented out code.(åøôØùÿÿÿÿ
+7python:S125’"Remove this commented out code.(ÃÓôÅ
+<python:S125š"Remove this commented out code.(æÒ€ øÿÿÿÿ
+7python:S125œ"Remove this commented out code.(£·¨É
+7python:S125 "Remove this commented out code.(ŞÎøŸ
+7python:S125°"Remove this commented out code.(Îœ¼¬
+7python:S125¼"Remove this commented out code.(®½€
+<python:S125¾"Remove this commented out code.(…úÿÎıÿÿÿÿ
+Gpython:S1481Ñ")Remove the unused local variable "table".(îÌ£ãûÿÿÿÿ
+Npython:S1481Õ"0Remove the unused local variable "current_page".(ùÕíïùÿÿÿÿ
+Kpython:S1481Ø"-Remove the unused local variable "total_pag".(ŠêÚäüÿÿÿÿ
+Gpython:S1481Ò")Remove the unused local variable "query".(ÓõˆÛÿÿÿÿÿ
+Bpython:S1481Ó")Remove the unused local variable "rango".(”¹ıà
+Lpython:S1481×"4Remove the unused local variable "total_data_count".(·ï«b
+`python:S1763û"GDelete this unreachable code or refactor the code to make it reachable.(ÃÓôÅ
+<python:S125Ğ"Remove this commented out code.(ËÅ¾Âıÿÿÿÿ
+<python:S125Ô"Remove this commented out code.(Îæ´şÿÿÿÿ
+<python:S125Ü"Remove this commented out code.(Ê¶Úşÿÿÿÿ
+<python:S125á"Remove this commented out code.(‰ãŠñøÿÿÿÿ
+7python:S125ä"Remove this commented out code.(ª´³
+7python:S125÷"Remove this commented out code.(’Õç
+7python:S125û"Remove this commented out code.(ÃÓôÅ
+Hpython:S1481¨"/Remove the unused local variable "finish_loop".(€í„
+7python:S125³"Remove this commented out code.(«ïé¥
+<python:S125¼"Remove this commented out code.(¦Ù¸ ÿÿÿÿÿ
+7python:S125Á"Remove this commented out code.(úÇÍ“
+6python:S125Æ"Remove this commented out code.(øîó
+7python:S125ò"Remove this commented out code.(ÃÓôÅ
+7python:S125í"Remove this commented out code.(õÅ•à
+7python:S125…"Remove this commented out code.(å‹ìÆ
+7python:S125Ò"Remove this commented out code.(¡‘¦Ã
+<python:S125Ş"Remove this commented out code.(×¨üÿÿÿÿ
+7python:S125ƒ"Remove this commented out code.(æ…¥
+7python:S125¥"Remove this commented out code.(´ÇĞŸ
+7python:S125­"Remove this commented out code.(öÕÖ
+7python:S125Ë"Remove this commented out code.(ÃÓôÅ
+7python:S125å"Remove this commented out code.(´ÇĞŸ
+Upython:S5754÷"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+Upython:S5754¹"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+<python:S125ñ"Remove this commented out code.(Ç½Ö’úÿÿÿÿ
+<python:S125õ"Remove this commented out code.(­ùüÃıÿÿÿÿ
+7python:S125€"Remove this commented out code.(á’šÙ
+<python:S125…"Remove this commented out code.(È×Å„úÿÿÿÿ
+`python:S1763–"GDelete this unreachable code or refactor the code to make it reachable.(™”ûÖ
+<python:S125Š"Remove this commented out code.(ˆÇİùÿÿÿÿ
+7python:S125‘"Remove this commented out code.(á’šÙ
+<python:S125—"Remove this commented out code.(È×Å„úÿÿÿÿ
+@python:S1481Â"'Remove the unused local variable "res".(´¥úŸ
+7python:S125¸"Remove this commented out code.(òÁ–¦
+7python:S125¿"Remove this commented out code.(“Ã®æ
+6python:S125Ã"Remove this commented out code.(½…ô&
+7python:S125Õ"Remove this commented out code.(ÃÓôÅ
+7python:S125Ü"Remove this commented out code.(ôù«Í
+<python:S125ÿ"Remove this commented out code.(ÚØÇäøÿÿÿÿ
+Gpython:S1481	")Remove the unused local variable "at_id".(­Ò€öûÿÿÿÿ
+7python:S125“	"Remove this commented out code.(òº½Ç

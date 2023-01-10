@@ -8,7 +8,7 @@ from ..sdk.meli.configuration import  Configuration
 from ..sdk.meli.api_client import ApiClient
 from ..sdk.meli.api import RestClientApi
 import base64
-from ..models.vex_soluciones_meli_config import API_URL , CATEGORIES_REQUIRED_ATRR
+from ..models.vex_soluciones_meli_config import API_URL , CATEGORIES_REQUIRED_ATRR , CATEGORIES_REQUIRED_BRAND
 from ..models.vex_soluciones_meli_config import CONDITIONS
 
 class MeliMultiExport(models.TransientModel):
@@ -25,7 +25,9 @@ class MeliMultiExport(models.TransientModel):
         if not p.image_1920:
             raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
         base_url = self.env["ir.config_parameter"].get_param("web.base.url")
-        foto_main = base_url+"/web/image?model=product.template&id={}&field=image_128&unique=".format(p.id)
+        foto_main = base_url+"/web/image?model=product.product&id={}&field=image_128&unique=".format(p.id)
+
+        #raise   ValidationError(foto_main)
 
         headers = { "Content-Type": "application/json"}
         #url = self.env['shop.action.synchro'].shop_url(self.server, str(argument))
@@ -52,8 +54,8 @@ class MeliMultiExport(models.TransientModel):
                 }
             ]
             r = requests.put(url, json=data, headers=headers)
-            data = r.json()
-            p.log_meli_txt = str(data)
+            datax = r.json()
+            p.log_meli_txt = str(data)+'\n'+str(datax)
         else:
             url = 'https://api.mercadolibre.com/items?access_token=' + str(server.access_token)
             if not self2.category_children:
@@ -85,50 +87,55 @@ class MeliMultiExport(models.TransientModel):
                 ],
             }
 
-            if cc.id_vex in CATEGORIES_REQUIRED_ATRR or cc.required_attributes_meli == True:
-                data['attributes'] = [
-                    {
-                        "id": "MANUFACTURER",
-                        "value_name": f"{server.display_name}",
-                    },
-                    {
+            atributes = []
+            atributes.append({
                         'id': 'SELLER_SKU',
                         "value_name": p.default_code
 
-                    }
-                ]
+                    })
+
+            if cc.id_vex in CATEGORIES_REQUIRED_ATRR or cc.required_manufacture_meli == True:
+                atributes.append({
+                        "id": "MANUFACTURER",
+                        "value_name": f"{server.display_name}",
+                    })
+
+
+            if cc.id_vex in CATEGORIES_REQUIRED_BRAND or cc.required_brand_meli == True:
+                atributes.append({
+                    "id": "BRAND",
+                    "value_name": f"{server.display_name}",
+                })
+
+
+            data['attributes'] = atributes
 
             r = requests.post(url, json=data, headers=headers)
 
 
-            data = r.json()
-            if 'id' in data:
+            datax = r.json()
+            if 'id' in datax:
                 # return
                 # assig server
                 # p.product_tmpl_id.server = server.id
                 p.product_tmpl_id.conector = 'meli'
                 p.product_tmpl_id.public_categ_ids = False
                 p.product_tmpl_id.public_categ_ids = [(6 ,0 , [cc.id] )]
-                p.log_meli_txt = str(data)
+                #p.log_meli_txt = str(data)
                 if len(p.product_tmpl_id.product_variant_ids) == 1:
-                    p.product_tmpl_id.id_vex = str(data['id'])
+                    p.product_tmpl_id.id_vex = str(datax['id'])
 
-                p.id_vex_varition = str(data['id'])
-                p.product_condition = data['condition']
-                p.buying_mode = data['buying_mode']
-                p.listing_type_id = data['listing_type_id']
+                p.id_vex_varition = str(datax['id'])
+                p.product_condition = datax['condition']
+                p.buying_mode = datax['buying_mode']
+                p.listing_type_id = datax['listing_type_id']
 
-            else:
-                import json
-                raise ValidationError(json.dumps(data))
-                # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
+            #else:
+            #    import json
+            #    raise ValidationError(json.dumps(data))
+            #    # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
 
-
-
-
-
-
-
+            p.log_meli_txt = str(data) + '\n' + str(datax)
 
 
 
@@ -148,17 +155,18 @@ class MeliMultiExport(models.TransientModel):
 
 class MeliUnitExport(models.TransientModel):
     _name              = "meli.export.unite"
-    server             = fields.Many2one('vex.instance',"Instance", required=True)
-    product            = fields.Many2one('product.product',required=True)
+    server             = fields.Many2one('vex.instance',"Instancia", required=True)
+    product            = fields.Many2one('product.product',required=True,string="Producto")
     id_vex             = fields.Char(related='product.id_vex')
     id_vex_varition    = fields.Char(related='product.id_vex_varition')
-    category           = fields.Many2one('product.public.category')
-    category_children  = fields.Many2one('product.public.category')
+    category           = fields.Many2one('product.public.category',string="Categoria")
+    category_children  = fields.Many2one('product.public.category',string="Sub Categoria")
     brand              = fields.Char()
-    condition          = fields.Selection(CONDITIONS, string='Product Condition')
-    quantity           = fields.Integer(required=True,default=10)
-    buying_mode        = fields.Selection([('buy_it_now','buy it now'),('classified','classified')])
-    listing_type_id    = fields.Selection([('free','free'),('bronze','bronze'),('gold_special','gold special')])
+    condition          = fields.Selection(CONDITIONS, string='Condición del producto')
+    quantity           = fields.Integer(required=True,default=10,string="Stock")
+    buying_mode        = fields.Selection([('buy_it_now','Compre ya'),('classified','clasificado')],string="Modo de Compra")
+    listing_type_id    = fields.Selection([('free','gratis'),('bronze','Clásica'),('gold_special','Premium')],
+                                          string="Tipo de Publicacion")
 
     #p.id_vex or p.id_vex_varition
     def start_export(self):
@@ -179,7 +187,16 @@ class MeliUnitExport(models.TransientModel):
                 self.category_children=cc.id
                 self.category=cc.id
 
-    #@api.onchange('server')
+    @api.onchange('server')
+    def change_server(self):
+        if self.server.warehouse_stock_vex and self.product:
+            quant = self.env['stock.quant'].search([('product_id','=',self.product.id),('on_hand','=',True),
+                                            ('location_id','=',self.server.warehouse_stock_vex.lot_stock_id.id)])
+            stock = 0
+            if quant:
+                stock = quant.quantity
+            self.quantity = stock
+
     #def check_category(self):
     #    if self.server:
     #        #self.env['meli.action.synchro'].check_synchronize(self.server)

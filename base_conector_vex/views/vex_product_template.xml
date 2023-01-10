@@ -8,8 +8,9 @@
            <field name="arch" type="xml">
 
               <xpath expr="//field[@name='name']" position="after">
-                   <field name="server_vex"  optional="show" />
-                   <field name="id_vex"  optional="show" />
+                   <field name="conector" optional="hidden" />
+                   <field name="server_vex"  optional="hidden" />
+                   <field name="id_vex"  optional="hidden" />
 
               </xpath>
            </field>
@@ -35,8 +36,8 @@
            <field name="inherit_id" ref="product.product_template_only_form_view"/>
            <field name="arch" type="xml">
 
-           	   <xpath expr="//page[@name='general_information']" position="before">
-                   <page name="Information_ML" string="Connector Information" >
+           	   <xpath expr="//page[@name='inventory']" position="after">
+                   <page name="Information_ML" string="Connector Vex Information" >
                        <group>
                            <field name="conector"  readonly="1"  />
                            <field name="edit_id"   />

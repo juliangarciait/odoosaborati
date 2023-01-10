@@ -1,6 +1,4 @@
 
-N
-views/vex_product_template.xml,6/a/6a7abca4d5ce50eeb1161bb5f3fb6dc7e82ec699
 F
 views/vex_instance.xml,e/3/e3ecc074d4e65d628076fa996a3aa57e1b144ab4
 N
@@ -15,9 +13,17 @@ R
 "models/vex_soluciones_customers.py,7/0/705e6257d8de80dc4b21cdf2bc91267cdfd9b9a5
 ?
 __manifest__.py,f/b/fb5097a66c279662079e85c889e061a106c5ec0f
-B
-security/group.xml,8/4/84d10c16da40a6e7c7eaf8a9c4c0583696b0b13d
 S
 #models/vex_soluciones_categories.py,0/6/06f41ee6a0216f0c1305819dd7d6ff515b105ac7
+E
+wizard/vex_synchro.py,d/a/da20818c8bdb6a34c2ce597d08290edb40ef28de
+J
+models/vex_restapi_list.py,3/f/3f95b4ff8941fe9ff83ba63560c8f721a667070b
+@
+data/product.xml,c/7/c70ec5976c8f599ef47677beeb8be07da3f2b50d
+N
+views/vex_product_template.xml,6/a/6a7abca4d5ce50eeb1161bb5f3fb6dc7e82ec699
+B
+security/group.xml,8/4/84d10c16da40a6e7c7eaf8a9c4c0583696b0b13d
 M
 views/vex_product_product.xml,8/3/83505afc8f6212de05cb480315832df7e4ba0da8

@@ -4,7 +4,7 @@ import base64
 from ..models.vex_soluciones_meli_config  import API_URL, INFO_URL, get_token
 from odoo import api, fields, models
 from odoo.addons.payment.models.payment_acquirer import ValidationError
-from ..models.vex_soluciones_meli_config  import API_URL, INFO_URL, get_token , CATEGORIES_REQUIRED_ATRR
+from ..models.vex_soluciones_meli_config  import API_URL, CATEGORIES_REQUIRED_ATRR , CATEGORIES_REQUIRED_BRAND
 import logging
 _logger = logging.getLogger(__name__)
 from datetime import datetime
@@ -125,7 +125,7 @@ class MeliActionSynchro(models.TransientModel):
         '''
         return resx
     @api.model
-    def meli_api(self, server, query, accion,filtro):
+    def meli_api(self, server, query, accion,filtro,offset=0):
         finish_loop = False
         if query == "products":
 
@@ -194,15 +194,20 @@ class MeliActionSynchro(models.TransientModel):
                 'finish_loop': finish_loop
             }
         if query == "orders":
-            orders_url = '{}/orders/search?seller={}&access_token={}'.format(API_URL, str(server.user_id),
-                                                                             str(server.access_token))
+            orders_url = '{}/orders/search?seller={}&access_token={}&offset={}'.format(API_URL, str(server.user_id),
+                                                                             str(server.access_token),offset)
+            #raise ValidationError(orders_url)
 
             #raise ValidationError(orders_url)
             res = requests.get(orders_url)
-            res = res.json()[filtro]
+            res = res.json()
+
+            #raise ValidationError(str(res))
+
             return {
-                'data': res,
-                'finish_loop': finish_loop
+                'data': res[filtro],
+                'finish_loop': finish_loop ,
+                'res': res
             }
 
 
@@ -312,6 +317,7 @@ class MeliActionSynchro(models.TransientModel):
 
                 if state:
                     state =state.odoo_state
+                    #raise ValidationError(state)
                 else:
                     state = 'draft'
                 #raise ValidationError(state)
@@ -341,7 +347,7 @@ class MeliActionSynchro(models.TransientModel):
                     'company_id' : server.company.id
                 }
                 write = {
-                    'state': "''".format(state),
+                    #'state': "''".format(state),
                     'client_order_ref': "'" + str(data['id']) + "'",
                 }
             if query == "categories":
@@ -353,6 +359,8 @@ class MeliActionSynchro(models.TransientModel):
                 }
                 if data['id'] in CATEGORIES_REQUIRED_ATRR:
                     create['required_attributes_meli'] = "'t'"
+                if data['id'] in CATEGORIES_REQUIRED_BRAND:
+                    create['required_brand_meli'] = "'t'"
                 write = create
 
             res['create'].update(create)
@@ -371,17 +379,17 @@ class MeliActionSynchro(models.TransientModel):
             rt = self.meli_api(server, query,accion ,'results')
             data_request = rt['data']
             finish_loop = rt['finish_loop']
+            
             #raise ValidationError(str(data_request))
             #self.synchro_threading(data_request,query, server, str(accion.model), accion, None , api)
             # importar stock
+            data = data_request
             if accion.argument == 'products':
                 products = []
                 ids_vex = []
-                data = data_request
+
                 for d in data:
                     #raise ValidationError(str(d['body']))
-
-
                     #if d['body']['status'] == 'active':
                     if 1 == 1:
                         id_vex = d['body']['id']
@@ -393,12 +401,52 @@ class MeliActionSynchro(models.TransientModel):
                 if accion.stock_import:
                     self.import_stock(server, products)
 
-            else:
-                data = data_request
+            elif accion.argument == 'orders':
+                #raise ValidationError(str(rt))
                 for d in data:
-                    #raise ValidationError(str(d))
-                    id_vex = d['id']
-                    self.synchro(d, query, server, str(accion.model), accion, id_vex, None)
+                    if server.order_after:
+                        fechax = d['date_created'].split('.')
+                        if fechax:
+                            fechax = fechax[0]
+                        fechax = datetime.strptime(fechax, '%Y-%m-%dT%H:%M:%S')
+                        if fechax >= server.order_after:
+                            #raise ValidationError(fechax)
+                            self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
+
+
+                    else:
+                        self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
+
+                    #%Y-%m-%d %H:%M:%S
+                    #raise ValueError([server.order_after,d['date_created'],fechax])
+
+                #get offsets
+                total_offset = rt['res']['paging']['total']
+                if total_offset > 0:
+                    for n in range(total_offset):
+                        ret = self.meli_api(server, query, accion, 'results',n+1)
+                        data_requestx = ret['data']
+                        for d in data_requestx:
+                            if server.order_after:
+                                fechax = d['date_created'].split('.')
+                                if fechax:
+                                    fechax = fechax[0]
+                                fechax = datetime.strptime(fechax, '%Y-%m-%dT%H:%M:%S')
+                                if fechax >= server.order_after:
+                                    # raise ValidationError(fechax)
+                                    self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
+
+
+                            else:
+                                self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
+                        #raise ValidationError(str(data_requestx))
+
+                # raise ValidationError(total_offset)
+
+
+            else:
+                for d in data:
+                    self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
             return finish_loop
         res = super(MeliActionSynchro, self).import_all(server, accion,queryx)
         return res
@@ -568,11 +616,34 @@ class MeliActionSynchro(models.TransientModel):
                     if server.discount_fee:
                         total_fee = self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
                                                           'sale_fee', -1)
-                        tt = exist.amount_total + float(total_fee)
-                        self.json_execute_update('sale.order', {
-                            'amount_untaxed': tt,
-                            'amount_total': tt
-                        }, exist.id)
+                        #tt = exist.amount_total + float(total_fee)
+                        #self.json_execute_update('sale.order', {
+                        #    'amount_untaxed': tt,
+                        #    'amount_total': tt
+                        #}, exist.id)
+                if not exist.state:
+                    exist.state = 'draft'
+
+                state = self.env['vex.instance.status.orders'].search(
+                    [('instance', '=', server.id), ('value', '=', dr['status'])])
+
+                if state:
+                    state = state.odoo_state
+                    # raise ValidationError(state)
+                else:
+                    state = 'draft'
+
+                if exist.state not in ['sale','done'] and state in ['sale']:
+                    exist.action_confirm()
+                else:
+                    if state in ['cancel'] and exist.state not in ['cancel']:
+                        exist.action_cancel()
+                    else:
+                        exist.state = state
+
+
+
+                #raise ValidationError(exist.state)
 
 
         res = super(MeliActionSynchro, self).synchro_ext(dr, query, server, table, accion, id_vex, api, exist,queryx,is_exist_sku)

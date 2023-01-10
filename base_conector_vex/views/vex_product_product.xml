@@ -6,10 +6,11 @@
            <field name="inherit_id" ref="product.product_product_tree_view"/>
            <field name="arch" type="xml">
               <xpath expr="//field[@name='name']" position="after">
-                   <field name="server_vex" optional="show" />
-                   <field name="id_vex"   optional="show" />
-                   <field name="id_vex_varition" optional="show"  />
-                  <field name="vex_regular_price" optional="show"  />
+                   <field name="conector" optional="hidden" />
+                   <field name="server_vex" optional="hidden" />
+                   <field name="id_vex"   optional="hidden" />
+                   <field name="id_vex_varition" optional="hidden"  />
+                  <field name="vex_regular_price" optional="hidden"  />
               </xpath>
            </field>
     </record>
@@ -20,10 +21,25 @@
            <field name="inherit_id" ref="product.product_normal_form_view"/>
            <field name="arch" type="xml">
               <xpath expr="//field[@name='barcode']" position="after">
-                   <field name="server_vex"  />
-                   <field name="id_vex" />
-                   <field name="id_vex_varition"   />
-                   <field name="vex_regular_price"   />
+                   <field name="server_vex" readonly="1" />
+                   <field name="id_vex" readonly="1" />
+                   <field name="id_vex_varition" readonly="1"  />
+                   <field name="vex_regular_price" invisible="1"  />
+                   <field name="log_meli_txt" groups="base_conector_vex.group_advanced_field_vex"  />
+              </xpath>
+           </field>
+    </record>
+
+    <record id="product_product_vex_herencia_form2" model="ir.ui.view">
+           <field name="name">Product.view</field>
+           <field name="model">product.product</field>
+           <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+           <field name="arch" type="xml">
+              <xpath expr="//field[@name='type']" position="after">
+                   <field name="server_vex" readonly="1" />
+                   <field name="id_vex" readonly="1" />
+                   <field name="id_vex_varition" readonly="1"  />
+                   <field name="vex_regular_price"  readonly="1" />
                    <field name="log_meli_txt" groups="base_conector_vex.group_advanced_field_vex"  />
               </xpath>
            </field>
@@ -31,7 +47,7 @@
 
 
     <record id="multi_update_stock_pp" model="ir.actions.server">
-			<field name="name">Exportar</field>
+			<field name="name">Export Vex Connector</field>
 			<field name="model_id" ref="base_conector_vex.model_product_product"/>
 			<field name="binding_model_id" ref="base_conector_vex.model_product_product"/>
 			<field name="state">code</field>

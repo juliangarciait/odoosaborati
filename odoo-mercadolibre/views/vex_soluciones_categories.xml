@@ -13,6 +13,8 @@
            </field>
     </record>
 
+    -->
+
 
     <record id="categorias_meli_herencia" model="ir.ui.view">
         <field name="name">categorias.herencia.Form</field>
@@ -20,12 +22,15 @@
         <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
         <field name="arch" type="xml">
                <xpath expr="//field[@name='sequence']" position="after">
-                    <field name="server_vex" string="Meli Instance"  readonly="1" />
+                    <field name="conector"  readonly="1" />
+                    <field name="id_vex"  readonly="1" />
+                    <field name="required_manufacture_meli"  groups="base_conector_vex.group_advanced_field_vex" />
+                    <field name="required_brand_meli"  groups="base_conector_vex.group_advanced_field_vex" />
                </xpath>
         </field>
 
     </record>
-    -->
+
     <record id="categories_meli" model="ir.actions.act_window">
         <field name="name">Category Mercado Libre</field>
         <field name="res_model">product.public.category</field>

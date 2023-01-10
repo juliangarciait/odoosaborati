@@ -1,6 +1,6 @@
 from odoo import api, fields, models
 import requests
-from ..models.vex_soluciones_meli_config  import API_URL, INFO_URL, get_token , CATEGORIES_REQUIRED_ATRR
+from ..models.vex_soluciones_meli_config  import API_URL, INFO_URL, get_token , CATEGORIES_REQUIRED_ATRR , CATEGORIES_REQUIRED_BRAND
 import logging
 _logger = logging.getLogger(__name__)
 import pprint
@@ -393,8 +393,12 @@ class MeliActionSynchro(models.TransientModel):
                     }
                     if parent_id:
                         dg['parent_id_vex_tmp'] = d['id']
+
+
                     if d['id'] in CATEGORIES_REQUIRED_ATRR:
-                        dg['required_attributes_meli'] = True
+                        dg['required_manufacture_meli'] = True
+                    if d['id'] in CATEGORIES_REQUIRED_BRAND:
+                        dg['required_brand_meli'] =  True
                     parent_id = d['id']
                     datavs.append(dg)
 
@@ -429,8 +433,11 @@ class MeliActionSynchro(models.TransientModel):
                         'parent_id': exist.id,
                         # 'parent_path': pt
                     }
+
                     if d['id'] in CATEGORIES_REQUIRED_ATRR:
-                        dg['required_attributes_meli'] = True
+                        dg['required_manufacture_meli'] =  True
+                    if d['id'] in CATEGORIES_REQUIRED_BRAND:
+                        dg['required_brand_meli'] =  True
                     datav.append(dg)
                 datar = {
                     'model': 'product.public.category',

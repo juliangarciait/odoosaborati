@@ -66,6 +66,11 @@ CATEGORIES_REQUIRED_ATRR =  [
     'MLM1417'
 ]
 
+CATEGORIES_REQUIRED_BRAND =  [
+    'MLM185717',
+
+]
+
 def get_token(client_id, client_secret, redirect_uri, code, refresh_token):
     configuration2 = Configuration(
         host = API_URL

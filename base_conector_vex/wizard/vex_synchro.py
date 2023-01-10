@@ -688,8 +688,12 @@ class WooSynchro(models.TransientModel):
             for f in fee_lines:
                 iw = f[key]
                 tfe = float(f[key_total] * sg)
-                if tfe:
-                    total_fee += float(f[key_total] * sg)
+
+
+                total_fee += float(f[key_total] * sg)
+
+                if tfe and server.discount_fee == 'save_line':
+
 
                     ppf = self.env['product.template'].search([('server_vex', '=', server.id), ('id_vex', '=', iw)])
 
@@ -756,6 +760,9 @@ class WooSynchro(models.TransientModel):
 
                     #self.json_execute_create('sale.order.line', new_line)
 
+        if server.discount_fee == 'save':
+            creado.fee_vex = total_fee
+
         return total_fee
 
     def insert_lines(self, lines, server, creado, accion):
@@ -795,12 +802,22 @@ class WooSynchro(models.TransientModel):
 
                 self.json_execute_create('vex.logs', dx)
 
+            #raise ValidationError(str(p))
+
+            price_unit = float(p['unit_price'])
+            if server.tax_id:
+                with_tax = float(p['unit_price'])
+                without_tax = ( 100 * with_tax ) / 118
+                price_unit = without_tax
+
+                #raise ValidationError(str([p['unit_price'],tax_amount,price_unit,creado.id_vex]))
+
             new_line = {
                 # 'name':str(existe.name),
                 'name': "'" + str(p['item']['title']) + "'",
                 'product_id': p_id,
                 'product_uom_qty': int(p['quantity']),
-                'price_unit': float(p['unit_price']),
+                'price_unit': price_unit,
                 #'price_reduce': float(p['unit_price']),
                 #'price_reduce_taxinc': float(p['unit_price']),
                 #'price_reduce_taxexcl': float(p['unit_price']),

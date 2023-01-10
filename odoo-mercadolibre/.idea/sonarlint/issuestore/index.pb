@@ -5,10 +5,6 @@ R
 "models/vex_soluciones_customers.py,7/0/705e6257d8de80dc4b21cdf2bc91267cdfd9b9a5
 B
 models/__init__.py,b/b/bb5e16ac59b350373b55d7ae678133d6e2cfadaa
-?
-__manifest__.py,f/b/fb5097a66c279662079e85c889e061a106c5ec0f
-I
-data/meli_action_list.xml,e/1/e180008a001f90fc6afc59f5bfe72f9ec47dedad
 B
 wizard/__init__.py,9/a/9a7bb951b8d2d2e191e5d30822e6fcf3d333634a
 ^
