@@ -12,7 +12,7 @@
     'maintainer': 'Emipro Technologies Pvt. Ltd.',
 
     # Dependencies
-    'depends': ['common_connector_library'],
+    'depends': ['common_connector_library', 'queue_job'],
 
     # Views
     'init_xml': [],
