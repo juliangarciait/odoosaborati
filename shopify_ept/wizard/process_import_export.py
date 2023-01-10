@@ -252,7 +252,7 @@ class ShopifyProcessImportExport(models.TransientModel):
         for instance in shopify_instances:
             shopify_templates = templates.filtered(lambda product: product.shopify_instance_id == instance)
             if shopify_templates:
-                shopify_product_obj.update_products_in_shopify(instance, shopify_templates,
+                shopify_product_obj.with_delay().update_products_in_shopify(instance, shopify_templates,
                                                                self.shopify_is_set_price,
                                                                self.shopify_is_set_image,
                                                                self.shopify_is_publish,

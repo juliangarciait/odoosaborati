@@ -71,46 +71,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if product.detailed_type == 'product':
-                for product_instance in product.shopify_product_template_ids:
-                    export_data = self.env['shopify.process.import.export'].create({
-                        'shopify_instance_id' : product_instance.shopify_instance_id.id,
-                        'shopify_is_set_basic_detail' : True,
-                        'shopify_is_update_basic_detail' : True,
-                        'shopify_is_set_price' : True,
-                        'shopify_is_set_image' : True,
-                        'shopify_is_publish' : 'publish_product_global',
-                    })
-                    
-                    if not product.active: 
-                        product_instance.product_status = 'archived'
-                        
-                    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
-                        'shopify_instance_id' : product_instance.shopify_instance_id.id, 
-                        'export_method' : "direct",
-                    })
-                    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-                    if not product_instance.exported_in_shopify:
-                        export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_export_product_to_shopify()
-                    else:
-                        export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
-                        
-                    #Add to collection if it has collections
-                    if product.product_collection_ids: 
-                        for product_collection in product.product_collection_ids: 
-                            product_collection.shopify_instance_id.connect_in_shopify()
-                            if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
-                                shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
-                                collections = shopify_product.collections()
-                                if collections:
-                                    for collect in collections: 
-                                        shopify_product.remove_from_collection(collect)
-                                        
-                        for product_collection in product.product_collection_ids:
-                            product_collection.shopify_instance_id.connect_in_shopify()     
-                            if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
-                                collect = product_collection.request_collection(product_collection.shopify_collection_id)
-                                if collect:
-                                    shopify_product.add_to_collection(collect)  
+                self.with_delay().export_to_shopify(product)
                             
                             #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
                                            
@@ -141,6 +102,52 @@ class ProductTemplate(models.Model):
         shopify_product.write({'active': product.product_variant_id.active})
             
         return res
+    
+    
+    def export_to_shopify(self, product):
+        for product_instance in product.shopify_product_template_ids:
+            export_data = self.env['shopify.process.import.export'].create({
+                'shopify_instance_id' : product_instance.shopify_instance_id.id,
+                'shopify_is_set_basic_detail' : True,
+                'shopify_is_update_basic_detail' : True,
+                'shopify_is_set_price' : True,
+                'shopify_is_set_image' : True,
+                'shopify_is_publish' : 'publish_product_global',
+            })
+            
+            if not product.active: 
+                product_instance.product_status = 'archived'
+                
+            shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
+                'shopify_instance_id' : product_instance.shopify_instance_id.id, 
+                'export_method' : "direct",
+            })
+            shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
+            if not product_instance.exported_in_shopify:
+                export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_export_product_to_shopify()
+            else:
+                export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
+                
+            #Add to collection if it has collections
+            if product.product_collection_ids: 
+                for product_collection in product.product_collection_ids: 
+                    product_collection.shopify_instance_id.connect_in_shopify()
+                    if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
+                        shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
+                        collections = shopify_product.collections()
+                        if collections:
+                            for collect in collections: 
+                                shopify_product.remove_from_collection(collect)
+                                
+                for product_collection in product.product_collection_ids:
+                    product_collection.shopify_instance_id.connect_in_shopify()     
+                    if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
+                        collect = product_collection.request_collection(product_collection.shopify_collection_id)
+                        if collect:
+                            shopify_product.add_to_collection(collect) 
+                            
+        return True
+        
 
                     
 class ProductProduct(models.Model):
@@ -157,8 +164,20 @@ class ProductProduct(models.Model):
                 _logger.info(shopify_product_variant.exported_in_shopify)
                 
     
-    def export_variant_to_shopify(self, product_tmpl_id): 
-        for product in product_tmpl_id: 
+    def export_variant_to_shopify(self, product_variant):
+        if product_variant.shopify_product_ids: 
+            for shopify_product_variant in product_variant.shopify_product_ids: 
+                shopify_product_variant.shopify_instance_id.connect_in_shopify() 
+                if not shopify_product_variant.to_shopify: 
+                    shopify_product_tmpl = shopify.Product().find(shopify_product_variant.shopify_template_id.shopify_tmpl_id)
+                    if shopify_product_tmpl.variants: 
+                        self.delete_variants_in_shopify(shopify_product_tmpl, shopify_product_variant)
+                    else: 
+                        raise ValidationError('Las variantes no están exportadas en Shopify.')
+                elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
+                    shopify_product_variant.unlink()
+                        
+        for product in product_variant.product_tmpl_id: 
             if product.detailed_type == 'product':
                 for product_instance in product.shopify_product_template_ids:
                     export_data = self.env['shopify.process.import.export'].create({
@@ -183,6 +202,8 @@ class ProductProduct(models.Model):
                     else:
                         export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                         
+        return True
+                        
 
     def write(self, vals):
         """
@@ -201,19 +222,6 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
-            
-            if product_variant.shopify_product_ids: 
-                for shopify_product_variant in product_variant.shopify_product_ids: 
-                    shopify_product_variant.shopify_instance_id.connect_in_shopify() 
-                    if not shopify_product_variant.to_shopify: 
-                        shopify_product_tmpl = shopify.Product().find(shopify_product_variant.shopify_template_id.shopify_tmpl_id)
-                        if shopify_product_tmpl.variants: 
-                            self.delete_variants_in_shopify(shopify_product_tmpl, shopify_product_variant)
-                        else: 
-                            raise ValidationError('Las variantes no están exportadas en Shopify.')
-                    elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
-                        shopify_product_variant.unlink()
-            
-            self.export_variant_to_shopify(product_variant.product_tmpl_id)
+            self.with_delay().export_variant_to_shopify(product_variant)
             
         return res
