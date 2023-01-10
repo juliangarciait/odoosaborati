@@ -20,6 +20,9 @@ class MeliMultiExport(models.TransientModel):
     products = fields.Many2many('product.template')
 
     def export_product(self,p,server,self2):
+        if not  p.description_sale:
+            raise ValidationError('El producto no tiene descripcion de venta')
+
         if not p.default_code:
             raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
         if not p.image_1920:
@@ -55,7 +58,17 @@ class MeliMultiExport(models.TransientModel):
             ]
             r = requests.put(url, json=data, headers=headers)
             datax = r.json()
-            p.log_meli_txt = str(data)+'\n'+str(datax)
+
+            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description'
+            data_des = {
+                "plain_text": p.description_sale
+            }
+            r_desc = requests.put(url_desc, json=data_des, headers=headers).json()
+
+            p.log_meli_txt = str(data)+'\n'+str(datax)+'\n'+str(r_desc)
+
+
+
         else:
             url = 'https://api.mercadolibre.com/items?access_token=' + str(server.access_token)
             if not self2.category_children:
@@ -114,6 +127,7 @@ class MeliMultiExport(models.TransientModel):
 
 
             datax = r.json()
+            r_desc = ''
             if 'id' in datax:
                 # return
                 # assig server
@@ -130,12 +144,19 @@ class MeliMultiExport(models.TransientModel):
                 p.buying_mode = datax['buying_mode']
                 p.listing_type_id = datax['listing_type_id']
 
+
+                url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description'
+                data_des = {
+                    "plain_text": p.description_sale
+                }
+                r_desc = requests.post(url_desc, json=data_des, headers=headers).json()
+
             #else:
             #    import json
             #    raise ValidationError(json.dumps(data))
             #    # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
 
-            p.log_meli_txt = str(data) + '\n' + str(datax)
+            p.log_meli_txt = str(data) + '\n' + str(datax)+ '\n' + str(r_desc)
 
 
 
