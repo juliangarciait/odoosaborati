@@ -68,25 +68,7 @@ class ProductPricelistItem(models.Model):
     def unlink(self):
         for item in self: 
             if item.product_tmpl_id.shopify_product_template_ids and item.applied_on == '1_product': 
-                for product in item.product_tmpl_id.shopify_product_template_ids: 
-                    export_data = item.env['shopify.process.import.export'].create({
-                            'shopify_instance_id' : product.shopify_instance_id.id,
-                            'shopify_is_set_basic_detail' : False,
-                            'shopify_is_update_basic_detail' : False,
-                            'shopify_is_set_price' : True,
-                            'shopify_is_set_image' : False,
-                            'shopify_is_publish' : 'publish_product_web',
-                        })
-                    export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+                item.product_tmpl_id.write({})
             elif item.applied_on == '0_product_variant' and item.product_id.product_tmpl_id.shopify_product_template_ids:
-                for product in item.product_id.product_tmpl_id.shopify_product_template_ids: 
-                    export_data = self.env['shopify.process.import.export'].create({
-                        'shopify_instance_id' : product.shopify_instance_id.id,
-                        'shopify_is_set_basic_detail' : False,
-                        'shopify_is_update_basic_detail' : False,
-                        'shopify_is_set_price' : True,
-                        'shopify_is_set_image' : False,
-                        'shopify_is_publish' : 'publish_product_web',
-                    })
-                    export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+                item.product_id.product_tmpl_id.write({})
         return super(ProductPricelistItem, self).unlink()

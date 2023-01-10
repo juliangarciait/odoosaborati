@@ -60,5 +60,5 @@ class ProductImageEpt(models.Model):
                             [("product_id", "=", vals.get("product_id")),
                              ("shopify_template_id", "=", shopify_product_image.shopify_template_id.id)], ["id"])
                         if shopify_variant:
-                            shopify_product_image.write({"shopify_variant_id": shopify_variant["id"]})
+                            shopify_product_image.write({"shopify_variant_id": shopify_variant[0].get('id')})
         return result

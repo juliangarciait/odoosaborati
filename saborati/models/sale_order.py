@@ -24,7 +24,14 @@ class SaleOrder(models.Model):
                 dlv_percentage += line.qty_delivered * line.price_unit
 
             record.delivery_percentage = dlv_percentage / qty_percentage if qty_percentage > 0 else 0.0
-            
+    
+    @api.model
+    def create(self, vals_list): 
+        res = super(SaleOrder, self).create(vals_list)
+        
+        res.medium_id = self.env.company.medium_id.id
+        
+        return res
             
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
