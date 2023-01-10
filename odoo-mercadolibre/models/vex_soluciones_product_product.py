@@ -13,6 +13,7 @@ class ProductProduct(models.Model):
     buying_mode = fields.Selection([('buy_it_now', 'buy it now'), ('classified', 'classified')])
     listing_type_id = fields.Selection([('free', 'free'), ('bronze', 'bronze'), ('gold_special', 'gold special')])
 
+
     def update_conector_vex(self):
         if  self.id_vex_varition or self.id_vex :
             #id_vex =  self.id_vex_varition or self.id_vex

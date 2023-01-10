@@ -14,6 +14,13 @@ class ProductProduct(models.Model):
          'There can be no duplication of synchronized products Variations')
     ]
 
+    def del_id_connector_vex(self):
+        self.id_vex_varition = False
+        if len(self.product_tmpl_id.product_variant_ids) == 1:
+            self.product_tmpl_id.id_vex = False
+            self.product_tmpl_id.conector = False
+            self.product_tmpl_id.server_vex = False
+
     @api.depends('list_price', 'price_extra')
     def _compute_product_lst_price(self):
         to_uom = None

@@ -41,15 +41,13 @@
            <field name="arch" type="xml">
 
            	   <xpath expr="//field[@name='permalink']" position="after">
-
-
-                           <field name="server_vex" string="Meli Server"
+                   <field name="server_vex" string="Meli Server"
                            attrs="{'readonly': [('edit_id', '!=', True)]}"/>
-                           <field name="description" string="Description"  />
+                   <field name="description" string="Description"  />
                            <!-- <field name="brand" string="Product Brand"   /> -->
-                           <field name="public_categ_ids"    widget="many2many_tags"  />
-                           <field name="product_condition" string="Product Condition"   />
-                           <field name="url_image" string="Image URL" widget="url"  />
+                   <field name="public_categ_ids"    widget="many2many_tags"  />
+                   <field name="product_condition" string="Product Condition"   />
+                   <field name="url_image" string="Image URL" widget="url"  />
 
 	           </xpath>
 

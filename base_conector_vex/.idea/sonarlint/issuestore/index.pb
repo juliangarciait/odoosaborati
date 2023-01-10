@@ -21,9 +21,3 @@ J
 models/vex_restapi_list.py,3/f/3f95b4ff8941fe9ff83ba63560c8f721a667070b
 @
 data/product.xml,c/7/c70ec5976c8f599ef47677beeb8be07da3f2b50d
-N
-views/vex_product_template.xml,6/a/6a7abca4d5ce50eeb1161bb5f3fb6dc7e82ec699
-B
-security/group.xml,8/4/84d10c16da40a6e7c7eaf8a9c4c0583696b0b13d
-M
-views/vex_product_product.xml,8/3/83505afc8f6212de05cb480315832df7e4ba0da8

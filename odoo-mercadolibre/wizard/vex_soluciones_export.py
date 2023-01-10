@@ -151,10 +151,10 @@ class MeliMultiExport(models.TransientModel):
                 }
                 r_desc = requests.post(url_desc, json=data_des, headers=headers).json()
 
-            #else:
-            #    import json
-            #    raise ValidationError(json.dumps(data))
-            #    # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
+            else:
+                import json
+                raise ValidationError(json.dumps(datax))
+                # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
 
             p.log_meli_txt = str(data) + '\n' + str(datax)+ '\n' + str(r_desc)
 
