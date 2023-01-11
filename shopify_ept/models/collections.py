@@ -162,10 +162,21 @@ class ShopifyProductCollection(models.Model):
     
     def add_products(self, collect, collection): 
         products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-        n = 0
         for shopify_product in products:
-            new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-            collect.add_product(new_product)
+            new_product = self.request_product(shopify_product.shopify_tmpl_id)
+            if new_product: 
+                collect.add_product(new_product)
+            
+    def request_product(self, shopify_tmpl_id): 
+        try: 
+            return shopify.Product().find(shopify_tmpl_id)
+        except ClientError as error: 
+            if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests": 
+                time.sleep(int(float(error.response.headers.get('Retry-After', 5))))
+                return shopify.Product().find(shopify_tmpl_id)
+        except Exception as error: 
+            _logger.info("Product %s not found in shopify while updating collection.\nError: %s" % (shopify_tmpl_id, str(error)))
+            return False
     
     def update_collections_in_shopify(self):
         collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
