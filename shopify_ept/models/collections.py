@@ -162,6 +162,7 @@ class ShopifyProductCollection(models.Model):
     
     def add_products(self, collect, collection): 
         products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+        _logger.info('&'*1000)
         for shopify_product in products:
             new_product = self.request_product(shopify_product.shopify_tmpl_id)
             _logger.info(new_product)
@@ -188,9 +189,9 @@ class ShopifyProductCollection(models.Model):
                                     
     def remove_products(self, collect, collection): 
         products = collect.products()
+        _logger.info('$'*100)
         for product in products:
             _logger.info(product)
-            _logger.info('$'*100)
             collect.remove_product(product)
         #for product in products
             #dict_product = product.to_dict()
