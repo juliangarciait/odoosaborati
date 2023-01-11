@@ -164,6 +164,8 @@ class ShopifyProductCollection(models.Model):
         products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
         for shopify_product in products:
             new_product = self.request_product(shopify_product.shopify_tmpl_id)
+            _logger.info(new_product)
+            _logger.info('#'*1000)
             if new_product: 
                 collect.add_product(new_product)
             
