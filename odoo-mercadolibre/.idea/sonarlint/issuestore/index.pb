@@ -11,3 +11,17 @@ B
 .views/vex_soluciones_meli_synchro_instance.xml,1/e/1e63e9eff6941c74e0c29a0f46fa822a837d38fb
 P
  wizard/vex_soluciones_export.xml,a/5/a5287a9281df9a7d64125d4253d2fedcfcaf49f7
+I
+data/meli_action_list.xml,e/1/e180008a001f90fc6afc59f5bfe72f9ec47dedad
+?
+__manifest__.py,f/b/fb5097a66c279662079e85c889e061a106c5ec0f
+F
+views/vex_instance.xml,e/3/e3ecc074d4e65d628076fa996a3aa57e1b144ab4
+S
+#views/vex_soluciones_categories.xml,1/5/1573be933a9dc779618033cb3539780d22a4936e
+a
+1wizard/vex_soluciones_action_synchro_funciones.py,4/f/4f8e4ab5c31d8add0fc58889ca2fe2e542309a93
+T
+$models/vex_soluciones_meli_config.py,5/7/576b1f4c5d9e895c1ca60a85b7a6e4b25f67e90f
+Y
+)views/vex_soluciones_product_template.xml,7/8/78d740bbf38267f6c7702c2ce04e3bbbdd2b3426

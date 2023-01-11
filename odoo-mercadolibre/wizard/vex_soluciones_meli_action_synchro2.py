@@ -358,7 +358,7 @@ class MeliActionSynchro(models.TransientModel):
                     'id_vex': "'" + data['id'] + "'",
                 }
                 if data['id'] in CATEGORIES_REQUIRED_ATRR:
-                    create['required_attributes_meli'] = "'t'"
+                    create['required_manufacture_meli'] = "'t'"
                 if data['id'] in CATEGORIES_REQUIRED_BRAND:
                     create['required_brand_meli'] = "'t'"
                 write = create
