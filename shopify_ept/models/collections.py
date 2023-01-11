@@ -130,8 +130,8 @@ class ShopifyProductCollection(models.Model):
                 
                 result = collect.save()
                 _logger.info('@'*1000)
-                #if collection.is_exported: 
-                #    self.remove_products(collect, collection)
+                if collection.is_exported: 
+                    self.remove_products(collect, collection)
                 
                 if collection.product_ids:
                     time.sleep(10)
