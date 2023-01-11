@@ -171,6 +171,7 @@ class ShopifyProductCollection(models.Model):
                 collect.add_product(new_product)
             
     def request_product(self, shopify_tmpl_id): 
+        _logger.info('!'*1000)
         try: 
             return shopify.Product().find(shopify_tmpl_id)
         except ClientError as error: 
