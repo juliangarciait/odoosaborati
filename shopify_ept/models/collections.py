@@ -188,8 +188,9 @@ class ShopifyProductCollection(models.Model):
                                     
     def remove_products(self, collect, collection): 
         products = collect.products()
-        n = 0 
         for product in products:
+            _logger.info(product)
+            _logger.info('$'*100)
             collect.remove_product(product)
         #for product in products
             #dict_product = product.to_dict()
