@@ -129,7 +129,7 @@ class ShopifyProductCollection(models.Model):
                 #collect.image     = {"src" : collection.image_url}
                 
                 result = collect.save()
-                
+                _logger.info('@'*1000)
                 #if collection.is_exported: 
                 #    self.remove_products(collect, collection)
                 
@@ -162,16 +162,12 @@ class ShopifyProductCollection(models.Model):
     
     def add_products(self, collect, collection): 
         products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-        _logger.info('&'*1000)
         for shopify_product in products:
             new_product = self.request_product(shopify_product.shopify_tmpl_id)
-            _logger.info(new_product)
-            _logger.info('#'*1000)
             if new_product: 
                 collect.add_product(new_product)
             
     def request_product(self, shopify_tmpl_id): 
-        _logger.info('!'*1000)
         try: 
             return shopify.Product().find(shopify_tmpl_id)
         except ClientError as error: 
