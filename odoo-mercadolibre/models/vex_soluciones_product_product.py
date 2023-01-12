@@ -11,12 +11,23 @@ class ProductProduct(models.Model):
     #questions = fields.One2many('meli.questions', 'product_id')
     active_meli = fields.Boolean(default=True)
     buying_mode = fields.Selection([('buy_it_now', 'buy it now'), ('classified', 'classified')])
-    listing_type_id = fields.Selection([('free', 'free'), ('bronze', 'bronze'), ('gold_special', 'gold special')])
+    listing_type_id = fields.Selection([('free', 'free'), ('bronze', 'bronze'),
+                                        ('gold_special', 'gold special')])
+    name_product_meli = fields.Char(string="Titulo")
 
 
     def update_conector_vex(self):
+        name = self.name_product_meli or self.name
+        categ = self.public_categ_ids[0] if self.public_categ_ids else None
+        if categ:
+            if not categ.id_vex:
+                categ = False
+            else:
+                categ = categ.id_vex
         if  self.id_vex_varition or self.id_vex :
             #id_vex =  self.id_vex_varition or self.id_vex
+
+
 
             return {
                 'name': ('Update to ML'),
@@ -32,6 +43,8 @@ class ProductProduct(models.Model):
                     'default_condition': self.product_condition,
                     'default_buying_mode': self.buying_mode ,
                     'default_listing_type_id': self.listing_type_id,
+                    'default_name_product_meli': name ,
+                    'default_category': categ
 
                 }
             }
@@ -53,6 +66,8 @@ class ProductProduct(models.Model):
                     'default_condition': self.product_condition,
                     'default_buying_mode': self.buying_mode,
                     'default_listing_type_id': self.listing_type_id,
+                    'default_name_product_meli': name,
+                    'default_category': categ
                 }
             }
 

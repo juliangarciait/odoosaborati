@@ -40,6 +40,7 @@
                      <group>
 
                            <field name="product" readonly="1"/>
+                           <field name="name_product_meli" />
                            <field name="id_vex" invisible="1" />
                            <field name="id_vex_varition" invisible="1"/>
 

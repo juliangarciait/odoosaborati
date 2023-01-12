@@ -292,7 +292,7 @@ class MeliActionSynchro(models.TransientModel):
 
             if query == "orders":
                 d = str(data['date_created']).split('.')
-                #raise ValidationError(d[0])
+                #raise ValidationError(str(data))
                 fecha = datetime.strptime(d[0], '%Y-%m-%dT%H:%M:%S')
                 pricelist = server.pricelist
                 if not pricelist:
@@ -303,7 +303,7 @@ class MeliActionSynchro(models.TransientModel):
                 if not server.warehouse:
                     raise ValidationError("Set Up Warehouse")
                 dx = {'customer':{}}
-                nam = "'{}'".format(str(data['buyer']['nickname']))
+                nam = "{}".format(str(data['buyer']['nickname']))
                 dx['customer']['name'] , dx['customer']['display_name'] = nam , nam
                 if 'phone' in dx['customer']:
                     dx['customer']['phone'] = "'{}'".format(str(data['buyer']['phone']['area_code'])+"-"+str(data['buyer']['phone']['number']))

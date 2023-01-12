@@ -71,6 +71,7 @@ class ApiSynchroInstance(models.Model):
             "client_secret": self.secret_key,
             "code": self.server_code,
             "redirect_uri": self.redirect_uri,
+
         }
         url = 'https://api.mercadolibre.com/oauth/token'
         r = requests.post(url, json=data, headers=headers)

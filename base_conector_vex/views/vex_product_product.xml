@@ -25,8 +25,10 @@
                    <field name="id_vex" readonly="1" />
                    <field name="id_vex_varition" readonly="1"  />
                    <field name="vex_regular_price" invisible="1"  />
+                   <button name="del_id_connector_vex"  type="object" string="Borrar ID VEX"
+                          groups="base_conector_vex.group_advanced_field_vex" />
                    <field name="log_meli_txt" groups="base_conector_vex.group_advanced_field_vex"  />
-                  <button name="del_id_connector_vex"  type="object" string="Borrar ID VEX" />
+
               </xpath>
            </field>
     </record>

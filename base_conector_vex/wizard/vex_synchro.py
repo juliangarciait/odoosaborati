@@ -579,10 +579,10 @@ class WooSynchro(models.TransientModel):
 
     def check_customer(self, dt, server, customer_id, accion):
         data = dt
-        # raise ValidationError(str(dt))
+        #raise ValidationError(str(dt))
         #data['customer'] = dt['customer']
-        data['customer']['id_vex'] = "{}".format(customer_id)
-        data['customer']['server_vex'] = server.id
+        data['customer']['id_vex'] = str(customer_id)
+        #data['customer']['server_vex'] = server.id
         data['customer']['conector'] = "{}".format(server.conector)
         data['customer']['active'] = True
         if server.type_document:
@@ -594,10 +594,11 @@ class WooSynchro(models.TransientModel):
             # pr = wcapi.get("customers/" + str(customer_id)).json()
             # buscar el cliente en res.partner odoo
             #dmm = [('id_vex', '=', str(customer_id)), ('server_vex', '=', int(server.id))]
-            dmm = [('id_vex', '=', str(customer_id))]
+            dmm = [('id_vex', '=', str(customer_id)),'|',('active','=',True),('active','=',False)]
             partner = self.env['res.partner'].search(dmm)
             if not partner:
-
+                #if data['customer']['id_vex'] == '544056182':
+                #    raise ValidationError(str([dmm]))
                 if 'billing' in data:
                     data['customer']['street'] = data['billing']['street']
                     '''
@@ -617,7 +618,12 @@ class WooSynchro(models.TransientModel):
                     '''
 
                 #self.json_execute_create('res.partner', data['customer'])
-                partner = self.env['res.partner'].create(data['customer'])
+                try:
+                    partner = self.env['res.partner'].create(data['customer'])
+                except:
+                    partner = self.env['res.partner'].search(dmm)
+                    raise ValueError(str([partner,data['customer']]))
+
                 #dmx = [('id_vex', '=', str(customer_id)), ('server_vex', '=', int(server.id))]
                 #dmx = [('id_vex', '=', str(customer_id))]
                 #partner = self.env['res.partner'].search(dmx)

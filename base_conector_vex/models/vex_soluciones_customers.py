@@ -11,6 +11,6 @@ class Customers(models.Model):
     conector = fields.Selection([])
     server_vex = fields.Many2one('vex.instance')
     _sql_constraints = [
-        ('unique_id_clie_vex', 'unique(id_vex, server_vex, conector)',
+        ('unique_id_clie_vex', 'unique(id_vex, conector)',
          'There can be no duplication of synchronized clients')
     ]

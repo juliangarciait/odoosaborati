@@ -9,8 +9,6 @@ B
 wizard/__init__.py,9/a/9a7bb951b8d2d2e191e5d30822e6fcf3d333634a
 ^
 .views/vex_soluciones_meli_synchro_instance.xml,1/e/1e63e9eff6941c74e0c29a0f46fa822a837d38fb
-P
- wizard/vex_soluciones_export.xml,a/5/a5287a9281df9a7d64125d4253d2fedcfcaf49f7
 I
 data/meli_action_list.xml,e/1/e180008a001f90fc6afc59f5bfe72f9ec47dedad
 ?
@@ -25,3 +23,5 @@ T
 $models/vex_soluciones_meli_config.py,5/7/576b1f4c5d9e895c1ca60a85b7a6e4b25f67e90f
 Y
 )views/vex_soluciones_product_template.xml,7/8/78d740bbf38267f6c7702c2ce04e3bbbdd2b3426
+X
+(views/vex_soluciones_product_product.xml,5/b/5b541ee1edf0e72891b9697c1752627ae56469ab

@@ -13,6 +13,7 @@ from ..models.vex_soluciones_meli_config import CONDITIONS
 
 class MeliMultiExport(models.TransientModel):
     _name = "meli.export"
+
     server = fields.Many2one('meli.synchro.instance',
                              "Instance", required=True)
     action = fields.Many2one('vex.restapi.list')
@@ -32,7 +33,10 @@ class MeliMultiExport(models.TransientModel):
 
         #raise   ValidationError(foto_main)
 
-        headers = { "Content-Type": "application/json"}
+        headers = {
+            "Content-Type": "application/json" ,
+            "client_id": server.app_id,
+        }
         #url = self.env['shop.action.synchro'].shop_url(self.server, str(argument))
         price = float(p.list_price)
         if server.pricelist:
@@ -59,7 +63,7 @@ class MeliMultiExport(models.TransientModel):
             r = requests.put(url, json=data, headers=headers)
             datax = r.json()
 
-            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description'
+            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description?access_token=' + str(server.access_token)
             data_des = {
                 "plain_text": p.description_sale
             }
@@ -71,8 +75,8 @@ class MeliMultiExport(models.TransientModel):
 
         else:
             url = 'https://api.mercadolibre.com/items?access_token=' + str(server.access_token)
-            if not self2.category_children:
-                raise ValidationError('no seleciono una categoria')
+            if  not self2.category:
+                raise ValidationError('no selecciono una categoria')
             cc = self2.category_children if self2.category_children else self2.category
             # raise ValidationError(cc.id_app)
             if not self2.buying_mode:
@@ -86,7 +90,7 @@ class MeliMultiExport(models.TransientModel):
 
             data = {
                 "site_id": str(server.meli_country),
-                "title": str(p.name),
+                "title": str(p.name_product_meli),
                 "category_id": str(cc.id_vex),
                 # "category_id": str(cc.id_app),
                 "price": price,
@@ -145,18 +149,19 @@ class MeliMultiExport(models.TransientModel):
                 p.listing_type_id = datax['listing_type_id']
 
 
-                url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description'
+                url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description?access_token=' + str(server.access_token)
                 data_des = {
                     "plain_text": p.description_sale
                 }
                 r_desc = requests.post(url_desc, json=data_des, headers=headers).json()
+                p.log_meli_txt = str(data) + '\n' + str(datax) + '\n' + str(r_desc)
 
             else:
                 import json
                 raise ValidationError(json.dumps(datax))
                 # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
 
-            p.log_meli_txt = str(data) + '\n' + str(datax)+ '\n' + str(r_desc)
+
 
 
 
@@ -188,6 +193,13 @@ class MeliUnitExport(models.TransientModel):
     buying_mode        = fields.Selection([('buy_it_now','Compre ya'),('classified','clasificado')],string="Modo de Compra")
     listing_type_id    = fields.Selection([('free','gratis'),('bronze','Clásica'),('gold_special','Premium')],
                                           string="Tipo de Publicacion")
+    name_product_meli = fields.Char(string="Titulo",required=True)
+
+    @api.onchange('name_product_meli')
+    def change_product(self):
+        for record in self:
+            if record.name_product_meli:
+                record.product.name_product_meli = record.name_product_meli
 
     #p.id_vex or p.id_vex_varition
     def start_export(self):
@@ -225,10 +237,13 @@ class MeliUnitExport(models.TransientModel):
 
     @api.onchange('category_children')
     def set_category_padre(self):
-        self.category = self.category_children
+        if self.category_children:
+            self.category = self.category_children
+
     @api.onchange('category')
     def set_childrens(self):
-        self.env['vex.synchro'].insert_categorias_children_meli(str(self.category.id_vex),self.server,self.category)
+        if self.category:
+            self.env['vex.synchro'].insert_categorias_children_meli(str(self.category.id_vex),self.server,self.category)
 
 
 
