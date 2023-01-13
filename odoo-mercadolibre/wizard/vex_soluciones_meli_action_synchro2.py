@@ -616,11 +616,11 @@ class MeliActionSynchro(models.TransientModel):
                     if server.discount_fee:
                         total_fee = self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
                                                           'sale_fee', -1)
-                        #tt = exist.amount_total + float(total_fee)
-                        #self.json_execute_update('sale.order', {
-                        #    'amount_untaxed': tt,
-                        #    'amount_total': tt
-                        #}, exist.id)
+                    #if server.shipment:
+                    #    #raise ValidationError(str(dr))
+                    #    self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
+                    #                          'sale_fee', -1,True)
+
                 if not exist.state:
                     exist.state = 'draft'
 

@@ -811,10 +811,21 @@ class WooSynchro(models.TransientModel):
             #raise ValidationError(str(p))
 
             price_unit = float(p['unit_price'])
-            if server.tax_id:
-                with_tax = float(p['unit_price'])
-                without_tax = ( 100 * with_tax ) / 118
-                price_unit = without_tax
+
+
+            tax_product = server.tax_id
+            if server.use_tax_product:
+                tax_product = existe.taxes_id
+                if tax_product:
+                    if len(tax_product) > 1:
+                        raise ValidationError('EL PRODUCTO TIENE MAS DE UN IMPUESTO')
+
+            if tax_product:
+                if  tax_product.amount != 0 :
+                    with_tax = float(p['unit_price'])
+                    without_tax = (100 * with_tax) / (100 + tax_product.amount)
+                    price_unit = without_tax
+
 
                 #raise ValidationError(str([p['unit_price'],tax_amount,price_unit,creado.id_vex]))
 
@@ -840,7 +851,7 @@ class WooSynchro(models.TransientModel):
                 #'discount': 0
 
             }
-            if server.tax_id:
+            if tax_product:
                 new_line['tax_id'] = [(6,0,[server.tax_id.id])]
 
 

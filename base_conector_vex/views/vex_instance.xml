@@ -69,7 +69,8 @@
                                               <field name="sales_team" />
                                               <field name="sequence_id" />
                                               <field name="search_sku" />
-                                              <field name="tax_id" />
+                                              <field name="use_tax_product" />
+                                              <field name="tax_id" attrs="{'invisible': [('use_tax_product','!=',False)]}" />
                                               <field name="export_stock_min" />
                                               <field name="export_stock_all_products"/>
                                               <field name="warehouse_stock_vex"/>
