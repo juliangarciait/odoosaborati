@@ -269,10 +269,10 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail or is_set_price:
             variants = []
             for variant in template.shopify_product_ids:
-                if variant.to_shopify: 
-                    variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
-                                                                    is_set_basic_detail)
-                    variants.append(variant_vals)
+                #if variant.to_shopify: 
+                variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
+                                                                is_set_basic_detail)
+                variants.append(variant_vals)
             new_product.variants = variants
         if is_set_basic_detail:
             self.prepare_export_update_product_attribute_vals(template, new_product)

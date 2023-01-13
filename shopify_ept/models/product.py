@@ -165,6 +165,7 @@ class ProductProduct(models.Model):
                 
     
     def export_variant_to_shopify(self, product_variant):
+        _logger.info('#'*1000)
         if product_variant.shopify_product_ids: 
             for shopify_product_variant in product_variant.shopify_product_ids: 
                 shopify_product_variant.shopify_instance_id.connect_in_shopify() 
