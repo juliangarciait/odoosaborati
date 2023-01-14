@@ -160,12 +160,14 @@ class ProductProduct(models.Model):
             product_dict = variant.to_dict()
             if str(product_dict.get('id')) == str(shopify_product_variant.variant_id): 
                 variant.destroy()
-                shopify_product_variant.exported_in_shopify = False 
                 _logger.info(shopify_product_variant.exported_in_shopify)
                 
+    def export_deleted_variant(self, shopify_product_variant): 
+        shopify_product_variant.unlink()
+
+    
     
     def export_variant_to_shopify(self, product_variant):
-        _logger.info('#'*1000)
         if product_variant.shopify_product_ids: 
             for shopify_product_variant in product_variant.shopify_product_ids: 
                 shopify_product_variant.shopify_instance_id.connect_in_shopify() 
@@ -175,8 +177,9 @@ class ProductProduct(models.Model):
                         self.delete_variants_in_shopify(shopify_product_tmpl, shopify_product_variant)
                     else: 
                         raise ValidationError('Las variantes no están exportadas en Shopify.')
+                    shopify_product_variant.exported_in_shopify = False 
                 elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
-                    shopify_product_variant.unlink()
+                    self.export_deleted_variant(shopify_product_variant)
                         
         for product in product_variant.product_tmpl_id: 
             if product.detailed_type == 'product':

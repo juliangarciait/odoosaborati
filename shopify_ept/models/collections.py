@@ -133,7 +133,7 @@ class ShopifyProductCollection(models.Model):
                 self.remove_products(collect, collection)
             
             if collection.product_ids:
-                time.sleep(10)
+                time.sleep(30)
                 self.add_products(collect, collection)
         #else:
         #    raise ValidationError (_('No se puede editar esta collection porque no pertence a la compañía activa'))
@@ -148,7 +148,7 @@ class ShopifyProductCollection(models.Model):
                 collect.add_product(new_product)
             
             if n == 10: 
-                time.sleep(5)
+                time.sleep(10)
             
     def request_product(self, shopify_tmpl_id): 
         try: 
@@ -174,7 +174,7 @@ class ShopifyProductCollection(models.Model):
             n += 1
             collect.remove_product(product)
             if n == 10: 
-                time.sleep(5)
+                time.sleep(10)
         #for product in products
             #dict_product = product.to_dict()
             #current_product = shopify.Product().find(dict_product.get('id'))
