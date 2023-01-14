@@ -128,7 +128,7 @@ class ShopifyProductCollection(models.Model):
             #collect.image     = {"src" : collection.image_url}
             
             result = collect.save()
-            _logger.info('@'*1000)
+            
             if collection.is_exported: 
                 self.remove_products(collect, collection)
             
@@ -140,10 +140,15 @@ class ShopifyProductCollection(models.Model):
     
     def add_products(self, collect, collection): 
         products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
+        n = 0
         for shopify_product in products:
             new_product = self.request_product(shopify_product.shopify_tmpl_id)
             if new_product: 
+                n += 1
                 collect.add_product(new_product)
+            
+            if n == 10: 
+                time.sleep(5)
             
     def request_product(self, shopify_tmpl_id): 
         try: 
@@ -160,14 +165,16 @@ class ShopifyProductCollection(models.Model):
         collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
         
         for collection in collections:
-            _logger.info('$'*10000)
             self.with_delay().export_to_shopify(collection)
                                     
     def remove_products(self, collect, collection): 
         products = collect.products()
+        n = 0
         for product in products:
-            _logger.info(product)
+            n += 1
             collect.remove_product(product)
+            if n == 10: 
+                time.sleep(5)
         #for product in products
             #dict_product = product.to_dict()
             #current_product = shopify.Product().find(dict_product.get('id'))
