@@ -146,6 +146,8 @@ class ShopifyProductCollection(models.Model):
 
             result = new_collection.save()
             
+            _logger.info('NUEVA'*1000)
+            
             if result: 
                 collection_info = new_collection.to_dict()
                 collection.shopify_collection_id = collection_info.get('id')
