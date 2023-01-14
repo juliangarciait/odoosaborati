@@ -121,44 +121,20 @@ class ShopifyProductCollection(models.Model):
     
     def export_to_shopify(self, collection): 
         collection.shopify_instance_id.connect_in_shopify()
-        if collection.company_id.id == self.env.company.id:
-            collect = self.request_collection(collection.shopify_collection_id)
-            if collect: 
-                collect.title     = collection.name
-                collect.body_html = collection.body_html
-                #collect.image     = {"src" : collection.image_url}
-                
-                result = collect.save()
-                _logger.info('@'*1000)
-                if collection.is_exported: 
-                    self.remove_products(collect, collection)
-                
-                if collection.product_ids:
-                    time.sleep(10)
-                    self.add_products(collect, collection)
-        else:
-            new_collection = shopify.CustomCollection()
-
-            new_collection.title           = collection.name
-            new_collection.body_html       = collection.body_html
-            #new_collection.image           = {"src" : collection.image_url}
-            new_collection.published_scope = "web"
-
-            result = new_collection.save()
+        collect = self.request_collection(collection.shopify_collection_id)
+        if collect: 
+            collect.title     = collection.name
+            collect.body_html = collection.body_html
+            #collect.image     = {"src" : collection.image_url}
             
-            _logger.info('NUEVA'*1000)
+            result = collect.save()
+            _logger.info('@'*1000)
+            if collection.is_exported: 
+                self.remove_products(collect, collection)
             
-            if result: 
-                collection_info = new_collection.to_dict()
-                collection.shopify_collection_id = collection_info.get('id')
-                collection.is_exported = True
-                if collection.product_ids: 
-                    products = self.env['shopify.product.template.ept'].search([('product_tmpl_id', 'in', collection.product_ids.ids)])
-                    for shopify_product in products:
-                        new_product = shopify.Product().find(shopify_product.shopify_tmpl_id)
-                        new_collection.add_product(new_product)
-            elif not result: 
-                raise ValidationError (_('Error al crear collection en Shopify'))
+            if collection.product_ids:
+                time.sleep(10)
+                self.add_products(collect, collection)
         #else:
         #    raise ValidationError (_('No se puede editar esta collection porque no pertence a la compañía activa'))
     
