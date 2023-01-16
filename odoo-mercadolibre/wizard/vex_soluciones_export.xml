@@ -46,12 +46,15 @@
 
                            <field name="server" string="Instance"/>
                            <field name="category"
+                                  widget="selection"
                                   attrs="{'invisible': ['|',('id_vex', '!=', False),('id_vex_varition', '!=', False)]}"
                                   domain="[('id_vex','!=',False)]" />
                            <field name="category_children"
+                                  widget="selection"
                                   attrs="{'invisible': ['|',('id_vex', '!=', False),('id_vex_varition', '!=', False)]}"
                                   domain="[('parent_id','=', category)]" />
                            <field name="category_children2"
+                                  widget="selection"
                                   attrs="{'invisible': ['|',('id_vex', '!=', False),('id_vex_varition', '!=', False)]}"
                                   domain="[('parent_id','=', category_children)]" />
 
