@@ -74,6 +74,9 @@
                                               <field name="export_stock_min" />
                                               <field name="export_stock_all_products"/>
                                               <field name="warehouse_stock_vex"/>
+                                              <field name="update_price" />
+                                              <field name="update_stock" />
+                                              <field name="update_title" />
                                               <field name="share_multi_instances" />
                                           </group>
                                       </div>

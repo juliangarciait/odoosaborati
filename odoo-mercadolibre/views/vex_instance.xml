@@ -225,7 +225,7 @@
                             </div>
                         </div>
                    </page>
-                   <page string="Initial Settings" name ="beforex"
+                   <page string="Initial Settings" name ="beforx"
                          attrs="{'invisible': ['|',('conector','!=','meli'),('state_meli','!=','init_settings')]}"
                    >
                        <group>
@@ -280,6 +280,12 @@
                                      
                         </group>
                     </page>
+               </xpath>
+               <xpath expr="//field[@name='warehouse_stock_vex']" position="after" >
+                   <field name="field_brand"
+                          attrs="{'invisible': [('conector','!=','meli')]}"
+                           />
+
                </xpath>
 
            </field>

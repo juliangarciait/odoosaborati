@@ -40,6 +40,10 @@ class ApiSynchroInstance(models.Model):
     conector  = fields.Selection(selection_add=[('meli', 'Mercado Libre')])
     state_meli = fields.Selection([('init','Introduction'),
                                    ('init_settings','Initial Settings'),('keys','keys'),('setting','Settings')],default='init')
+    field_brand = fields.Many2one('ir.model.fields', string="Campo Marca",
+                                  domain=[('model_id.model','=','product.product'),
+                                          ('ttype','in',['char','text','many2one'])])
+
 
     def get_user(self):
         if not self.nick:

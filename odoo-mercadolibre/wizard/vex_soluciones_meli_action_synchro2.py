@@ -234,6 +234,7 @@ class MeliActionSynchro(models.TransientModel):
             create = {}
             write = {}
             if query == "products":
+                #raise ValidationError(str(data))
                 if not 'body' in data:
                     import json
                     raise ValidationError('ka')
@@ -270,11 +271,11 @@ class MeliActionSynchro(models.TransientModel):
                     #'public_categ_ids': [(6, 0, [self.check_categories(body['category_id'], server, None).id])]
                 }
                 write = {
-                    'name': "'" + body['title'] + "'",
+                    #'name': "'" + body['title'] + "'",
                     'list_price': body['price'],
                     'type': "'product'",
                     'detailed_type': "'product'",
-                    'categ_id': server.categ_id.id,
+                    #'categ_id': server.categ_id.id,
                     'permalink': "'" + body['permalink']+ "'",
                     'product_condition':  condicion,
                     'active_meli': active,
@@ -349,6 +350,7 @@ class MeliActionSynchro(models.TransientModel):
                 write = {
                     #'state': "''".format(state),
                     'client_order_ref': "'" + str(data['id']) + "'",
+
                 }
             if query == "categories":
                 create = {

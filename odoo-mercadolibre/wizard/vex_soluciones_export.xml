@@ -51,6 +51,9 @@
                            <field name="category_children"
                                   attrs="{'invisible': ['|',('id_vex', '!=', False),('id_vex_varition', '!=', False)]}"
                                   domain="[('parent_id','=', category)]" />
+                           <field name="category_children2"
+                                  attrs="{'invisible': ['|',('id_vex', '!=', False),('id_vex_varition', '!=', False)]}"
+                                  domain="[('parent_id','=', category_children)]" />
 
                      </group>
 
@@ -69,6 +72,7 @@
                 </group>
                 <footer>
                     <button name="start_export" string="Export"
+                            confimr="Recuerda estar seguro de colocar el nombre correcto de la publicacion"
                             type="object" class="oe_highlight"/>
                     or
                     <button string="Cancel" class="oe_link" special="cancel"/>

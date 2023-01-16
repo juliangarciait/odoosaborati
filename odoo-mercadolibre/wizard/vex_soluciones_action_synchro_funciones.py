@@ -377,7 +377,9 @@ class MeliActionSynchro(models.TransientModel):
         return img_str
 
     def insert_categorias_children_meli(self,id_vex,server,exist):
+        #raise ValidationError('oki')
         dr = self.get_category(id_vex)
+        #raise ValidationError(str(dr))
         if 'path_from_root' in dr:
             if dr['path_from_root']:
                 datavs = []

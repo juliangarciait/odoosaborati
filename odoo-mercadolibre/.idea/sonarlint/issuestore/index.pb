@@ -11,11 +11,9 @@ I
 data/meli_action_list.xml,e/1/e180008a001f90fc6afc59f5bfe72f9ec47dedad
 S
 #views/vex_soluciones_categories.xml,1/5/1573be933a9dc779618033cb3539780d22a4936e
-T
-$models/vex_soluciones_meli_config.py,5/7/576b1f4c5d9e895c1ca60a85b7a6e4b25f67e90f
 Y
 )views/vex_soluciones_product_template.xml,7/8/78d740bbf38267f6c7702c2ce04e3bbbdd2b3426
 X
 (views/vex_soluciones_product_product.xml,5/b/5b541ee1edf0e72891b9697c1752627ae56469ab
-S
-#models/vex_soluciones_categories.py,0/6/06f41ee6a0216f0c1305819dd7d6ff515b105ac7
+?
+__manifest__.py,f/b/fb5097a66c279662079e85c889e061a106c5ec0f

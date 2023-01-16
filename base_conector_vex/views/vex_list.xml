@@ -84,6 +84,12 @@
                     <div class="oe_button_box" name="button_box">
 
                         <button class="oe_stat_button" type="object"
+                            name="go_export_product" icon="fa-cloud" string="Exportar"
+                            attrs="{'invisible': [('argument', '!=', 'products')]}"
+
+                        />
+
+                        <button class="oe_stat_button" type="object"
                             name="go_action_list" icon="fa-cloud"
 
                         >

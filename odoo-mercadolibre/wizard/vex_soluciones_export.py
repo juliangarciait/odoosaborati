@@ -45,10 +45,12 @@ class MeliMultiExport(models.TransientModel):
             id_vex = p.id_vex_varition or p.id_vex
             url = f'https://api.mercadolibre.com/items/{id_vex}?access_token=' + str(server.access_token)
             data = {
-                "price": price,
-                "available_quantity": int(self2.quantity),
+                "price": round(price,2),
+
 
             }
+            if server.update_stock:
+                data['available_quantity']: int(self2.quantity)
             data['attributes'] = [
                 #{
                 #    "id": "MANUFACTURER",
@@ -75,10 +77,11 @@ class MeliMultiExport(models.TransientModel):
 
         else:
             url = 'https://api.mercadolibre.com/items?access_token=' + str(server.access_token)
-            if  not self2.category:
-                raise ValidationError('no selecciono una categoria')
-            cc = self2.category_children if self2.category_children else self2.category
+
+            cc = self2.category_children2 or self2.category_children  or self2.category
             # raise ValidationError(cc.id_app)
+            if  not cc:
+                raise ValidationError('no selecciono una categoria')
             if not self2.buying_mode:
                 raise ValidationError('no selecciono un buying_mode')
 
@@ -93,7 +96,7 @@ class MeliMultiExport(models.TransientModel):
                 "title": str(p.name_product_meli),
                 "category_id": str(cc.id_vex),
                 # "category_id": str(cc.id_app),
-                "price": price,
+                "price": round(price,2),
                 "currency_id": str(server.default_currency),
                 "buying_mode": str(self2.buying_mode),
                 "listing_type_id": str(self2.listing_type_id),
@@ -102,6 +105,7 @@ class MeliMultiExport(models.TransientModel):
                 "pictures": [
                     {"source": foto_main}
                 ],
+                #'thumbnail': foto_main
             }
 
             atributes = []
@@ -119,9 +123,18 @@ class MeliMultiExport(models.TransientModel):
 
 
             if cc.id_vex in CATEGORIES_REQUIRED_BRAND or cc.required_brand_meli == True:
+                if not server.field_brand:
+                    raise ValidationError('No configuro un campo marca ')
+
+                brand = p[server.field_brand.name]
+                if not brand:
+                    raise ValidationError('NO SE ENCONTRO UN VALOR PARA LA MARCA')
+                if server.field_brand.ttype == 'many2one':
+                    brand = brand.display_name
+
                 atributes.append({
                     "id": "BRAND",
-                    "value_name": f"{server.display_name}",
+                    "value_name":  brand,
                 })
 
 
@@ -162,9 +175,6 @@ class MeliMultiExport(models.TransientModel):
                 # raise ValidationError('AN ERROR HAS OCCURRED, TRY AGAIN')
 
 
-
-
-
     def export_export(self):
         threaded_synchronization = threading.Thread(target=self.start_export())
         threaded_synchronization.run()
@@ -187,13 +197,27 @@ class MeliUnitExport(models.TransientModel):
     id_vex_varition    = fields.Char(related='product.id_vex_varition')
     category           = fields.Many2one('product.public.category',string="Categoria")
     category_children  = fields.Many2one('product.public.category',string="Sub Categoria")
+    category_children2 = fields.Many2one('product.public.category', string="Sub Sub Categoria")
     brand              = fields.Char()
     condition          = fields.Selection(CONDITIONS, string='Condición del producto')
     quantity           = fields.Integer(required=True,default=10,string="Stock")
-    buying_mode        = fields.Selection([('buy_it_now','Compre ya'),('classified','clasificado')],string="Modo de Compra")
+    buying_mode        = fields.Selection([('buy_it_now','Compre ya'),('classified','clasificado')],
+                                          string="Modo de Compra",default='buy_it_now')
     listing_type_id    = fields.Selection([('free','gratis'),('bronze','Clásica'),('gold_special','Premium')],
-                                          string="Tipo de Publicacion")
-    name_product_meli = fields.Char(string="Titulo",required=True)
+                                          string="Tipo de Publicacion",default='bronze')
+    name_product_meli = fields.Text(string="Titulo",required=True)
+
+    @api.onchange('product')
+    def change_productx(self):
+        #raise ValidationError('que pasa')
+        for record in self:
+            categ = self.product.public_categ_ids[0] if self.product.public_categ_ids else None
+            if categ:
+                if not categ.id_vex:
+                    categ = False
+                else:
+                    categ = categ.id
+            record.category = categ
 
     @api.onchange('name_product_meli')
     def change_product(self):
@@ -235,15 +259,40 @@ class MeliUnitExport(models.TransientModel):
     #        #self.env['meli.action.synchro'].check_synchronize(self.server)
     #        self.predict_category()
 
-    @api.onchange('category_children')
+    @api.onchange('category_children2')
     def set_category_padre(self):
-        if self.category_children:
-            self.category = self.category_children
+        if self.category_children2:
+            if type(self.category_children2.id)==str:
+                return
+
+            self.env['vex.synchro'].insert_categorias_children_meli(str(self.category_children2.id_vex),
+                                                                    self.server,self.category_children2)
+            exist = self.env['product.public.category'].search([('parent_id','=',self.category_children2.id)])
+            if exist:
+                self.category = self.category_children2.id
+                self.category_children2 = False
+                self.category_children = False
 
     @api.onchange('category')
     def set_childrens(self):
         if self.category:
-            self.env['vex.synchro'].insert_categorias_children_meli(str(self.category.id_vex),self.server,self.category)
+            if type(self.category.id)==str:
+                return
+
+            self.env['vex.synchro'].insert_categorias_children_meli(str(self.category.id_vex), self.server,self.category)
+            self.category_children2 = False
+
+    @api.onchange('category_children')
+    def set_childrens2(self):
+        if self.category_children:
+            if type(self.category_children.id)==str:
+                return
+
+            self.env['vex.synchro'].insert_categorias_children_meli(str(self.category_children.id_vex),
+                                                                    self.server,self.category_children)
+
+
+
 
 
 

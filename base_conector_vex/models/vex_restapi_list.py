@@ -35,11 +35,20 @@ class VexRestapilist(models.Model):
     last_number_import = fields.Integer(default=0,string="Ultima Cantidad Importada")
 
 
+
     _sql_constraints = [
         ('unique_id_argument', 'unique(argument,conector)', 'There can be no duplication of argument in conector')
     ]
 
     #funcion  para cambiar las facturas el customer los apuntes contables
+
+    def go_export_product(self):
+        view = self.env.ref('stock.stock_product_normal_action').read([])[0]
+        view['domain'] = f"[('id_vex', '=', False),('id_vex_varition','=',False)]"
+        view['limit'] = self.limit_action
+        # model = 'product.product'
+
+        return view
 
     def change_lines_customer(self,domain):
         orders = self.env['sale.order'].search(domain)
@@ -54,6 +63,8 @@ class VexRestapilist(models.Model):
 
     def go_action_list(self):
 
+        model = str(self.model)
+
         view_mode = 'tree,kanban,form'
         if self.argument ==  'products':
             view_mode = 'kanban,tree,form'
@@ -64,9 +75,10 @@ class VexRestapilist(models.Model):
             domain = "[('conector','=','{}'), ('id_vex', '!=', False),('type', '=', 'service')]".format(self.conector)
 
         if str(self.model) == 'product.template':
-            view = self.env.ref('stock.product_template_action_product').read([])[0]
-            view['domain'] = domain
+            view = self.env.ref('stock.stock_product_normal_action').read([])[0]
+            view['domain'] = f"[('conector','=','{self.conector}'),('id_vex', '!=', False),('id_vex_varition','!=',False)]"
             view['limit'] = self.limit_action
+            #model = 'product.product'
 
             return view
 
@@ -81,7 +93,7 @@ class VexRestapilist(models.Model):
         dx =  {
             'name': str(self.name),
             'type': 'ir.actions.act_window',
-            'res_model': str(self.model),
+            'res_model': model,
             'view_mode': view_mode,
             'view_type': 'form',
             'domain': domain,
@@ -141,8 +153,8 @@ class VexRestapilist(models.Model):
 
                 argument = record.argument
                 if argument == 'products':
-                    count = self.env[str(model)].search_count([('conector', '=', str(record.conector)),('id_vex', '!=', False),
-                                                               ('detailed_type','=','product')])
+                    count = self.env['product.product'].search_count([('conector', '=', str(record.conector)),'|',('id_vex', '!=', False),
+                                                               ('id_vex_varition','!=',False)])
                 if argument == 'fee':
                     count = self.env[str(model)].search_count([('conector', '=', str(record.conector)),('id_vex', '!=', False),
                                                                ('detailed_type','=','service')])

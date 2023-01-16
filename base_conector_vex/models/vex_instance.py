@@ -47,6 +47,10 @@ class VexInstance(models.Model):
     search_sku = fields.Boolean()
     tax_id = fields.Many2one('account.tax',string='Impuesto')
     use_tax_product = fields.Boolean(default=False,string="Usar el Impuesto del producto")
+    update_price = fields.Boolean()
+    update_stock = fields.Boolean()
+    update_title = fields.Boolean()
+
 
     discount_fee = fields.Selection([
         ('save','Guardar como Dato'),
