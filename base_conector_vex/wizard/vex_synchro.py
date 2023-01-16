@@ -852,7 +852,7 @@ class WooSynchro(models.TransientModel):
 
             }
             if tax_product:
-                new_line['tax_id'] = [(6,0,[server.tax_id.id])]
+                new_line['tax_id'] = [(6,0,[tax_product.id])]
 
 
             self.env['sale.order.line'].create(new_line)
