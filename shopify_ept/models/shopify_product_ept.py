@@ -269,10 +269,12 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail or is_set_price:
             variants = []
             for variant in template.shopify_product_ids:
-                if variant.to_shopify:
-                    variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
-                                                                is_set_basic_detail)
-                    variants.append(variant_vals)
+                price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
+                                                                    uom_id=variant.product_id.uom_id.id)
+                #if variant.to_shopify:
+                variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
+                                                            is_set_basic_detail, price)
+                variants.append(variant_vals)
             new_product.variants = variants
         if is_set_basic_detail:
             self.prepare_export_update_product_attribute_vals(template, new_product)
@@ -448,7 +450,7 @@ class ShopifyProductProductEpt(models.Model):
 
         return True
 
-    def shopify_prepare_variant_vals(self, instance, template, variant, is_set_price, is_set_basic_detail):
+    def shopify_prepare_variant_vals(self, instance, template, variant, is_set_price, is_set_basic_detail, price):
         """This method used to prepare variant vals for export product variant from
             shopify third layer to shopify store.
             :param variant: Record of shopify product product(shopify product variant)
@@ -459,8 +461,10 @@ class ShopifyProductProductEpt(models.Model):
         if variant.variant_id:
             variant_vals.update({"id": variant.variant_id})
         if is_set_price:
-            price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
-                                                                    uom_id=variant.product_id.uom_id.id)
+            #price = #instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
+                                                                    #uom_id=variant.product_id.uom_id.id)
+            _logger.info(price)
+            _logger.info('#'*100)
             if float(price) > 0.0: 
                 total = template.product_tmpl_id.taxes_id.compute_all(float(price), product=template.product_tmpl_id, partner=self.env['res.partner'])
                 variant_vals.update({"price": float(total['total_included'])})
@@ -469,7 +473,7 @@ class ShopifyProductProductEpt(models.Model):
                 variant_vals.update({"price": float(total['total_included'])})
             else: 
                 raise ValidationError("El producto no se puede mandar a shopify porque su precio (en la lista de precio seleccionada) es de 0")
-            variant_vals.update({'cost': template.replacement_cost, 'collections': 1})
+            variant_vals.update({'cost': variant.product_id.replacement_cost, 'collections': 1})
         if is_set_basic_detail:
             variant_vals = self.prepare_vals_for_product_basic_details(variant_vals, variant)
 
@@ -492,7 +496,7 @@ class ShopifyProductProductEpt(models.Model):
         """
         variant_vals.update({"barcode": variant.product_id.barcode or "",
                              "grams": int(variant.product_id.weight * 1000),
-                             "weight": variant.product_id.weight,
+                             "weight": 60.0,#variant.product_id.weight,
                              "weight_unit": "kg",
                              "requires_shipping": "true", "sku": variant.default_code,
                              "taxable": variant.taxable and "true" or "false",

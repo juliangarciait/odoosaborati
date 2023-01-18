@@ -71,7 +71,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if product.detailed_type == 'product':
-                self.with_delay().export_to_shopify(product)
+                self.export_to_shopify(product)
                             
                             #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
                                            
@@ -177,7 +177,7 @@ class ProductProduct(models.Model):
                         self.delete_variants_in_shopify(shopify_product_tmpl, shopify_product_variant)
                     else: 
                         raise ValidationError('Las variantes no están exportadas en Shopify.')
-                    shopify_product_variant.exported_in_shopify = False 
+                    shopify_product_variant.exported_in_shopify = False
                 elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
                     self.export_deleted_variant(shopify_product_variant)
                         
@@ -214,18 +214,18 @@ class ProductProduct(models.Model):
         This method use to archive/unarchive shopify product base on odoo product.
         @author: Haresh Mori @Emipro Technologies Pvt. Ltd on date 30/03/2019.
         """
-        #if 'active' in vals.keys():
-        #    shopify_product_product_obj = self.env['shopify.product.product.ept']
-        #    for product in self:
-        #        shopify_product = shopify_product_product_obj.search(
-        #            [('product_id', '=', product.id)])
-        #        if vals.get('active'):
-        #            shopify_product = shopify_product_product_obj.search(
-        #                [('product_id', '=', product.id), ('active', '=', False)])
-        #        shopify_product.write({'active': vals.get('active')})
+        if 'active' in vals.keys():
+            shopify_product_product_obj = self.env['shopify.product.product.ept']
+            for product in self:
+                shopify_product = shopify_product_product_obj.search(
+                    [('product_id', '=', product.id)])
+                if vals.get('active'):
+                    shopify_product = shopify_product_product_obj.search(
+                        [('product_id', '=', product.id), ('active', '=', False)])
+                shopify_product.write({'active': vals.get('active')})
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
-            self.with_delay().export_variant_to_shopify(product_variant)
+            self.export_variant_to_shopify(product_variant)
             
         return res
