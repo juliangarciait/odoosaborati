@@ -269,6 +269,7 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail or is_set_price:
             variants = []
             for variant in template.shopify_product_ids:
+                _logger.info(variant.product_id.list_price)
                 price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
                 #if variant.to_shopify:
@@ -461,7 +462,7 @@ class ShopifyProductProductEpt(models.Model):
         if variant.variant_id:
             variant_vals.update({"id": variant.variant_id})
         if is_set_price:
-            #price = #instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
+            #price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     #uom_id=variant.product_id.uom_id.id)
             _logger.info(price)
             _logger.info('#'*100)

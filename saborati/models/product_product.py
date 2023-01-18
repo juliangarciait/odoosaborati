@@ -15,6 +15,8 @@ class ProductProduct(models.Model):
     purchase_ok = fields.Boolean('Can be Purchased', default=True)
     sale_ok = fields.Boolean('Can be Sold', default=True)
     
+    product_prices_ids = fields.One2many('product.prices', 'product_tmpl_id')
+    
     @api.depends('seller_ids', 'bom_ids')
     def _compute_replacement_cost(self): 
         for record in self: 
