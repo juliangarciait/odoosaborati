@@ -29,6 +29,16 @@
                         </tree>
                     </field>
                 </page>
+                <page string="Precios">
+                    <group>
+                        <field name="product_prices_ids" context="{'default_product_id': active_id}" widget="one2many_list" nolabel="1">
+                            <tree string="Precios" editable="bottom" default_order="create_date desc">
+                                <field name="product_pricelist_id"/>
+                                <field name="price_product"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
             </xpath>
             <xpath expr="//form/sheet/notebook/page[@name='purchase']" position="attributes">
                 <attribute name="string">Vendor Pricelists</attribute>
