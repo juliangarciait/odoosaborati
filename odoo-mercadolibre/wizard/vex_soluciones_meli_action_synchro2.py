@@ -478,12 +478,10 @@ class MeliActionSynchro(models.TransientModel):
             #    if dr['body']['status'] != 'active':
             #       continue
 
-            id_vex = data['body']['id'] if query == "products" else data['id']
-
-
-
-
-
+            try:
+               id_vex = data['body']['id'] if query == "products" else data['id']
+            except:
+                raise ValidationError(str(data))
 
             if query == "categories":
                 if not server.meli_country:

@@ -888,6 +888,7 @@ class WooSynchro(models.TransientModel):
         atributo = p['variation_id']
         # condicion para verificar si es un atributo
         if atributo:
+            #raise ValidationError('okk2')
 
             # buscar en product product
             pp = self.env['product.product'].search(
@@ -961,10 +962,25 @@ class WooSynchro(models.TransientModel):
                         raise ValidationError('queee')
 
 
-
-
-
         else:
+            if server.search_sku and p['seller_sku']:
+                pp = self.env['product.product'].search([('default_code','=',p['seller_sku'])])
+                if not pp:
+                    ppt = self.env['product.template'].search([('default_code', '=', p['seller_sku'])])
+                    pp = self.env['product.product'].search([('product_tmpl_id', '=', int(ppt.id))])
+                    if not pp:
+                        raise ValidationError(f'''no se encontro el prodto con el sku {p['seller_sku']}  {str(p)}''')
+                #raise ValidationError(str(p))
+                #return
+            else:
+                ppt = self.check_produc(p['id'], server, accion)
+                pp = self.env['product.product'].search([('product_tmpl_id', '=', int(ppt.id))])
+
+
+
+            #raise ValidationError(ppt)
+            '''
+            #raise ValidationError('okk')
             try:
                 ppt = self.check_produc(p['id'], server, accion)
             except:
@@ -1022,12 +1038,13 @@ class WooSynchro(models.TransientModel):
                 #self.json_execute_create('product.product', datav)
 
                 self.env['vex.web.services'].create_update(datav)
+                '''
 
             # raise ValidationError(pt.id_vex)
             # raise ValidationError(pt.product_variant_ids)
 
-            pp = self.env['product.product'].search([('product_tmpl_id', '=', int(ppt.id))])
-            # raise ValidationError(pp)
+
+            #raise ValidationError(pp)
 
         return pp
 
@@ -1050,7 +1067,8 @@ class WooSynchro(models.TransientModel):
     def check_produc_sku(self, id, server, accion):
         #raise ValidationError('llega qui')
         pro_id = None
-        dmx = [('default_code', '=', str(id)), (server_api, '=', int(server.id))]
+        dmx = [('default_code', '=', str(id))]
+        #, (server_api, '=', int(server.id)
         if server.share_multi_instances:
             dmx = [('default_code', '=', str(id)), ('conector', '=', str(server.conector))]
 

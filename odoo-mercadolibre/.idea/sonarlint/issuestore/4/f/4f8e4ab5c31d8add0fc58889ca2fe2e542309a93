@@ -4,15 +4,14 @@ bpython:S1192…"IDefine a constant instead of duplicating this literal ' acti
 ppython:S1192"XDefine a constant instead of duplicating this literal 'product.attribute.value' 3 times.(·¨Üş
 hpython:S1192¼"PDefine a constant instead of duplicating this literal 'product.product' 8 times.(­Ñàb
 opython:S11920"RDefine a constant instead of duplicating this literal 'product.attribute' 3 times.(øŸí‘ùÿÿÿÿ
-Mpython:S1066ş"/Merge this if statement with the enclosing one.(·’¤Ôÿÿÿÿÿ
-Hpython:S1066§"/Merge this if statement with the enclosing one.(ıë£
+Hpython:S1066©"/Merge this if statement with the enclosing one.(ıë£
 ;python:S125"Remove this commented out code.(ÚØÇäøÿÿÿÿ
 Fpython:S1481/")Remove the unused local variable "at_id".(­Ò€öûÿÿÿÿ
 6python:S1252"Remove this commented out code.(òº½Ç
 ;python:S125Q"Remove this commented out code.(‰Æøùÿÿÿÿ
-Gpython:S1481ç"/Remove the unused local variable "query_combi".(¡¿‡k
 Hpython:S1481ƒ"*Remove the unused local variable "myfile".(÷¦Ñšùÿÿÿÿ
 Cpython:S1481s"+Remove the unused local variable "json_at".(ö¨´×
+Gpython:S1481ç"/Remove the unused local variable "query_combi".(¡¿‡k
 Cpython:S1481i"&Remove the unused local variable "ct".(Æ¬”«üÿÿÿÿ
 Cpython:S1481l"&Remove the unused local variable "ct".( óş˜şÿÿÿÿ
 6python:S125d"Remove this commented out code.(‰Áÿô
@@ -36,5 +35,7 @@ Kpython:S1940œ"-Use the opposite operator ("not in") instead.(ÂÛíÿÿÿÿÿ
 7python:S125Ö"Remove this commented out code.(Â¾ë·
 7python:S125æ"Remove this commented out code.(ÃÓôÅ
 7python:S125ø"Remove this commented out code.(³í¸ç
-7python:S125‚"Remove this commented out code.(´äÚÊ
-7python:S125ª"Remove this commented out code.(´äÚÊ
+<python:S125ü"Remove this commented out code.(ƒËÂŞøÿÿÿÿ
+<python:S125ş"Remove this commented out code.(ğü¸Óûÿÿÿÿ
+7python:S125„"Remove this commented out code.(´äÚÊ
+7python:S125¬"Remove this commented out code.(´äÚÊ

@@ -1,3 +1,5 @@
 
-`python:S1192o"HDefine a constant instead of duplicating this literal 'ir.cron' 3 times.(柧好
-7python:S36265"Remove this redundant continue.(罇瑘
+`python:S1192{"HDefine a constant instead of duplicating this literal 'ir.cron' 3 times.(柧好
+6python:S1251"Remove this commented out code.(氯力
+7python:S3626>"Remove this redundant continue.(罇瑘
+6python:S125Q"Remove this commented out code.(氯力
