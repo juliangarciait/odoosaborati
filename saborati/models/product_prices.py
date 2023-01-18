@@ -27,6 +27,6 @@ class ProductPrices(models.Model):
     def _compute_product_price(self): 
         for record in self: 
             if record.product_pricelist_id:
-                price = record.product_pricelist_id.get_product_price(record, 1.0, partner=False, uom_id=record.uom_id.id)
+                price = record.product_pricelist_id.get_product_price(record.product_id, 1.0, partner=False, uom_id=record.product_id.uom_id.id)
                 price_with_tax = record.product_tmpl_id.taxes_id.compute_all(float(price), product=record.product_tmpl_id, partner=self.env['res.partner']) 
                 record.price = str(float(price)) + " (" + str(float(price_with_tax['total_included'])) + " con impuestos)"
