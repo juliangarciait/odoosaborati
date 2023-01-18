@@ -24,7 +24,7 @@ class ProductPrices(models.Model):
                 
                 
     @api.depends('product_pricelist_id', 'product_pricelist_id.item_ids')
-    def _compute_product_pricelist(self): 
+    def _compute_product_price(self): 
         for record in self: 
             if record.product_pricelist_id:
                 price = record.product_pricelist_id.get_product_price(record, 1.0, partner=False, uom_id=record.uom_id.id)
