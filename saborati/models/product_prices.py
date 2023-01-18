@@ -11,8 +11,8 @@ class ProductPrices(models.Model):
     product_pricelist_id = fields.Many2one('product.pricelist', 'Lista de precios')
     price = fields.Char('Precio', readonly="1", store=True, compute='_compute_product_pricelist')
     product_tmpl_id = fields.Many2one('product.template', 'Product')
-    product_id = fields.Many2one('product_id')
-    price_prduct = fields.Char('Precio producto', readonly="1", store=True, compute='_compute_product_price')
+    product_id = fields.Many2one('product.product')
+    price_product = fields.Char('Precio producto', readonly="1", store=True, compute='_compute_product_price')
     
     @api.depends('product_pricelist_id', 'product_pricelist_id.item_ids')
     def _compute_product_pricelist(self): 
