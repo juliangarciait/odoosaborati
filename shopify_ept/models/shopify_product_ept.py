@@ -272,6 +272,8 @@ class ShopifyProductProductEpt(models.Model):
                 _logger.info(variant.product_id.list_price)
                 price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
+                _logger.info(instance.shopify_pricelist_id.read())
+                _logger.info(variant.product_id.read())
                 #if variant.to_shopify:
                 variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
                                                             is_set_basic_detail, price)
