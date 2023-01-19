@@ -44,7 +44,7 @@ class VexRestapilist(models.Model):
 
     def go_export_product(self):
         view = self.env.ref('stock.stock_product_normal_action').read([])[0]
-        view['domain'] = f"[('id_vex', '=', False),('id_vex_varition','=',False)]"
+        view['domain'] = f"[('id_vex_varition','=',False)]"
         view['limit'] = self.limit_action
         # model = 'product.product'
 
@@ -76,7 +76,7 @@ class VexRestapilist(models.Model):
 
         if str(self.model) == 'product.template':
             view = self.env.ref('stock.stock_product_normal_action').read([])[0]
-            view['domain'] = f"[('conector','=','{self.conector}'),('id_vex', '!=', False),('id_vex_varition','!=',False)]"
+            view['domain'] = f"[('conector','=','{self.conector}'),('id_vex_varition','!=',False)]"
             view['limit'] = self.limit_action
             #model = 'product.product'
 
@@ -155,8 +155,7 @@ class VexRestapilist(models.Model):
                 if argument == 'products':
                     #view[
                     #    'domain'] = f"[('conector','=','{self.conector}'),('id_vex', '!=', False),('id_vex_varition','!=',False)]"
-                    count = self.env['product.product'].search_count([('conector', '=', str(record.conector)),('id_vex', '!=', False),
-                                                               ('id_vex_varition','!=',False)])
+                    count = self.env['product.product'].search_count([('conector', '=', str(record.conector)),('id_vex_varition','!=',False)])
                 if argument == 'fee':
                     count = self.env[str(model)].search_count([('conector', '=', str(record.conector)),('id_vex', '!=', False),
                                                                ('detailed_type','=','service')])
