@@ -968,12 +968,15 @@ class WooSynchro(models.TransientModel):
                 if not pp:
                     ppt = self.env['product.template'].search([('default_code', '=', p['seller_sku'])])
                     pp = self.env['product.product'].search([('product_tmpl_id', '=', int(ppt.id))])
-                    if not pp:
-                        raise ValidationError(f'''no se encontro el prodto con el sku {p['seller_sku']}  {str(p)}''')
+                    #if not pp:
+                    #    raise ValidationError(f'''no se encontro el prodto con el sku {p['seller_sku']}  {str(p)}''')
                 #raise ValidationError(str(p))
                 #return
             else:
+
                 ppt = self.check_produc(p['id'], server, accion)
+
+
                 pp = self.env['product.product'].search([('product_tmpl_id', '=', int(ppt.id))])
 
 
@@ -1052,9 +1055,9 @@ class WooSynchro(models.TransientModel):
         pro_id = None
         dmx = [(id_api, '=', str(id)), (server_api, '=', int(server.id))]
         if server.share_multi_instances:
-            dmx = [(id_api, '=', str(id)), ('conector', '=', str(server.conector))]
+            dmx = [('conector', '=', str(server.conector)),'|',('id_vex_varition','=',str(id)),(id_api, '=', str(id))]
 
-        existe = self.env['product.template'].search(dmx)
+        existe = self.env['product.product'].search(dmx)
         # raise ValidationError(existe)
         if existe:
             pro_id = existe

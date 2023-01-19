@@ -17,9 +17,12 @@ class SaleOrder(models.Model):
 
     def write(self, vals):
         if self.custom_state_delivery in ['Ready (No Delivered)', 'Done (Delivered)']:
-            if vals['order_line']:
-                if len(self.order_line) < len(vals['order_line']):
-                    raise ValidationError("You can't add more lines in the current state ("+self.custom_state_delivery+")")
+            if 'order_line' in vals:
+                if vals['order_line']:
+                    if len(self.order_line) < len(vals['order_line']):
+                        raise ValidationError(
+                            "You can't add more lines in the current state (" + self.custom_state_delivery + ")")
+
         return super(SaleOrder, self).write(vals)
 
     @api.depends('picking_ids.custom_state_delivery')

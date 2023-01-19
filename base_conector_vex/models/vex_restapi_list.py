@@ -153,7 +153,9 @@ class VexRestapilist(models.Model):
 
                 argument = record.argument
                 if argument == 'products':
-                    count = self.env['product.product'].search_count([('conector', '=', str(record.conector)),'|',('id_vex', '!=', False),
+                    #view[
+                    #    'domain'] = f"[('conector','=','{self.conector}'),('id_vex', '!=', False),('id_vex_varition','!=',False)]"
+                    count = self.env['product.product'].search_count([('conector', '=', str(record.conector)),('id_vex', '!=', False),
                                                                ('id_vex_varition','!=',False)])
                 if argument == 'fee':
                     count = self.env[str(model)].search_count([('conector', '=', str(record.conector)),('id_vex', '!=', False),

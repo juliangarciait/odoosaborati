@@ -33,8 +33,14 @@ class MeliActionSynchro(models.TransientModel):
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + str(server.access_token)
                 }
+                res = requests.get(url, headers=headers)
 
-                res = requests.get(url, headers=headers).json()
+                try:
+                    res = res.json()
+                except:
+                    raise ValueError([res,url])
+
+
 
 
                 return res
