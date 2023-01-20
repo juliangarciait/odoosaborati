@@ -36,18 +36,7 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
     
-    def _compute_name(self):
-        for line in self:
-            if not line.product_id:
-                continue
-
-            name = line.with_context(lang=line.order_partner_id.lang)._get_sale_order_line_multiline_description_sale()
-            if line.is_downpayment and not line.display_type:
-                context = {'lang': line.order_partner_id.lang}
-                dp_state = line._get_downpayment_state()
-                if dp_state == 'draft':
-                    name = _("%(line_description)s (Draft)", line_description=name)
-                elif dp_state == 'cancel':
-                    name = _("%(line_description)s (Canceled)", line_description=name)
-                del context
-            line.name = name
+    @api.onchange('product_id')
+    def _get_description_(self): 
+        self.name = self.product_id.product_tmpl_id.name
+        _logger.info('#'*10000)
