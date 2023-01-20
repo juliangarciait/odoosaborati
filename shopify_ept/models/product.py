@@ -196,9 +196,6 @@ class ProductProduct(models.Model):
                     if not product.active: 
                         product_instance.product_status = 'archived'
                         
-                    _logger.info(product_instance.shopify_instance_id.shopify_pricelist_id.get_product_price(product_variant, 1.0, partner=False, uom_id=product_variant.uom_id.id))
-                    _logger.info('!'*1000)
-                    _logger.info(product_variant)
                     shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
                         'shopify_instance_id' : product_instance.shopify_instance_id.id, 
                         'export_method' : "direct",
@@ -229,6 +226,6 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
-            self.with_delay().export_variant_to_shopify(product_variant)
+            self.export_variant_to_shopify(product_variant)
             
         return res
