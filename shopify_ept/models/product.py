@@ -177,6 +177,8 @@ class ProductProduct(models.Model):
                     else: 
                         raise ValidationError('Las variantes no están exportadas en Shopify.')
                     shopify_product_variant.exported_in_shopify = False
+                if not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify: 
+                    self.export_deleted_variant(shopify_product_variant)
                         
         for product in product_variant.product_tmpl_id: 
             if product.detailed_type == 'product':
