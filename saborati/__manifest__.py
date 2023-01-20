@@ -18,6 +18,7 @@
         'report_xlsx',
         'sale',
         'sale_management',
+        'queue_job',
     ],
     'data' : [
         'security/ir.model.access.csv',
