@@ -71,7 +71,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if product.detailed_type == 'product':
-                self.with_delay().export_to_shopify(product)
+                self.export_to_shopify(product)
                             
                             #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
                                            
