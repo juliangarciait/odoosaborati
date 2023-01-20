@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import fields, models, api, _ 
+import logging 
+_logger = logging.getLogger(__name__)
 
 
 class AccountMoveLine(models.Model): 
@@ -27,4 +29,6 @@ class AccountMoveLine(models.Model):
             #elif self.journal_id.type == 'purchase':
             #    if product.description_purchase:
             #        values.append(product.description_purchase)
+            _logger.info(values)
+            _logger.info('%'*100)
             return '\n'.join(values)
