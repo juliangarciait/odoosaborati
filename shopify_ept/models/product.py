@@ -4,6 +4,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from .. import shopify
+import time
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -71,7 +72,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if product.detailed_type == 'product':
-                self.with_delay().export_to_shopify(product)
+                self.export_to_shopify(product)
                             
                             #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
                                            
@@ -87,12 +88,12 @@ class ProductTemplate(models.Model):
                 #    export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
                     
 
-        shopify_templates = self.env['shopify.product.template.ept'].search(
-                    [('product_tmpl_id', '=', product.id)])
-        if product.active:
             shopify_templates = self.env['shopify.product.template.ept'].search(
-                [('product_tmpl_id', '=', product.id), ('active', '=', False)])
-        shopify_templates.write({'active': product.active})
+                        [('product_tmpl_id', '=', product.id)])
+            if product.active:
+                shopify_templates = self.env['shopify.product.template.ept'].search(
+                    [('product_tmpl_id', '=', product.id), ('active', '=', False)])
+            shopify_templates.write({'active': product.active})
 
         shopify_product = self.env['shopify.product.product.ept'].search(
                     [('product_id', '=', product.product_variant_id.id)])
@@ -123,9 +124,7 @@ class ProductTemplate(models.Model):
                 'export_method' : "direct",
             })
             shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-            if not product_instance.exported_in_shopify:
-                export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_export_product_to_shopify()
-            else:
+            if product_instance.exported_in_shopify:
                 export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                 
             #Add to collection if it has collections
@@ -178,8 +177,6 @@ class ProductProduct(models.Model):
                     else: 
                         raise ValidationError('Las variantes no están exportadas en Shopify.')
                     shopify_product_variant.exported_in_shopify = False
-                elif not shopify_product_variant.exported_in_shopify and shopify_product_variant.to_shopify:
-                    self.export_deleted_variant(shopify_product_variant)
                         
         for product in product_variant.product_tmpl_id: 
             if product.detailed_type == 'product':
@@ -196,17 +193,12 @@ class ProductProduct(models.Model):
                     if not product.active: 
                         product_instance.product_status = 'archived'
                         
-                    _logger.info(product_instance.shopify_instance_id.shopify_pricelist_id.get_product_price(product_variant, 1.0, partner=False, uom_id=product_variant.uom_id.id))
-                    _logger.info('!'*1000)
-                    _logger.info(product_variant)
                     shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
                         'shopify_instance_id' : product_instance.shopify_instance_id.id, 
                         'export_method' : "direct",
                     })
                     shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-                    if not product_instance.exported_in_shopify:
-                        export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_export_product_to_shopify()
-                    else:
+                    if product_instance.exported_in_shopify:
                         export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                         
         return True
@@ -217,18 +209,19 @@ class ProductProduct(models.Model):
         This method use to archive/unarchive shopify product base on odoo product.
         @author: Haresh Mori @Emipro Technologies Pvt. Ltd on date 30/03/2019.
         """
-        if 'active' in vals.keys():
-            shopify_product_product_obj = self.env['shopify.product.product.ept']
-            for product in self:
-                shopify_product = shopify_product_product_obj.search(
-                    [('product_id', '=', product.id)])
-                if vals.get('active'):
-                    shopify_product = shopify_product_product_obj.search(
-                        [('product_id', '=', product.id), ('active', '=', False)])
-                shopify_product.write({'active': vals.get('active')})
+        #if 'active' in vals.keys():
+        #    shopify_product_product_obj = self.env['shopify.product.product.ept']
+        #    for product in self:
+        #        shopify_product = shopify_product_product_obj.search(
+        #            [('product_id', '=', product.id)])
+        #        if vals.get('active'):
+        #            shopify_product = shopify_product_product_obj.search(
+        #                [('product_id', '=', product.id), ('active', '=', False)])
+        #        shopify_product.write({'active': vals.get('active')})
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
-            self.with_delay().export_variant_to_shopify(product_variant)
+            self.export_variant_to_shopify(product_variant)
+            
             
         return res

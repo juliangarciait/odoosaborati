@@ -269,14 +269,8 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail or is_set_price:
             variants = []
             for variant in template.shopify_product_ids:
-                _logger.info(variant.product_id.list_price)
-                price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
-                                                                    uom_id=variant.product_id.uom_id.id)
-                _logger.info(instance.shopify_pricelist_id.read())
-                _logger.info(variant.product_id.read())
-                #if variant.to_shopify:
                 variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
-                                                            is_set_basic_detail, price)
+                                                            is_set_basic_detail)
                 variants.append(variant_vals)
             new_product.variants = variants
         if is_set_basic_detail:
@@ -453,7 +447,7 @@ class ShopifyProductProductEpt(models.Model):
 
         return True
 
-    def shopify_prepare_variant_vals(self, instance, template, variant, is_set_price, is_set_basic_detail, price):
+    def shopify_prepare_variant_vals(self, instance, template, variant, is_set_price, is_set_basic_detail):
         """This method used to prepare variant vals for export product variant from
             shopify third layer to shopify store.
             :param variant: Record of shopify product product(shopify product variant)
@@ -464,10 +458,8 @@ class ShopifyProductProductEpt(models.Model):
         if variant.variant_id:
             variant_vals.update({"id": variant.variant_id})
         if is_set_price:
-            #price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
-                                                                    #uom_id=variant.product_id.uom_id.id)
-            _logger.info(price)
-            _logger.info('#'*100)
+            price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
+                                                                    uom_id=variant.product_id.uom_id.id)
             if float(price) > 0.0: 
                 total = template.product_tmpl_id.taxes_id.compute_all(float(price), product=template.product_tmpl_id, partner=self.env['res.partner'])
                 variant_vals.update({"price": float(total['total_included'])})

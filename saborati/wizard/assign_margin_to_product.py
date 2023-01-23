@@ -20,27 +20,30 @@ class AssignMarginToProduct(models.Model):
                     'product_tmpl_id' : product.id,
                 }
             )
-            if product.detailed_type == 'product':
+            self.with_delay().export_products(product)
     
-                for product_instance in product.shopify_product_template_ids:
-                    
-                    if not product.active: 
-                        product_instance.product_status = 'archived'
+    
+    def export_products(self, product): 
+        if product.detailed_type == 'product':
+            for product_instance in product.shopify_product_template_ids:
+                
+                if not product.active: 
+                    product_instance.product_status = 'archived'
 
-                    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
-                        'shopify_instance_id' : product_instance.shopify_instance_id.id, 
-                        'export_method' : "direct",
-                    })
-                    export_data = self.env['shopify.process.import.export'].create({
-                        'shopify_instance_id' : product_instance.shopify_instance_id.id,
-                        'shopify_is_set_basic_detail' : True,
-                        'shopify_is_update_basic_detail' : True,
-                        'shopify_is_set_price' : True,
-                        'shopify_is_set_image' : True,
-                        'shopify_is_publish' : 'publish_product_global',
-                    })
-                    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-                    if not product_instance.exported_in_shopify: 
-                        export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
-                    else:
-                        export_data.with_context({"active_ids" : [product_instance.id]}).manual_update_product_to_shopify()
+                shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
+                    'shopify_instance_id' : product_instance.shopify_instance_id.id, 
+                    'export_method' : "direct",
+                })
+                export_data = self.env['shopify.process.import.export'].create({
+                    'shopify_instance_id' : product_instance.shopify_instance_id.id,
+                    'shopify_is_set_basic_detail' : True,
+                    'shopify_is_update_basic_detail' : True,
+                    'shopify_is_set_price' : True,
+                    'shopify_is_set_image' : True,
+                    'shopify_is_publish' : 'publish_product_global',
+                })
+                shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
+                if not product_instance.exported_in_shopify: 
+                    export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
+                else:
+                    export_data.with_context({"active_ids" : [product_instance.id]}).manual_update_product_to_shopify()
