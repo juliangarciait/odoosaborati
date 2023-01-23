@@ -25,3 +25,9 @@ X
 (models/vex_soluciones_product_product.py,2/c/2c3d4dd7177e986dc9969dcb7d45c6a44f93c4c7
 J
 models/vex_restapi_list.py,3/f/3f95b4ff8941fe9ff83ba63560c8f721a667070b
+F
+views/vex_instance.xml,e/3/e3ecc074d4e65d628076fa996a3aa57e1b144ab4
+E
+wizard/vex_synchro.py,d/a/da20818c8bdb6a34c2ce597d08290edb40ef28de
+F
+models/vex_instance.py,a/6/a69af579d4a4fb55160673eb684af734d03dc4c1

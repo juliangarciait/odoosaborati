@@ -1,7 +1,7 @@
 
+ppython:S1192"XDefine a constant instead of duplicating this literal 'product.attribute.value' 3 times.(·¨Üş
 xpython:S1192€"`Define a constant instead of duplicating this literal 'product.template.attribute.line' 3 times.(óÙ„5
 bpython:S1192…"IDefine a constant instead of duplicating this literal ' active ' 4 times.(ÒÚàß
-ppython:S1192"XDefine a constant instead of duplicating this literal 'product.attribute.value' 3 times.(·¨Üş
 hpython:S1192¼"PDefine a constant instead of duplicating this literal 'product.product' 8 times.(­Ñàb
 opython:S11920"RDefine a constant instead of duplicating this literal 'product.attribute' 3 times.(øŸí‘ùÿÿÿÿ
 Hpython:S1066©"/Merge this if statement with the enclosing one.(ıë£
@@ -10,10 +10,10 @@ Fpython:S1481/")Remove the unused local variable "at_id".(­Ò€öûÿÿÿÿ
 6python:S1252"Remove this commented out code.(òº½Ç
 ;python:S125Q"Remove this commented out code.(‰Æøùÿÿÿÿ
 Hpython:S1481ƒ"*Remove the unused local variable "myfile".(÷¦Ñšùÿÿÿÿ
-Cpython:S1481s"+Remove the unused local variable "json_at".(ö¨´×
-Gpython:S1481ç"/Remove the unused local variable "query_combi".(¡¿‡k
 Cpython:S1481i"&Remove the unused local variable "ct".(Æ¬”«üÿÿÿÿ
 Cpython:S1481l"&Remove the unused local variable "ct".( óş˜şÿÿÿÿ
+Cpython:S1481s"+Remove the unused local variable "json_at".(ö¨´×
+Gpython:S1481ç"/Remove the unused local variable "query_combi".(¡¿‡k
 6python:S125d"Remove this commented out code.(‰Áÿô
 ;python:S125q"Remove this commented out code.(ìº¿£øÿÿÿÿ
 6python:S125u"Remove this commented out code.(ÃÓôÅ

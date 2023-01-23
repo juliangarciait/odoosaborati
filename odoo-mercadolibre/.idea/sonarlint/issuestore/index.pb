@@ -29,3 +29,9 @@ P
  wizard/vex_soluciones_export.xml,a/5/a5287a9281df9a7d64125d4253d2fedcfcaf49f7
 Y
 )models/vex_soluciones_meli_action_list.py,0/e/0e252b7bc913a41f9af19b921cddf2d531d72d85
+]
+-wizard/vex_soluciones_meli_action_synchro2.py,0/a/0af4278a12e100469573c19c6bebfc7773efdc70
+a
+1wizard/vex_soluciones_action_synchro_funciones.py,4/f/4f8e4ab5c31d8add0fc58889ca2fe2e542309a93
+I
+data/meli_action_list.xml,e/1/e180008a001f90fc6afc59f5bfe72f9ec47dedad

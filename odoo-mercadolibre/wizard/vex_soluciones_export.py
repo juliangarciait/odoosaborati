@@ -65,7 +65,7 @@ class MeliMultiExport(models.TransientModel):
             r = requests.put(url, json=data, headers=headers)
             datax = r.json()
 
-            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description?access_token=' + str(server.access_token)
+            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
             data_des = {
                 "plain_text": p.description_sale +'\n'+server.description_company
             }
@@ -162,7 +162,7 @@ class MeliMultiExport(models.TransientModel):
                 p.listing_type_id = datax['listing_type_id']
 
 
-                url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description?access_token=' + str(server.access_token)
+                url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
                 data_des = {
                     "plain_text": p.description_sale+'\n'+server.description_company
                 }
