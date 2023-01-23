@@ -53,6 +53,7 @@ class VexInstance(models.Model):
     medium_id = fields.Many2one('utm.medium',string="Medio")
 
 
+
     discount_fee = fields.Selection([
         ('save','Guardar como Dato'),
         ('save_line','Guardar como Linea')
@@ -71,6 +72,7 @@ class VexInstance(models.Model):
     export_stock_all_products = fields.Boolean(default=True,string="Exportar Stock todos los productos")
     warehouse_stock_vex = fields.Many2one('stock.warehouse', string="Almacen x Exportar")
     type_document = fields.Many2one('l10n_latam.identification.type',string="Tipo de Identificacion")
+    description_company = fields.Text(string="Descripcion Empresa",default='')
 
 
 

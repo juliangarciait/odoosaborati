@@ -79,6 +79,7 @@
                                               <field name="update_stock" />
                                               <field name="update_title" />
                                               <field name="share_multi_instances" />
+                                              <field name="description_company" />
                                           </group>
                                       </div>
                                 </div>
