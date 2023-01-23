@@ -340,18 +340,20 @@ class MeliActionSynchro(models.TransientModel):
                     'partner_shipping_id': customer['shipping'].id,
                     'pricelist_id': server.pricelist.id,
                     'date_order': "'"+str(fecha)+"'",
+                    'create_date': "'" + str(fecha.date()) + "'",
                     'amount_untaxed': float(data['total_amount']),
                     'amount_total': float(data['total_amount']),
                     #'woo_status': "'"+str(['status']) + "'",
                     #'woo_customer_ip_address': "'"+str(data['customer_ip_address']) + "'",
-                    'team_id': salesteam.id,
+                    #'team_id': salesteam.id,
                     #'woo_date_created': "'"+str(data['date_created']) + "'",
                     #'woo_payment_method': "'"+str(data['payment_method_title']) + "'",
                     'payment_term_id': server.payment_term.id,
                     'picking_policy': "'" + str(server.picking_policy) + "'",
                     'warehouse_id': server.warehouse.id,
                     'state': "'{}'".format(state),
-                    'company_id' : server.company.id
+                    'company_id' : server.company.id ,
+
                 }
                 write = {
                     #'state': "''".format(state),
@@ -646,6 +648,8 @@ class MeliActionSynchro(models.TransientModel):
                         exist.action_cancel()
                     else:
                         exist.state = state
+
+
 
 
 
