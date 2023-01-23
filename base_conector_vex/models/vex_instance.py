@@ -50,6 +50,7 @@ class VexInstance(models.Model):
     update_price = fields.Boolean(default=True)
     update_stock = fields.Boolean(default=True)
     update_title = fields.Boolean()
+    medium_id = fields.Many2one('utm.medium',string="Medio")
 
 
     discount_fee = fields.Selection([

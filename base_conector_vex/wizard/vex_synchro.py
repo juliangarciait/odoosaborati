@@ -224,7 +224,8 @@ class WooSynchro(models.TransientModel):
             salesteam = server.sales_team
             create['team_id'] = salesteam.id
             create['user_id']: server.user_sale_id.id if server.user_sale_id else None
-
+            if server.medium_id:
+                create['medium_id'] = server.medium_id.id
 
         return {
             'create': create,
@@ -284,6 +285,9 @@ class WooSynchro(models.TransientModel):
                 exist.team_id = server.sales_team.id
             if not exist.user_id:
                 exist.user_id = server.user_sale_id.id
+
+            if not exist.medium_id and server.medium_id:
+                exist.medium_id =  server.medium_id.id
 
 
         return queryx

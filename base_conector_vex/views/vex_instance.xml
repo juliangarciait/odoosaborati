@@ -64,6 +64,7 @@
                                               <field name="warehouse"/>
                                               <field name="user_sale_id"/>
                                               <field name="categ_id"/>
+                                              <field name="medium_id"/>
                                               <field name="active_automatic"/>
                                               <field name="pricelist" />
                                               <field name="sales_team" />
