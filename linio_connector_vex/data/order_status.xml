@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+      <record id="order_status_delivered_linio" model="vex.status.orders">
+            <field name="name">Entregado</field>
+            <field name="value">delivered</field>
+            <field name="conector">linio</field>
+      </record>
+
+      <record id="order_status_cancelx_linio" model="vex.status.orders">
+            <field name="name">Cancelado</field>
+            <field name="value">canceled</field>
+            <field name="conector">linio</field>
+      </record>
+
+      <record id="order_status_return_linio" model="vex.status.orders">
+            <field name="name">Devuelto</field>
+            <field name="value">returned</field>
+            <field name="conector">linio</field>
+      </record>
+
+      <record id="order_status_failed_linio" model="vex.status.orders">
+            <field name="name">Fallado</field>
+            <field name="value">failed</field>
+            <field name="conector">linio</field>
+      </record>
+
+      <record id="order_status_failed_shipped" model="vex.status.orders">
+            <field name="name">Enviado</field>
+            <field name="value">shipped</field>
+            <field name="conector">linio</field>
+      </record>
+      <record id="order_status_failed_pending" model="vex.status.orders">
+            <field name="name">Pendiente</field>
+            <field name="value">pending</field>
+            <field name="conector">linio</field>
+      </record>
+
+      <!-- 'delivered,canceled,returned,canceled,failed' -->
+
+
+  </data>
+</odoo>

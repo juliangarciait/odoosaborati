@@ -44,11 +44,11 @@ class VexInstance(models.Model):
     license_secret_key = fields.Char(default='587423b988e403.69821411')
     license_key = fields.Char()
     active_list = fields.Many2one('vex.restapi.list')
-    search_sku = fields.Boolean()
+    search_sku = fields.Boolean(default=True)
     tax_id = fields.Many2one('account.tax',string='Impuesto')
     use_tax_product = fields.Boolean(default=False,string="Usar el Impuesto del producto")
-    update_price = fields.Boolean()
-    update_stock = fields.Boolean()
+    update_price = fields.Boolean(default=True)
+    update_stock = fields.Boolean(default=True)
     update_title = fields.Boolean()
 
 

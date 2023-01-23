@@ -1,0 +1,146 @@
+
+ipython:S1192Ë"PDefine a constant instead of duplicating this literal 'sale.order.line' 4 times.(¡ôŸà
+jpython:S1192é"QDefine a constant instead of duplicating this literal 'vex.web.services' 4 times.(áß“ñ
+qpython:S1192¶"XDefine a constant instead of duplicating this literal 'product.public.category' 4 times.(ëé‡‰
+fpython:S1192Ñ"HDefine a constant instead of duplicating this literal "'linio'" 3 times.(úÿÊûÿÿÿÿ
+xpython:S1192ì"`Define a constant instead of duplicating this literal 'product.template.attribute.line' 3 times.(óÙ„5
+opython:S1192"QDefine a constant instead of duplicating this literal 'product.template' 8 times.(›¨ó¡øÿÿÿÿ
+bpython:S1192ñ"IDefine a constant instead of duplicating this literal ' active ' 3 times.(ÒÚàß
+tpython:S1192¯"[Define a constant instead of duplicating this literal 'vex.instance.status.orders' 3 times.(Ø¥²ä
+cpython:S1192Ö"JDefine a constant instead of duplicating this literal "'product'" 4 times.(ùöÊ’
+opython:S1192¢"QDefine a constant instead of duplicating this literal 'product.product' 15 times.(¦Šãûÿÿÿÿ
+Gpython:S10669"/Merge this if statement with the enclosing one.(«ÿÅÂ
+Hpython:S1066ı"/Merge this if statement with the enclosing one.(š”ÿ
+Mpython:S1066œ"/Merge this if statement with the enclosing one.(®àÄéşÿÿÿÿ
+Mpython:S1066µ"/Merge this if statement with the enclosing one.(®ÆËéúÿÿÿÿ
+;python:S125"Remove this commented out code.(ìÂùıÿÿÿÿ
+Qpython:S3516"9Refactor this method to not always return the same value.(éé‚Ì
+Dpython:S1481#",Remove the unused local variable "acciones".(÷½óØ
+Hpython:S1481'"+Remove the unused local variable "servers".(¥˜¾üùÿÿÿÿ
+6python:S125%"Remove this commented out code.(ÀºÌÃ
+;python:S125("Remove this commented out code.(ıäË£ùÿÿÿÿ
+6python:S125H"Remove this commented out code.(îÊÏ
+;python:S125J"Remove this commented out code.(¼ıÅ„ùÿÿÿÿ
+;python:S125b"Remove this commented out code.(óáÒÁüÿÿÿÿ
+;python:S125g"Remove this commented out code.(Úş°‰ÿÿÿÿÿ
+;python:S125{"Remove this commented out code.(ÿ¡Şğÿÿÿÿÿ
+6python:S125•"Remove this commented out code.(¡Ù‰
+6python:S125¥"Remove this commented out code.(ÂŞÒr
+<python:S125§"Remove this commented out code.(€âóµıÿÿÿÿ
+7python:S125©"Remove this commented out code.(ííœ¤
+Kpython:S1940µ"-Use the opposite operator ("not in") instead.(«åÓ™úÿÿÿÿ
+Kpython:S1940¹"-Use the opposite operator ("not in") instead.(«åÓ™úÿÿÿÿ
+6python:S125Â"Remove this commented out code.(ƒ³¦%
+<python:S125Ê"Remove this commented out code.(ƒİÂ»şÿÿÿÿ
+<python:S125Í"Remove this commented out code.(°­è‰úÿÿÿÿ
+<python:S125Ï"Remove this commented out code.(§Ë®øÿÿÿÿ
+<python:S125Ò"Remove this commented out code.(İõ¬¦ıÿÿÿÿ
+7python:S125Ø"Remove this commented out code.(Á¬ß¾
+7python:S125İ"Remove this commented out code.(°Ç…¥
+Upython:S5754ğ"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+7python:S125ø"Remove this commented out code.(±‘œë
+<python:S125‚"Remove this commented out code.(ÍÄ¬—úÿÿÿÿ
+<python:S125…"Remove this commented out code.(Øğ¹èúÿÿÿÿ
+7python:S125‡"Remove this commented out code.(Ñ €Ü
+7python:S125Œ"Remove this commented out code.(ö¬Õ
+7python:S125›"Remove this commented out code.(Ğìèõ
+7python:S125Ÿ"Remove this commented out code.(ÁÀæË
+6python:S125ª"Remove this commented out code.(ÂŞÒr
+7python:S125¬"Remove this commented out code.(Ğìèõ
+<python:S125»"Remove this commented out code.(Üû˜çÿÿÿÿÿ
+hpython:S1854³"JRemove this assignment to local variable 'state'; the value is never used.(½ÑŞØıÿÿÿÿ
+hpython:S1854µ"JRemove this assignment to local variable 'state'; the value is never used.(ºŞ¥œıÿÿÿÿ
+]python:S3827°"?state is used before it is defined. Move the definition before.(¤ä’•ùÿÿÿÿ
+6python:S125ı"Remove this commented out code.(ÂŞÒr
+7python:S125£"Remove this commented out code.(Ÿîî¥
+<python:S125§"Remove this commented out code.(­şùÎúÿÿÿÿ
+6python:S125®"Remove this commented out code.(Á¤ä6
+7python:S125¹"Remove this commented out code.(Î€¯
+6python:S125Ü"Remove this commented out code.(ÂŞÒr
+6python:S125â"Remove this commented out code.(ÂŞÒr
+7python:S125í"Remove this commented out code.(¶Àíõ
+<python:S125ğ"Remove this commented out code.(ğê¸èüÿÿÿÿ
+<python:S125ÿ"Remove this commented out code.(¥Ô†úÿÿÿÿ
+7python:S125¢"Remove this commented out code.(´äÚÊ
+Qpython:S1481Ì"3Remove the unused local variable "variantes_array".(‰‘ÁÄûÿÿÿÿ
+7python:S125Ò"Remove this commented out code.(‰Áÿô
+<python:S125÷"Remove this commented out code.(—†ïûÿÿÿÿ
+6python:S125€"Remove this commented out code.(ÃÜøE
+7python:S125„"Remove this commented out code.(¥’ê‘
+<python:S125†"Remove this commented out code.(ïóöˆøÿÿÿÿ
+Kpython:S1940‰"-Use the opposite operator ("not in") instead.(ÂÛíÿÿÿÿÿ
+7python:S125Š"Remove this commented out code.(Î°Ü¨
+7python:S125"Remove this commented out code.(ô—è
+7python:S125”"Remove this commented out code.(‚¾ãÛ
+7python:S125²"Remove this commented out code.(ÃÓôÅ
+<python:S125É"Remove this commented out code.(ƒ÷ÁÖøÿÿÿÿ
+<python:S125Ú"Remove this commented out code.(ğü¸Óûÿÿÿÿ
+<python:S125æ"Remove this commented out code.(âË€Êıÿÿÿÿ
+6python:S125ó"Remove this commented out code.(ÂŞÒr
+7python:S125ö"Remove this commented out code.(„éÌŸ
+>python:S1481™"%Remove the unused local variable "a".(É³œ
+>python:S1481¡"%Remove the unused local variable "a".(É¼éÅ
+Hpython:S1481ˆ"/Remove the unused local variable "order_items".(ÕÎóì
+Hpython:S1481®"/Remove the unused local variable "order_items".(…£Æî
+<python:S125…"Remove this commented out code.(æÒ€ øÿÿÿÿ
+Upython:S5754˜"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+7python:S125”"Remove this commented out code.(Â¾ë·
+epython:S1764"LCorrect one of the identical sub-expressions on both sides of operator "==".(·¥Â¼
+<python:S125Ÿ"Remove this commented out code.(»—ƒÏùÿÿÿÿ
+Upython:S5754¢"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+epython:S1764©"LCorrect one of the identical sub-expressions on both sides of operator "==".(·¥Â¼
+6python:S125ª"Remove this commented out code.(â’
+<python:S125±"Remove this commented out code.(ßÿâ˜ùÿÿÿÿ
+<python:S125¼"Remove this commented out code.(è‡­°ÿÿÿÿÿ
+<python:S125Ä"Remove this commented out code.(ğü¸Óûÿÿÿÿ
+7python:S125É"Remove this commented out code.(Õ¦À
+7python:S125Õ"Remove this commented out code.(ÃÓôÅ
+7python:S125ß"Remove this commented out code.(–¿Ò
+7python:S125ë"Remove this commented out code.(ÑüÓŠ
+<python:S125†"Remove this commented out code.(ĞƒŞğûÿÿÿÿ
+Fpython:S1940–"-Use the opposite operator ("not in") instead.(ø¢¿í
+Fpython:S1940š"-Use the opposite operator ("not in") instead.(ø¢¿í
+<python:S125«"Remove this commented out code.(ĞƒŞğûÿÿÿÿ
+7python:S125¯"Remove this commented out code.(„¤Ç±
+<python:S125²"Remove this commented out code.(›üııÿÿÿÿ
+Dpython:S5806È"+Rename this variable; it shadows a builtin.(ĞµÇ
+7python:S125Æ"Remove this commented out code.(ÏœÁ 
+7python:S125Ô"Remove this commented out code.(øÀœ
+7python:S125Ø"Remove this commented out code.(µ»„‹
+7python:S125ô"Remove this commented out code.(¤´‹œ
+7python:S125÷"Remove this commented out code.(¹¬ªÎ
+<python:S125ú"Remove this commented out code.(‚ß¸ìøÿÿÿÿ
+<python:S125ÿ"Remove this commented out code.(öÀ˜şÿÿÿÿ
+Upython:S5754Š"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+Upython:S5754—"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+<python:S125 "Remove this commented out code.(ÚàŸ…ûÿÿÿÿ
+<python:S125´"Remove this commented out code.(‚ß¸ìøÿÿÿÿ
+Cpython:S125·"Remove this commented out code.(…½Å¿ùÿÿÿÿ8ó†éØ0
+7python:S125È"Remove this commented out code.(ÜÆóä
+7python:S125Ø"Remove this commented out code.(´ÇĞŸ
+Upython:S5754Ş"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+7python:S125ì"Remove this commented out code.(øÜİ­
+Upython:S5754€	"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+Upython:S5754¿	"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
+7python:S125Â	"Remove this commented out code.(ññÄŸ
+<python:S125í	"Remove this commented out code.(Ç½Ö’úÿÿÿÿ
+<python:S125ñ	"Remove this commented out code.(­ùüÃıÿÿÿÿ
+Gpython:S1481ù	".Remove the unused local variable "total_base".(ÃæÊß
+Lpython:S1481§
+".Remove the unused local variable "total_base".(Ñ“£êøÿÿÿÿ
+Fpython:S1481ú	"-Remove the unused local variable "total_tax".(şŒÔ»
+Hpython:S1481û	"0Remove the unused local variable "total_amount".(ºÌ—q
+Ipython:S1481ª
+"0Remove the unused local variable "total_amount".(ñ¿´‡
+<python:S125¢
+"Remove this commented out code.(õÇÊÿÿÿÿÿ
+<python:S125¤
+"Remove this commented out code.(»€Ùşÿÿÿÿ
+>python:S125Í
+"Remove this commented out code.(´ÇĞŸ8ÛÊ€­Ù0
+7python:S125£"Remove this commented out code.(ÃÓôÅ
+6python:S3626Ù"Remove this redundant return.(ÙãŞŸ
+<python:S125Á"Remove this commented out code.(Óü®—øÿÿÿÿ
+7python:S125Ê"Remove this commented out code.(Óç¾æ
+7python:S125ß"Remove this commented out code.(¸è“
+<python:S125ä"Remove this commented out code.(Ê¦ô¤ùÿÿÿÿ

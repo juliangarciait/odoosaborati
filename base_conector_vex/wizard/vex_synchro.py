@@ -16,6 +16,9 @@ _logger = logging.getLogger(__name__)
 # from difflib import SequenceMatcher
 # from datetime import timedelta
 
+import datetime
+from datetime import datetime
+
 
 id_api = "id_vex"
 server_api = "server_vex"
@@ -217,6 +220,10 @@ class WooSynchro(models.TransientModel):
             if not server.share_multi_instances:
                 create['server_vex'] = server.id
 
+        if query == 'orders':
+            salesteam = server.sales_team
+            create['team_id'] = salesteam.id
+            create['user_id']: server.user_sale_id.id if server.user_sale_id else None
 
 
         return {
@@ -266,6 +273,19 @@ class WooSynchro(models.TransientModel):
         return 0
 
     def synchro_ext(self, data, query, server, table, accion, id_vex, api, exist, queryx='', is_exist_sku=False):
+        if query == 'orders':
+
+            if not exist.create_date or exist.create_date == False:
+                create_date = exist.date_order.date()
+                query = f'''UPDATE sale_order SET create_date = '{str(create_date)}' WHERE id = {exist.id}'''
+                self.env.cr.execute(query)
+
+            if not exist.team_id:
+                exist.team_id = server.sales_team.id
+            if not exist.user_id:
+                exist.user_id = server.user_sale_id.id
+
+
         return queryx
 
     def synchro_threading(self, data, query, server, table, accion, id_vex, api):
