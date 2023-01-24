@@ -39,8 +39,29 @@ class MeliMultiExport(models.TransientModel):
         }
         #url = self.env['shop.action.synchro'].shop_url(self.server, str(argument))
         price = float(p.list_price)
+        #raise ValidationError(price)
         if server.pricelist:
             price = p._get_display_price_meli(p,server.pricelist,fields.Date.today(),server,1)
+
+            tax_id = None
+
+            if server.use_tax_product:
+                if p.taxes_id:
+                    tax_id = p.taxes_id[0]
+
+            else:
+                if server.tax_id:
+                    tax_id = server.tax_id
+
+            if tax_id:
+                if tax_id.amount and tax_id.amount != 0:
+                    #raise ValidationError(price)
+                    add_amount_tax = price * tax_id.amount / 100
+                    price += add_amount_tax
+
+        #raise ValidationError(price)
+
+
         if p.id_vex or p.id_vex_varition:
             id_vex = p.id_vex_varition or p.id_vex
             url = f'https://api.mercadolibre.com/items/{id_vex}?access_token=' + str(server.access_token)
