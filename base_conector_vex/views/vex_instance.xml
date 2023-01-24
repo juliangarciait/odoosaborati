@@ -28,11 +28,15 @@
                              <group>
                                   <field name="name" />
                                   <field name="conector" invisible="1"/>
+
                              </group>
-                             <group>
-                                 
-                             </group>
+
                         </group>
+                        <div>
+                            <b>Descripcion:</b> <br />
+                            <field name="description_company" />
+                        </div>
+
 
                         <notebook>
                             <page string="Basic Configuration" name ="basic_conf">
@@ -79,7 +83,7 @@
                                               <field name="update_stock" />
                                               <field name="update_title" />
                                               <field name="share_multi_instances" />
-                                              <field name="description_company" />
+
                                           </group>
                                       </div>
                                 </div>

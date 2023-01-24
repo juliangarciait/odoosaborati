@@ -35,7 +35,10 @@ class VexInstance(models.Model):
 
     pricelist = fields.Many2one('product.pricelist')
     sales_team = fields.Many2one('crm.team', string="Sales Team")
+
     import_lines = fields.One2many('vexlines.import','instance')
+
+
     sequence_id = fields.Many2one('ir.sequence')
     state_orders = fields.One2many('vex.instance.status.orders','instance')
 
