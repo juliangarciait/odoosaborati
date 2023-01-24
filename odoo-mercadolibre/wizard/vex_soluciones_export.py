@@ -21,8 +21,8 @@ class MeliMultiExport(models.TransientModel):
     products = fields.Many2many('product.template')
 
     def export_product(self,p,server,self2):
-        if not  p.description_sale:
-            raise ValidationError('El producto no tiene descripcion de venta')
+        if not  p.description_meli:
+            raise ValidationError('El producto no tiene descripcion de Mercado Libre')
 
         if not p.default_code:
             raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
@@ -67,7 +67,7 @@ class MeliMultiExport(models.TransientModel):
 
             url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
             data_des = {
-                "plain_text": p.description_sale +'\n'+server.description_company
+                "plain_text": p.description_meli +'\n'+server.description_company
             }
             r_desc = requests.put(url_desc, json=data_des, headers=headers).json()
 
@@ -164,7 +164,7 @@ class MeliMultiExport(models.TransientModel):
 
                 url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
                 data_des = {
-                    "plain_text": p.description_sale+'\n'+server.description_company
+                    "plain_text": p.description_meli+'\n'+server.description_company
                 }
                 r_desc = requests.post(url_desc, json=data_des, headers=headers).json()
                 p.log_meli_txt = str(data) + '\n' + str(datax) + '\n' + str(r_desc)
@@ -206,6 +206,7 @@ class MeliUnitExport(models.TransientModel):
     listing_type_id    = fields.Selection([('free','gratis'),('bronze','Clásica'),('gold_special','Premium')],
                                           string="Tipo de Publicacion",default='bronze')
     name_product_meli = fields.Text(string="Titulo",required=True)
+    description_meli = fields.Text(string="Descripcion",required=True)
 
     @api.onchange('product')
     def change_productx(self):
@@ -224,6 +225,12 @@ class MeliUnitExport(models.TransientModel):
         for record in self:
             if record.name_product_meli:
                 record.product.name_product_meli = record.name_product_meli
+
+    @api.onchange('description_meli')
+    def change_product(self):
+        for record in self:
+            if record.description_meli:
+                record.product.description_meli = record.description_meli
 
     #p.id_vex or p.id_vex_varition
     def start_export(self):

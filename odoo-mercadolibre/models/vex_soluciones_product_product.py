@@ -14,6 +14,7 @@ class ProductProduct(models.Model):
     listing_type_id = fields.Selection([('free', 'free'), ('bronze', 'bronze'),
                                         ('gold_special', 'gold special')])
     name_product_meli = fields.Text(string="Titulo")
+    description_meli = fields.Text(string="Descripcion")
 
 
     def update_conector_vex(self):
@@ -35,7 +36,7 @@ class ProductProduct(models.Model):
                     'default_buying_mode': self.buying_mode ,
                     'default_listing_type_id': self.listing_type_id,
                     'default_name_product_meli': name ,
-                    #'default_category': categ
+                    'default_description_meli': self.description_meli
 
                 }
 
@@ -62,6 +63,7 @@ class ProductProduct(models.Model):
                     #'default_buying_mode': self.buying_mode,
                     #'default_listing_type_id': self.listing_type_id,
                     'default_name_product_meli': name,
+                    'default_description_meli': self.description_meli
                     #'default_category': categ
                 }
 

@@ -41,6 +41,7 @@
 
                            <field name="product" readonly="1"/>
                            <field name="name_product_meli" />
+
                            <field name="id_vex" invisible="1" />
                            <field name="id_vex_varition" invisible="1"/>
 
@@ -72,7 +73,13 @@
                            />
                      </group>
 
+
+
                 </group>
+                <div class="m-2">
+                            <b>Descripcion:</b> <br />
+                            <field name="description_meli" />
+                </div>
                 <footer>
                     <button name="start_export" string="Export"
                             confimr="Recuerda estar seguro de colocar el nombre correcto de la publicacion"

@@ -310,6 +310,18 @@ class MeliActionSynchro(models.TransientModel):
                 if not server.warehouse:
                     raise ValidationError("Set Up Warehouse")
                 dx = {'customer':{}}
+
+                #id_customer = str(data['buyer']['id'])
+                #url_customer = f'''https://api.mercadolibre.com/users/{id_customer}'''
+
+                #item = requests.get(url_customer,params={'access_token': server.access_token}).json()
+
+                #url_envio = f'''https://api.mercadolibre.com/shipments/{str(data['shipping']['id'])}'''
+
+                #envio = requests.get(url_envio,params={'access_token': server.access_token}).json()
+
+                #raise ValidationError(str(envio))
+
                 nam = "{}".format(str(data['buyer']['nickname']))
                 dx['customer']['name'] , dx['customer']['display_name'] = nam , nam
                 if 'phone' in dx['customer']:
