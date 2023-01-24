@@ -18,8 +18,9 @@ class StockPicking(models.Model):
                     'shopify_instance_id' : product.shopify_instance_id.id,
                 })
                 products.append(product.id)
-        
-        process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
+                
+        if process_import_export_obj: 
+            process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
         
         return res
     
@@ -51,8 +52,8 @@ class StockReturnPicking(models.TransientModel):
                     'shopify_instance_id' : product.shopify_instance_id.id,
                 })
                 products.append(product.id)
-        
-        process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
+        if process_import_export_obj: 
+            process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
             
         
         return res
