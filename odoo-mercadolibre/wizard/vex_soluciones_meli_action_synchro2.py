@@ -696,7 +696,7 @@ class MeliActionSynchro(models.TransientModel):
                 zip_code = envio['receiver_address']['zip_code'] if 'zip_code' in envio['receiver_address'] else ''
                 exist.partner_id.zip = zip_code
 
-                neighborhood = envio['receiver_address']['neighborhood'] if 'neighborhood' in envio[
+                neighborhood = envio['receiver_address']['neighborhood']['name'] if 'neighborhood' in envio[
                     'receiver_address'] else ''
 
                 street_line = envio['receiver_address']['street_name'] if 'street_name' in envio['receiver_address'] else ''
