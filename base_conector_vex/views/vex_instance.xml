@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <tree string="Vex Instance">
                 <field name="name"/>
+
                 <field name="conector"/>
             </tree>
         </field>
@@ -27,6 +28,7 @@
                         <group name="group1">
                              <group>
                                   <field name="name" />
+                                  <field name="include_name_init_descripton"/>
                                   <field name="conector" invisible="1"/>
 
                              </group>

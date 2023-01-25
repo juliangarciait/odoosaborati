@@ -28,6 +28,18 @@ class MeliMultiExport(models.TransientModel):
             raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
         if not p.image_1920:
             raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
+
+        name_product = p.name_product_meli
+        if not name_product:
+            raise ValidationError('NO SE INDICO NOMBRE DEL PRODUCTO')
+
+        plain_text = p.description_meli+'\n'+server.description_company
+        if server.include_name_init_descripton:
+            plain_text = name_product + '\n' + plain_text
+
+
+
+
         base_url = self.env["ir.config_parameter"].get_param("web.base.url")
         foto_main = base_url+"/web/image?model=product.product&id={}&field=image_128&unique=".format(p.id)
 
@@ -88,7 +100,7 @@ class MeliMultiExport(models.TransientModel):
 
             url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
             data_des = {
-                "plain_text": p.description_meli +'\n'+server.description_company
+                "plain_text": plain_text
             }
             r_desc = requests.put(url_desc, json=data_des, headers=headers).json()
 
@@ -114,7 +126,7 @@ class MeliMultiExport(models.TransientModel):
 
             data = {
                 "site_id": str(server.meli_country),
-                "title": str(p.name_product_meli),
+                "title": name_product,
                 "category_id": str(cc.id_vex),
                 # "category_id": str(cc.id_app),
                 "price": round(price,2),
@@ -185,7 +197,7 @@ class MeliMultiExport(models.TransientModel):
 
                 url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
                 data_des = {
-                    "plain_text": p.description_meli+'\n'+server.description_company
+                    "plain_text": plain_text
                 }
                 r_desc = requests.post(url_desc, json=data_des, headers=headers).json()
                 p.log_meli_txt = str(data) + '\n' + str(datax) + '\n' + str(r_desc)
@@ -255,6 +267,7 @@ class MeliUnitExport(models.TransientModel):
 
     #p.id_vex or p.id_vex_varition
     def start_export(self):
+        self.product.name_product_meli = self.name_product_meli
         self.env['vex.synchro'].check_synchronize(self.server)
         self.env['meli.export'].export_product(self.product,self.server,self)
 

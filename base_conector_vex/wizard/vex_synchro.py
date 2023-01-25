@@ -421,8 +421,12 @@ class WooSynchro(models.TransientModel):
 
             #if id_vex == '120021':
             #    raise ValidationError(str([id_vex,exist_product]))
+
+        has_create = False
+
         if not exist:
             self.env.cr.execute(sql_fields['create'])
+            has_create = True
             '''
 
             try:
@@ -480,8 +484,15 @@ class WooSynchro(models.TransientModel):
             raise ValidationError(str([server.search_sku,data_json['create'],exist,exist_product.default_code,id_vex,default_code]))
             raise ValidationError('no se encontro' + str(exist) + ':' + str(table) + ',' + str(domain)+'/'+str(sql_fields['create']))
 
+
+        if has_create:
+            self.execute_after_create(data, query, server, table, accion, id_vex, api, exist,queryx ,is_exist_sku)
+
         queryx += self.synchro_ext(data, query, server, table, accion, id_vex, api, exist,queryx ,is_exist_sku)
         return queryx
+
+    def execute_after_create(self,data, query, server, table, accion, id_vex, api, exist,queryx ,is_exist_sku):
+        return
 
     def synchronize(self, accion, server, bypart=False):
         server.validate_licence()
