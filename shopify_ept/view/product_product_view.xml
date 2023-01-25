@@ -136,13 +136,13 @@
         </field>
     </record>
 
-    <record id="product_product_action_server" model="ir.actions.server">
+    <!--<record id="product_product_action_server" model="ir.actions.server">
         <field name="name">Exportar nueva variante a shopify</field>
         <field name="model_id" ref="model_product_product"/>
         <field name="binding_model_id" ref="model_product_product"/>
         <field name="state">code</field>
         <field name="code">action = model.export_new_variant_to_shopify()</field>
-    </record>
+    </record>-->
 
 
     <menuitem id="menu_item_shopify_variants_ept" name="Product Variants"
