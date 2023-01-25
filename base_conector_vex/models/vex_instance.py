@@ -76,7 +76,7 @@ class VexInstance(models.Model):
     warehouse_stock_vex = fields.Many2one('stock.warehouse', string="Almacen x Exportar")
     type_document = fields.Many2one('l10n_latam.identification.type',string="Tipo de Identificacion")
     description_company = fields.Text(string="Descripcion Empresa",default='')
-    include_name_init_descripton = fields.Boolean(string="Incluir Nombre del Producto al incio de la descripcion")
+    include_name_init_descripton = fields.Boolean(default=True,string="Incluir Nombre del Producto al incio de la descripcion")
 
 
 
