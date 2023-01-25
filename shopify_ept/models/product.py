@@ -227,31 +227,35 @@ class ProductProduct(models.Model):
             
         return res
     
-    #def export_new_variant_to_shopify(self): 
-    #    variant_ids = self.env['product.product'].search([('id', 'in', self.env.context.get('active_ids', []))])
-    #    
-    #    self.with_delay().export_new_variant(variant_ids)
-    #    
-    #    return {}
+    def export_new_variant_to_shopify(self): 
+        variant_ids = self.env['product.product'].search([('id', 'in', self.env.context.get('active_ids', []))])
         
-    #def export_new_variant(self, variant_ids): 
-    #    for variant in variant_ids: 
-    #        for product in variant.product_tmpl_id: 
-    #            if product.detailed_type == 'product':
-    #                for product_instance in product.shopify_product_template_ids:
-    #                    export_data = self.env['shopify.process.import.export'].create({
-    #                        'shopify_instance_id' : product_instance.shopify_instance_id.id,
-    #                        'shopify_is_set_basic_detail' : True,
-    #                        'shopify_is_update_basic_detail' : True,
-    #                        'shopify_is_set_price' : True,
-    #                        'shopify_is_set_image' : True,
-    #                        'shopify_is_publish' : 'publish_product_global',
-    #                    })
+        self.export_new_variant(variant_ids)
+        
+        return {}
+        
+    def export_new_variant(self, variant_ids): 
+        for variant in variant_ids: 
+            for product in variant.product_tmpl_id: 
+                if product.detailed_type == 'product':
+                    for product_instance in product.shopify_product_template_ids:
+                        export_data = self.env['shopify.process.import.export'].create({
+                            'shopify_instance_id' : product_instance.shopify_instance_id.id,
+                            'shopify_is_set_basic_detail' : True,
+                            'shopify_is_update_basic_detail' : True,
+                            'shopify_is_set_price' : True,
+                            'shopify_is_set_image' : True,
+                            'shopify_is_publish' : 'publish_product_global',
+                        })
                         
-    #                    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
-    #                        'shopify_instance_id' : product_instance.shopify_instance_id.id, 
-    #                        'export_method' : "direct",
-    #                    })
-    #                    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-    #                    export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_export_product_to_shopify()
+                        if not product.active: 
+                            product_instance.product_status = 'archived'
+                            
+                        shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
+                            'shopify_instance_id' : product_instance.shopify_instance_id.id, 
+                            'export_method' : "direct",
+                        })
+                        shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
+                        if product_instance.exported_in_shopify:
+                            export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                     
