@@ -731,7 +731,7 @@ class WooSynchro(models.TransientModel):
                 tfe = float(f[key_total] * sg)
 
 
-                total_fee += float(f[key_total] * sg)
+                total_fee += float(f[key_total] * sg) * f['quantity']
 
                 if tfe and server.discount_fee == 'save_line':
 
@@ -780,7 +780,7 @@ class WooSynchro(models.TransientModel):
                         'name': "'" + str(pp.name) + "'",
                         'product_id': pp.id,
                         'product_uom_qty': f['quantity'],
-                        'price_unit': float(f[key_total] * sg),
+                        'price_unit': float(f[key_total] * sg) * f['quantity'] ,
                         #'price_reduce': float(f[key_total] * sg),
                         #'price_reduce_taxinc': float(f[key_total] * sg),
                         #'price_reduce_taxexcl': float(f[key_total] * sg),
