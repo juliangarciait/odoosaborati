@@ -154,6 +154,8 @@ class ProductProduct(models.Model):
     
     shopify_product_ids = fields.One2many('shopify.product.product.ept', 'product_id')
     
+    to_shopify = fields.Boolean('To Shopify?')
+    
     def delete_variants_in_shopify(self, shopify_product_tmpl, shopify_product_variant): 
         for variant in shopify_product_tmpl.variants: 
             product_dict = variant.to_dict()

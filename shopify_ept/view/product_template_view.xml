@@ -320,6 +320,10 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="Online" name="online">
+                    <span class="d-inline-block">
+                        <field name="to_shopify" string="To Shopify?"/>
+                        <label for="to_shopify"/>
+                    </span>
                     <field name="shopify_product_ids">
                         <tree string="Product variants in shopify instances" editable="bottom" create="false" delete="false">
                             <field name="exported_in_shopify" string="Is Exported?" readonly="1"/>
