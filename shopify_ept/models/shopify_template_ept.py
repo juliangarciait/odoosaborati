@@ -58,7 +58,7 @@ class ShopifyProductTemplateEpt(models.Model):
     active = fields.Boolean(default=True)
     shopify_image_ids = fields.One2many("shopify.product.image.ept", "shopify_template_id")
     product_status = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived')], default="draft", string="Product status")
-
+    
     def cron_update_products_in_shopify(self): 
         products = self.search([])
         
@@ -101,8 +101,21 @@ class ShopifyProductTemplateEpt(models.Model):
                           shopify_template.shopify_instance_id.id),
                          ("active", "=", False)])
                     shopify_variants.write({"active": vals.get("active")})
-        res = super(ShopifyProductTemplateEpt, self).write(vals)        
+        res = super(ShopifyProductTemplateEpt, self).write(vals)
         return res
+    
+    def update_from_form(self): 
+        _logger.info('$'*1000)
+        export_data = self.env['shopify.process.import.export'].create({
+            'shopify_instance_id' : self.shopify_instance_id.id,
+            'shopify_is_set_basic_detail' : True,
+            'shopify_is_update_basic_detail' : True,
+            'shopify_is_set_price' : True,
+            'shopify_is_set_image' : True,
+            'shopify_is_publish' : 'publish_product_global',
+        })
+        if self.exported_in_shopify:
+            export_data.with_context({"active_ids" : [self.id], "lang": self.env.user.lang}).manual_update_product_to_shopify() 
 
     @api.model
     def find_template_attribute_values(self, template_options, product_template_id, variant):

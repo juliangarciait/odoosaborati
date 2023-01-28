@@ -83,6 +83,7 @@
                             type="object" string="Publish in Web Only"
                             context="{'publish': 'shopify_publish_web'}"
                             attrs="{'invisible': ['|',('exported_in_shopify','=',False),('website_published','=','published_web')]}"/>
+                    <button name="update_from_form" class="oe_highlight" string="Actualizar en shopify" type="object"/>
                     <notebook>
                         <page string="Shopify Info">
                             <group>
@@ -322,7 +323,7 @@
                     <field name="shopify_product_ids">
                         <tree string="Product variants in shopify instances" editable="bottom" create="false" delete="false">
                             <field name="exported_in_shopify" string="Is Exported?" readonly="1"/>
-                            <field name="to_shopify" string="To Shopify?"/>
+                            <field name="to_shopify" string="To Shopify?" readonly="1"/>
                             <field name="name" readonly="1"/>
                             <field name="shopify_instance_id" readonly="1"/>
                             <field name="product_id" readonly="1"/>
