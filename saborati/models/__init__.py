@@ -16,3 +16,4 @@ from . import account_move
 from . import stock_quant
 from . import product_prices
 from . import stock_picking
+from . import product_supplierinfo
