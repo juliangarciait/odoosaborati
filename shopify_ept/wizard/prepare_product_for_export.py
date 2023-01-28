@@ -171,7 +171,7 @@ class PrepareProductForExport(models.TransientModel):
         shopify_variant_vals = self.prepare_variant_val_for_export_product_in_layer(shopify_instance,
                                                                                     shopify_template, variant,
                                                                                     sequence)
-        if not shopify_variant:
+        if not shopify_variant and variant.to_shopify:
             shopify_variant = shopify_product_obj.create(shopify_variant_vals)
         else:
             shopify_variant.write(shopify_variant_vals)
