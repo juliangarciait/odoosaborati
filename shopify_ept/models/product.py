@@ -128,22 +128,22 @@ class ProductTemplate(models.Model):
                 export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                 
             #Add to collection if it has collections
-            if product.product_collection_ids: 
-                for product_collection in product.product_collection_ids: 
-                    product_collection.shopify_instance_id.connect_in_shopify()
-                    if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
-                        shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
-                        collections = shopify_product.collections()
-                        if collections:
-                            for collect in collections: 
-                                shopify_product.remove_from_collection(collect)
-                                
-                for product_collection in product.product_collection_ids:
-                    product_collection.shopify_instance_id.connect_in_shopify()     
-                    if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
-                        collect = product_collection.request_collection(product_collection.shopify_collection_id)
-                        if collect:
-                            shopify_product.add_to_collection(collect) 
+                if product.product_collection_ids: 
+                    for product_collection in product.product_collection_ids: 
+                        product_collection.shopify_instance_id.connect_in_shopify()
+                        if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
+                            shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
+                            collections = shopify_product.collections()
+                            if collections:
+                                for collect in collections: 
+                                    shopify_product.remove_from_collection(collect)
+                                    
+                    for product_collection in product.product_collection_ids:
+                        product_collection.shopify_instance_id.connect_in_shopify()     
+                        if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
+                            collect = product_collection.request_collection(product_collection.shopify_collection_id)
+                            if collect:
+                                shopify_product.add_to_collection(collect) 
                             
         return True
         
