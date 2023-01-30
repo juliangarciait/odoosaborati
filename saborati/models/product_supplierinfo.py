@@ -7,6 +7,14 @@ _logger = logging.getLogger(__name__)
 class ProductSupplierinfo(models.Model): 
     _inherit = 'product.supplierinfo'
     
+    @api.model
+    def create(self, vals_list):
+        res = super(ProductSupplierinfo, self).create(vals_list)
+        
+        self.with_delay().update_prices_in_shopify(res.product_tmpl_id)
+        
+        return res
+    
     def write(self, vals): 
         res = super(ProductSupplierinfo, self).write(vals)
         
@@ -20,8 +28,6 @@ class ProductSupplierinfo(models.Model):
         bom_ids = self.env['mrp.bom.line'].search([('product_id.product_tmpl_id', '=', product_tmpl_id.id)]).bom_id
         for bom in bom_ids: 
             for product in bom.product_tmpl_id.shopify_product_template_ids: 
-                _logger.info(product)
-                _logger.info('$'*100)
                 export_data = self.env['shopify.process.import.export'].create({
                     'shopify_instance_id' : product.shopify_instance_id.id,
                     'shopify_is_set_basic_detail' : True,
