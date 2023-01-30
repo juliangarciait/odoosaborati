@@ -23,6 +23,11 @@ class ProductSupplierinfo(models.Model):
         
         return res
     
+    def unlink(self): 
+        for vendor_pricelist in self: 
+            self.with_delay().update_prices_in_shopify(vendor_pricelist.product_tmpl_id)
+            
+        return super(ProductSupplierinfo, self).unlink()
     
     def update_prices_in_shopify(self, product_tmpl_id): 
         bom_ids = self.env['mrp.bom.line'].search([('product_id.product_tmpl_id', '=', product_tmpl_id.id)]).bom_id
