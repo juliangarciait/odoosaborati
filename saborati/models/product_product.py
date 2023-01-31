@@ -15,10 +15,9 @@ class ProductProduct(models.Model):
     purchase_ok = fields.Boolean('Can be Purchased', default=True)
     sale_ok = fields.Boolean('Can be Sold', default=True)
     
-    
     @api.depends('seller_ids', 'bom_ids')
     def _compute_replacement_cost(self): 
-        for record in self: 
+        for record in self:
             record.replacement_cost = 0.0
             has_mrp_bom = self.env['mrp.bom'].search([('product_id', '=', record.id)], order='write_date desc', limit=1)
 
