@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_view_inherit_progress" model="ir.ui.view">
+        <field name="name">purchase.order.view.inherit.tree.progress</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='amount_total']" position="after">
+                <field name="percent_d_progress" widget="percentage"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="purchase_order_kpis_tree_progress" model="ir.ui.view">
+        <field name="name">purchase.order.view.inherit.tree.progress</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='amount_total']" position="after">
+                <field name="percent_d_progress" widget="percentage"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
