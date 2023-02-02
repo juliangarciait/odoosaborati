@@ -32,7 +32,39 @@ class SaleOrder(models.Model):
         res.medium_id = self.env.company.medium_id.id
         
         return res
+    
+    def action_confirm(self): 
+        res = super(SaleOrder, self).action_confirm()
+        
+        products = []
+        for line in self.order_line: 
+            for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
+                process_import_export_obj = self.env['shopify.process.import.export'].create({
+                    'shopify_instance_id' : product.shopify_instance_id.id,
+                })
+                products.append(product.id)
+                
+        if process_import_export_obj: 
+            process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
+        
+        return res
+    
+    def action_cancel(self): 
+        res = super(SaleOrder, self).action_cancel()
+        
+        products = []
+        for line in self.order_line: 
+            for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
+                process_import_export_obj = self.env['shopify.process.import.export'].create({
+                    'shopify_instance_id' : product.shopify_instance_id.id,
+                })
+                products.append(product.id)
+                
+        if process_import_export_obj: 
+            process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
             
+        return res
+    
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
     
