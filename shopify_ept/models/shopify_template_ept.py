@@ -105,7 +105,6 @@ class ShopifyProductTemplateEpt(models.Model):
         return res
     
     def update_from_form(self): 
-        _logger.info('$'*1000)
         export_data = self.env['shopify.process.import.export'].create({
             'shopify_instance_id' : self.shopify_instance_id.id,
             'shopify_is_set_basic_detail' : True,
@@ -116,6 +115,12 @@ class ShopifyProductTemplateEpt(models.Model):
         })
         if self.exported_in_shopify:
             export_data.with_context({"active_ids" : [self.id], "lang": self.env.user.lang}).manual_update_product_to_shopify() 
+            
+        process_import_export_obj = self.env['shopify.process.import.export'].create({
+            'shopify_instance_id' : self.shopify_instance_id.id,
+        })
+        if process_import_export_obj: 
+            process_import_export_obj.with_context({'active_ids' : [self.id]}).shopify_selective_product_stock_export()
 
     @api.model
     def find_template_attribute_values(self, template_options, product_template_id, variant):
