@@ -42,6 +42,7 @@
         'wizard/vex_soluciones_export.xml',
         'data/meli_action_list.xml',
         'data/order_status.xml',
+        'data/vex_cron.xml',
         #'views/conectado.xml',
         'views/vex_soluciones_meli_action_list.xml',
     ],

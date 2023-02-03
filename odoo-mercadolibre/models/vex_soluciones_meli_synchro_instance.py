@@ -134,4 +134,23 @@ class ApiSynchroInstance(models.Model):
                 if not record.refresh_token:
                     raise ValidationError('required refresh_token')
 
+    def get_crons(self):
+        #cr0 = self.env.ref('base_conector_vex.vex_soluciones_ir_cron_automatico')
+        cr1 = self.env.ref('odoo-mercadolibre.vex_soluciones_ir_cron_automatico_meli_sale')
+        cr2 = self.env.ref('odoo-mercadolibre.vex_soluciones_ir_cron_automatico_meli_stock')
+
+        dm = [('id', 'in', [cr1.id,cr2.id]),'|',('active','=',True),('active','=',False)]
+
+        return {
+            'name': ('CRONS'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'res_model': 'ir.cron',
+            # 'views': [(view.id, 'form')],
+            # 'view_id': view.id,
+            'target': 'current',
+            'domain': dm,
+
+        }
+
 

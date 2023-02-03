@@ -675,42 +675,49 @@ class MeliActionSynchro(models.TransientModel):
 
     def execute_after_create(self,data, query, server, table, accion, id_vex, api, exist,queryx ,is_exist_sku):
         if server.conector == 'meli':
-            id_customer = str(data['buyer']['id'])
-            #raise ValidationError(str([exist.partner_id.id_vex,id_customer]))
-            if exist.partner_id.id_vex == id_customer:
-                #url_customer = f'''https://api.mercadolibre.com/users/{id_customer}'''
-                #data_customer = requests.get(url_customer,params={'access_token': server.access_token}).json()
-                #raise ValidationError(str(data_customer))
-                url_envio = f'''https://api.mercadolibre.com/shipments/{str(data['shipping']['id'])}'''
-                envio = requests.get(url_envio, params={'access_token': server.access_token}).json()
+            if query == 'orders':
+                id_customer = str(data['buyer']['id'])
+                # raise ValidationError(str([exist.partner_id.id_vex,id_customer]))
+                if exist.partner_id.id_vex == id_customer:
+                    # url_customer = f'''https://api.mercadolibre.com/users/{id_customer}'''
+                    # data_customer = requests.get(url_customer,params={'access_token': server.access_token}).json()
+                    # raise ValidationError(str(data_customer))
+                    url_envio = f'''https://api.mercadolibre.com/shipments/{str(data['shipping']['id'])}'''
+                    envio = requests.get(url_envio, params={'access_token': server.access_token}).json()
 
-                name_customer = envio['receiver_address']['receiver_name'] if 'receiver_name' in envio['receiver_address'] else None
+                    name_customer = envio['receiver_address']['receiver_name'] if 'receiver_name' in envio[
+                        'receiver_address'] else None
 
-                if name_customer:
-                    exist.partner_id.name = name_customer
+                    if name_customer:
+                        exist.partner_id.name = name_customer
 
-                receiver_phone = envio['receiver_address']['receiver_phone'] if 'receiver_phone' in envio['receiver_address'] else None
-                if receiver_phone:
-                    exist.partner_id.phone = receiver_phone
+                    receiver_phone = envio['receiver_address']['receiver_phone'] if 'receiver_phone' in envio[
+                        'receiver_address'] else None
+                    if receiver_phone:
+                        exist.partner_id.phone = receiver_phone
 
-                zip_code = envio['receiver_address']['zip_code'] if 'zip_code' in envio['receiver_address'] else ''
-                exist.partner_id.zip = zip_code
+                    zip_code = envio['receiver_address']['zip_code'] if 'zip_code' in envio['receiver_address'] else ''
+                    exist.partner_id.zip = zip_code
 
-                neighborhood = envio['receiver_address']['neighborhood']['name'] if 'neighborhood' in envio[
-                    'receiver_address'] else ''
+                    neighborhood = envio['receiver_address']['neighborhood']['name'] if 'neighborhood' in envio[
+                        'receiver_address'] else ''
 
-                street_line = envio['receiver_address']['street_name'] if 'street_name' in envio['receiver_address'] else ''
-                street_number = envio['receiver_address']['street_number'] if 'street_number' in envio['receiver_address'] else ''
-                country = envio['receiver_address']['country']['name'] if 'country' in envio['receiver_address'] else ''
-                city = envio['receiver_address']['city']['name'] if 'city' in envio['receiver_address'] else ''
-                state = envio['receiver_address']['state']['name'] if 'state' in envio['receiver_address'] else ''
+                    street_line = envio['receiver_address']['street_name'] if 'street_name' in envio[
+                        'receiver_address'] else ''
+                    street_number = envio['receiver_address']['street_number'] if 'street_number' in envio[
+                        'receiver_address'] else ''
+                    country = envio['receiver_address']['country']['name'] if 'country' in envio[
+                        'receiver_address'] else ''
+                    city = envio['receiver_address']['city']['name'] if 'city' in envio['receiver_address'] else ''
+                    state = envio['receiver_address']['state']['name'] if 'state' in envio['receiver_address'] else ''
 
-                direccion = f''' {street_line}   {street_number}   {neighborhood}  {state} , {city} ,  {country}  '''
-                exist.partner_id.street = direccion
+                    direccion = f''' {street_line}   {street_number}   {neighborhood}  {state} , {city} ,  {country}  '''
+                    exist.partner_id.street = direccion
 
-                comment = envio['receiver_address']['comment'] if 'comment' in envio['receiver_address'] else ''
-                exist.partner_id.street2 = comment
-                #raise ValidationError(str(envio))
+                    comment = envio['receiver_address']['comment'] if 'comment' in envio['receiver_address'] else ''
+                    exist.partner_id.street2 = comment
+                    # raise ValidationError(str(envio))
+
 
 
         res = super(MeliActionSynchro, self).synchro_ext(data, query, server, table, accion, id_vex, api, exist, queryx,
@@ -718,6 +725,37 @@ class MeliActionSynchro(models.TransientModel):
         return res
 
 
+    def start_sync_sale_meli(self):
+        #importar solo info de productos
+        servers = self.env['vex.instance'].search([('active_automatic', '=', True)])
+        #raise ValidationError(servers)
+        for s in servers:
+            #wizard = self.env['vex.synchro'].create(dict(
+            #    server_vex=s.id,
+            #    accion=self.env.ref('linio_connector_vex.linio_action_products', False).id ,
+            #    conector='linio',
+            #    type_log='automatic'
+            #))
+            #raise ValidationError()
+            #wizard.start_import()
 
+            wizard = self.env['vex.synchro'].create(dict(
+                server_vex=s.id,
+                accion=self.env.ref('odoo-mercadolibre.meli_action_orders', False).id,
+                conector='meli',
+                type_log='automatic'
+
+            ))
+            wizard.start_import()
+
+
+
+        #iniciar la importacion de las ventas
+        return
+
+    def start_sync_stock_meli(self):
+        products = self.env['product.product'].search(['|',('id_vex','!=',False),('id_vex_varition','!=',False)])
+        #,limit=150
+        products.update_conector_vex()
 
 

@@ -20,7 +20,7 @@ class MeliMultiExport(models.TransientModel):
     model = fields.Char(related="action.model")
     products = fields.Many2many('product.template')
 
-    def export_product(self,p,server,self2):
+    def export_product(self,p,server,self2=None):
         if not  p.description_meli:
             raise ValidationError('El producto no tiene descripcion de Mercado Libre')
 
@@ -83,7 +83,16 @@ class MeliMultiExport(models.TransientModel):
 
             }
             if server.update_stock:
-                data['available_quantity']: int(self2.quantity)
+                if self2:
+                    data['available_quantity'] = int(self2.quantity)
+                else:
+                    quant = self.env['stock.quant'].search(
+                        [('product_id', '=', p.id), ('on_hand', '=', True),
+                         ('location_id', '=', server.warehouse_stock_vex.lot_stock_id.id)])
+                    stock = 0
+                    if quant:
+                        stock = quant.quantity
+                    data['available_quantity'] = stock
             data['attributes'] = [
                 #{
                 #    "id": "MANUFACTURER",

@@ -1,10 +1,10 @@
 <odoo>
     <data noupdate="1" >
-        <record id="vex_soluciones_ir_cron_automatico_linio_sale" model="ir.cron">
-        <field name="name">CRON AUTOMATICO VENTAS LINIO</field>
+        <record id="vex_soluciones_ir_cron_automatico_meli_sale" model="ir.cron">
+        <field name="name">CRON AUTOMATICO VENTAS MELI</field>
         <field name="model_id" ref="model_vex_synchro"/>
         <field name="state">code</field>
-        <field name="code">model.start_sync_sale_linio()</field>
+        <field name="code">model.start_sync_sale_meli()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="numbercall">-1</field>
@@ -13,11 +13,11 @@
         <!--<field name="argument">vex_cron</field> -->
     </record>
 
-    <record id="vex_soluciones_ir_cron_automatico_linio_stock" model="ir.cron">
-        <field name="name">CRON AUTOMATICO STOCK LINIO</field>
+    <record id="vex_soluciones_ir_cron_automatico_meli_stock" model="ir.cron">
+        <field name="name">CRON AUTOMATICO EXPORT MELI</field>
         <field name="model_id" ref="model_vex_synchro"/>
         <field name="state">code</field>
-        <field name="code">model.start_sync_stock_linio()</field>
+        <field name="code">model.start_sync_stock_meli()</field>
         <field name="interval_number">3</field>
         <field name="interval_type">hours</field>
         <field name="numbercall">-1</field>

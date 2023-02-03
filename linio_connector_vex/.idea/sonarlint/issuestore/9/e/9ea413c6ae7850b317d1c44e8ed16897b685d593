@@ -1,12 +1,0 @@
-
-;python:S125"Remove this commented out code.(ê®•–ùÿÿÿÿ
-Tpython:S5754"<Specify an exception class to catch or reraise the exception(ˆÊÉ·
-;python:S125"Remove this commented out code.(¥­Žëûÿÿÿÿ
-6python:S125)"Remove this commented out code.(ôÚì³
-;python:S125."Remove this commented out code.(½¦‹ãüÿÿÿÿ
-Qpython:S1481@"4Remove the unused local variable "products_updated".(«¥©ûûÿÿÿÿ
-6python:S125m"Remove this commented out code.(Ü±·‡
-Dpython:S1940p"-Use the opposite operator ("not in") instead.(£šôl
-Gpython:S1481x"*Remove the unused local variable "record".(¤©ë¿úÿÿÿÿ
-epython:S1763‹"GDelete this unreachable code or refactor the code to make it reachable.(Úˆ Êüÿÿÿÿ
-<python:S125ˆ"Remove this commented out code.(™Ýõßüÿÿÿÿ
