@@ -42,10 +42,9 @@ class ProductTemplate(models.Model):
     @api.depends('seller_ids', 'bom_ids', 'additional_cost_ids')
     def _compute_replacement_cost(self): 
         for record in self: 
-            has_mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', record.id), ('product_id', '=', record.product_variant_id.id)], order='write_date desc', limit=1)
+            has_mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', record.id), ('product_id', '=', False)], order='write_date desc', limit=1)
             
             if not has_mrp_bom:
-                price = 0.0
                 vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.id)], order='create_date desc', limit=1)
                 if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
                     price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
