@@ -88,7 +88,7 @@ class ProductProduct(models.Model):
                 start_date = fields.Datetime.now()
                 for record in self:
                     if record.id_vex_varition or record.id_vex:
-                        self.env['meli.export'].export_product(record, server)
+                        self.env['meli.export'].export_product(record, server,None,False)
                         name_products += record.display_name + ' , '
                         n += str(record.id) + ' ,'
                 end_date = fields.Datetime.now()

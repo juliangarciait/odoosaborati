@@ -20,18 +20,20 @@ class MeliMultiExport(models.TransientModel):
     model = fields.Char(related="action.model")
     products = fields.Many2many('product.template')
 
-    def export_product(self,p,server,self2=None):
-        if not  p.description_meli:
-            raise ValidationError('El producto no tiene descripcion de Mercado Libre')
+    def export_product(self,p,server,self2=None,validate=True):
+        if validate:
+            if not p.description_meli:
+                raise ValidationError('El producto no tiene descripcion de Mercado Libre')
 
-        if not p.default_code:
-            raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
-        if not p.image_1920:
-            raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
+            if not p.default_code:
+                raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
+            if not p.image_1920:
+                raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
 
-        name_product = p.name_product_meli
-        if not name_product:
-            raise ValidationError('NO SE INDICO NOMBRE DEL PRODUCTO')
+            name_product = p.name_product_meli
+            if not name_product:
+                raise ValidationError('NO SE INDICO NOMBRE DEL PRODUCTO')
+
 
         plain_text = p.description_meli+'\n'+server.description_company
         if server.include_name_init_descripton:
