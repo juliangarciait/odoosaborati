@@ -31,14 +31,14 @@ class MeliMultiExport(models.TransientModel):
             if not p.image_1920:
                 raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
 
-            name_product = p.name_product_meli
-            if not name_product:
-                raise ValidationError('NO SE INDICO NOMBRE DEL PRODUCTO')
+        name_product = p.name_product_meli
+        if not name_product:
+            raise ValidationError('NO SE INDICO NOMBRE DEL PRODUCTO')
 
 
         plain_text = p.description_meli+'\n'+server.description_company
         if server.include_name_init_descripton:
-            plain_text = name_product + '\n' + plain_text
+            plain_text = name_product  + '\n' + plain_text
 
 
 
