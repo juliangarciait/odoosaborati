@@ -1,7 +1,6 @@
 from odoo import api, fields, models
 from odoo.addons.payment.models.payment_acquirer import ValidationError
 
-
 class ProductProduct(models.Model):
     _inherit = 'product.product'
     id_vex_varition = fields.Char(string="ID Variation")

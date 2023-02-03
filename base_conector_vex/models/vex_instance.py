@@ -77,7 +77,10 @@ class VexInstance(models.Model):
     type_document = fields.Many2one('l10n_latam.identification.type',string="Tipo de Identificacion")
     description_company = fields.Text(string="Descripcion Empresa",default='')
     include_name_init_descripton = fields.Boolean(default=True,string="Incluir Nombre del Producto al incio de la descripcion")
+    search_archive_products = fields.Boolean(default=False,string="Buscar Productos Archivados")
 
+    def get_crons(self):
+        return
 
 
 

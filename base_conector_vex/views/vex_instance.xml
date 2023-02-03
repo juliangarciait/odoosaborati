@@ -24,6 +24,10 @@
                             <button name="fun_test" type="object" class="oe_stat_button" icon="fa-spinner">
                                 Test Connection
                             </button>
+                            <button name="get_crons" type="object"
+                               class="oe_stat_button" icon="fa-spinner">
+                                CRONS
+                            </button>
                         </div>
                         <group name="group1">
                              <group>
@@ -48,6 +52,8 @@
                                                <field name="picking_policy"/>
                                                <!--<field name="location_id"/> -->
                                                <field name="journal_id"/>
+                                               <field name="company" />
+                                               <field name="warehouse"/>
                                                <!--<field name="type_document"/> -->
                                                <field name="payment_term"/>
                                                <field name="use_date_specific"/>
@@ -66,8 +72,8 @@
                                      </div>
                                       <div class="col-6">
                                           <group>
-                                              <field name="company" />
-                                              <field name="warehouse"/>
+
+
                                               <field name="user_sale_id"/>
                                               <field name="categ_id"/>
                                               <field name="medium_id"/>
@@ -85,6 +91,7 @@
                                               <field name="update_stock" />
                                               <field name="update_title" />
                                               <field name="share_multi_instances" />
+                                              <field name="search_archive_products" />
 
                                           </group>
                                       </div>

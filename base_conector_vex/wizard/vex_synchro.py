@@ -343,7 +343,10 @@ class WooSynchro(models.TransientModel):
         if query == "products":
             if server.share_multi_instances:
                 domain = [('id_vex', '=', str(id_vex)), ('conector', '=', str(server.conector))]
-            domain = domain + ['|', ('active', '=', True), ('active', '=', False)]
+
+            if server.search_archive_products:
+                domain = domain + ['|', ('active', '=', True), ('active', '=', False)]
+
 
         if query == "orders":
             domain = [('id_vex', '=', str(id_vex)),
@@ -354,7 +357,7 @@ class WooSynchro(models.TransientModel):
 
         exist = self.env[table].search(domain)
 
-        if server.search_sku and query == 'products' and 'default_code' in data_json['create'] and not exist:
+        if server.search_sku and query == 'products' and 'default_code' in data_json['create'] and  (not exist or len(exist) > 1):
 
             if not default_code:
                 raise ValidationError(str(data_json['create']))
@@ -366,7 +369,10 @@ class WooSynchro(models.TransientModel):
 
         #search if exist the variant sku
 
-        if server.search_sku and query == 'products' and 'default_code' in data_json['create'] and not exist:
+
+
+
+        if server.search_sku and query == 'products' and 'default_code' in data_json['create'] and (not exist or len(exist) > 1):
             exist_product = self.env['product.product'].search(domain)
 
             contador_existentes = 0
@@ -450,6 +456,9 @@ class WooSynchro(models.TransientModel):
                 add_id_server = f''', server_vex = {server.id}'''
                 if server.share_multi_instances:
                     add_id_server = ''
+
+                if len(exist) > 1:
+                    raise ValueError([exist,domain])
 
                 query_updatex = f"UPDATE {tablec} SET  conector = '{conector}' , id_vex = '{str(id_vex)}' {add_id_server}  WHERE default_code = '{default_code}' ;"
                 query_updatex += f"UPDATE product_product SET id_vex_varition = '{str(id_vex)}' , base_unit_count = 0 WHERE product_tmpl_id = {exist.id} ;"

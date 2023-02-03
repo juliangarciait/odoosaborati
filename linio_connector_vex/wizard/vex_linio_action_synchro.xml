@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="linio_config_main" name="Action" parent="linio_config"/>
+
+
+
+    <record id="action_view_linio_synchro" model="ir.actions.act_window">
+        <field name="name">Import</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">vex.synchro</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="view_meli_synchro"/> -->
+        <field name="target">new</field>
+        <field name="context">{'default_conector':'linio'}</field>
+    </record>
+
+
+    <menuitem parent="linio_config_main" name="Import / Update"
+              action="action_view_linio_synchro" id="menu_action_view_linio_synchro" />
+
+</odoo>

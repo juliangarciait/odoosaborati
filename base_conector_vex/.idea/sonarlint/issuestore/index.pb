@@ -3,8 +3,6 @@ D
 models/vex_config.py,4/9/49cd05b3847e73a706b098b404d0f544d8b69ebd
 D
 models/vex_envios.py,f/9/f9758dae308a1d2851a39e30dc9b0d24c4c23d81
-B
-models/__init__.py,b/b/bb5e16ac59b350373b55d7ae678133d6e2cfadaa
 ?
 __manifest__.py,f/b/fb5097a66c279662079e85c889e061a106c5ec0f
 @
@@ -23,3 +21,17 @@ B
 models/vex_logs.py,6/f/6f518d99455a5569be98ed214ab844d73b2f277c
 C
 views/vex_order.xml,7/f/7f076b7dc93d536111190c26e168985cf1b88a3e
+X
+(models/vex_soluciones_product_product.py,2/c/2c3d4dd7177e986dc9969dcb7d45c6a44f93c4c7
+I
+models/vex_stock_quant.py,b/0/b0803637f2dc623e96872ea8f07464baef4b186b
+B
+models/__init__.py,b/b/bb5e16ac59b350373b55d7ae678133d6e2cfadaa
+E
+wizard/vex_synchro.py,d/a/da20818c8bdb6a34c2ce597d08290edb40ef28de
+F
+views/vex_instance.xml,e/3/e3ecc074d4e65d628076fa996a3aa57e1b144ab4
+F
+models/vex_instance.py,a/6/a69af579d4a4fb55160673eb684af734d03dc4c1
+A
+data/vex_cron.xml,e/e/eeb8292222b4fb8c77fec2ab1866fa7a5f5fe961

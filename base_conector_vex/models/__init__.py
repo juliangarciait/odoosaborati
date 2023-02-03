@@ -12,4 +12,5 @@ from . import vex_soluciones_cupones
 from . import vex_taxes
 from . import vex_instance
 from . import vex_state_orders
+#from . import vex_stock_quant
 #from . import vex_stock_inventory
