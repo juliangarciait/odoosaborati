@@ -21,9 +21,10 @@ class MeliMultiExport(models.TransientModel):
     products = fields.Many2many('product.template')
 
     def export_product(self,p,server,self2=None,validate=True):
+        if not p.description_meli:
+            raise ValidationError(f'El producto no tiene descripcion de Mercado Libre {p.display_name}')
         if validate:
-            if not p.description_meli:
-                raise ValidationError('El producto no tiene descripcion de Mercado Libre')
+
 
             if not p.default_code:
                 raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
