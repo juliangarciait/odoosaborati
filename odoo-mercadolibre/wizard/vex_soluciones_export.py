@@ -94,7 +94,10 @@ class MeliMultiExport(models.TransientModel):
                          ('location_id', '=', server.warehouse_stock_vex.lot_stock_id.id)])
                     stock = 0
                     if quant:
-                        stock = quant.quantity
+                        for qua in quant:
+                            stock += qua.quantity
+
+
                     data['available_quantity'] = stock
             data['attributes'] = [
                 #{
