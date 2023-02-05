@@ -33,7 +33,7 @@ class MeliMultiExport(models.TransientModel):
 
         name_product = p.name_product_meli
         if not name_product:
-            raise ValidationError('NO SE INDICO NOMBRE DEL PRODUCTO')
+            raise ValidationError(f'NO SE INDICO NOMBRE DEL PRODUCTO {p.display_name}')
 
 
         plain_text = p.description_meli+'\n'+server.description_company
@@ -302,13 +302,18 @@ class MeliUnitExport(models.TransientModel):
 
     @api.onchange('server')
     def change_server(self):
+        if self.server:
+            self.env['vex.synchro'].check_synchronize(self.server)
         if self.server.warehouse_stock_vex and self.product:
             quant = self.env['stock.quant'].search([('product_id','=',self.product.id),('on_hand','=',True),
                                             ('location_id','=',self.server.warehouse_stock_vex.lot_stock_id.id)])
             stock = 0
             if quant:
-                stock = quant.quantity
+                for quan in quant:
+                    stock += quan.quantity
+                #stock = quant.quantity
             self.quantity = stock
+
 
     #def check_category(self):
     #    if self.server:

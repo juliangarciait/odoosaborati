@@ -730,6 +730,7 @@ class MeliActionSynchro(models.TransientModel):
         servers = self.env['vex.instance'].search([('active_automatic', '=', True)])
         #raise ValidationError(servers)
         for s in servers:
+            self.env['vex.synchro'].check_synchronize(s)
             #wizard = self.env['vex.synchro'].create(dict(
             #    server_vex=s.id,
             #    accion=self.env.ref('linio_connector_vex.linio_action_products', False).id ,
