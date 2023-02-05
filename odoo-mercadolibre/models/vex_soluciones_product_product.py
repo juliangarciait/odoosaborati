@@ -83,7 +83,7 @@ class ProductProduct(models.Model):
 
             accion = self.env['vex.restapi.list'].search([('conector', '=', 'meli'), ('argument', '=', 'products')])
             for server in self.env['vex.instance'].search([]):
-                self.check_synchronize(server)
+                self.env['vex.synchro'].check_synchronize(server)
                 name_products = ''
                 n = ''
                 start_date = fields.Datetime.now()
