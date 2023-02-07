@@ -271,7 +271,25 @@ class ShopifyProductProductEpt(models.Model):
             for variant in template.shopify_product_ids:
                 variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
                                                             is_set_basic_detail)
-                variants.append(variant_vals)
+                _logger.info(variant_vals.get('price'))
+                _logger.info(variant)
+                _logger.info(variant_vals)
+                _logger.info('#'*1000)
+                if variant_vals.get('price') > 1.00: 
+                    variants.append(variant_vals)
+                    product_in_log_exist = self.env['product.log'].search([('product_id', '=', variant.product_id.id), ('instance_id', '=', instance.id)])
+                    if product_in_log_exist: 
+                        product_in_log_exist.unlink()
+                else: 
+                    product_in_log_exist = self.env['product.log'].search([('product_id', '=', variant.product_id.id), ('instance_id', '=', instance.id)])
+                    if not product_in_log_exist: 
+                        create_product_in_log = self.env['product.log'].create(
+                            {
+                                'product_id' : variant.product_id.id, 
+                                'instance_id': instance.id
+                            }
+                        )
+                
             new_product.variants = variants
         if is_set_basic_detail:
             self.prepare_export_update_product_attribute_vals(template, new_product)

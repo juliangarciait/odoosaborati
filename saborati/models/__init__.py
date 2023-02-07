@@ -18,3 +18,4 @@ from . import product_prices
 from . import stock_picking
 from . import product_supplierinfo
 from . import mrp_production
+from . import product_log

@@ -61,6 +61,7 @@
         'wizard/change_product_status_view.xml',
         'wizard/assign_collection_to_product.xml',
         'wizard/export_collection_to_shopify.xml',
+        'view/product_log.xml',
     ],
     'demo_xml': [],
     # cloc settings
