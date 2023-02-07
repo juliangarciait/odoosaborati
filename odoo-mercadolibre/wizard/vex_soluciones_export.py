@@ -21,9 +21,14 @@ class MeliMultiExport(models.TransientModel):
     products = fields.Many2many('product.template')
 
     def export_product(self,p,server,self2=None,validate=True):
-        if not p.description_meli:
-            raise ValidationError(f'El producto no tiene descripcion de Mercado Libre {p.display_name}')
+
+        name_product = p.name_product_meli
+
+
         if validate:
+
+            if not p.description_meli:
+                raise ValidationError(f'El producto no tiene descripcion de Mercado Libre {p.display_name}')
 
 
             if not p.default_code:
@@ -31,12 +36,15 @@ class MeliMultiExport(models.TransientModel):
             if not p.image_1920:
                 raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
 
-        name_product = p.name_product_meli
-        if not name_product:
-            raise ValidationError(f'NO SE INDICO NOMBRE DEL PRODUCTO {p.display_name}')
+            if not name_product:
+                raise ValidationError(f'NO SE INDICO NOMBRE DEL PRODUCTO {p.display_name}')
+
+        name_product = name_product or ''
 
 
-        plain_text = p.description_meli+'\n'+server.description_company
+
+
+        plain_text = p.description_meli or ''+'\n'+server.description_company
         if server.include_name_init_descripton:
             plain_text = name_product  + '\n' + plain_text
 
@@ -89,13 +97,13 @@ class MeliMultiExport(models.TransientModel):
                 if self2:
                     data['available_quantity'] = int(self2.quantity)
                 else:
-                    quant = self.env['stock.quant'].search(
-                        [('product_id', '=', p.id), ('on_hand', '=', True),
-                         ('location_id', '=', server.warehouse_stock_vex.lot_stock_id.id)])
+                    domain_quant = p.action_open_quants()['domain']
+                    quant = self.env['stock.quant'].search(domain_quant)
                     stock = 0
                     if quant:
                         for qua in quant:
-                            stock += qua.quantity
+                            if qua.location_id.id == server.warehouse_stock_vex.lot_stock_id.id:
+                                stock += qua.quantity
 
 
                     data['available_quantity'] = stock
@@ -110,6 +118,7 @@ class MeliMultiExport(models.TransientModel):
 
                 }
             ]
+            #raise ValidationError(str(data))
             r = requests.put(url, json=data, headers=headers)
             datax = r.json()
 
@@ -303,16 +312,22 @@ class MeliUnitExport(models.TransientModel):
     @api.onchange('server')
     def change_server(self):
         if self.server:
+            #raise ValidationError(self.server)
+            server = self.server
             self.env['vex.synchro'].check_synchronize(self.server)
-        if self.server.warehouse_stock_vex and self.product:
-            quant = self.env['stock.quant'].search([('product_id','=',self.product.id),('on_hand','=',True),
-                                            ('location_id','=',self.server.warehouse_stock_vex.lot_stock_id.id)])
-            stock = 0
-            if quant:
-                for quan in quant:
-                    stock += quan.quantity
-                #stock = quant.quantity
-            self.quantity = stock
+            if self.server.warehouse_stock_vex and self.product:
+                domain_quant = self.product.action_open_quants()['domain']
+                quant = self.env['stock.quant'].search(domain_quant)
+                self.server = server.id
+                stock = 0
+                if quant:
+                    for qua in quant:
+                        if qua.location_id.id == self.server.warehouse_stock_vex.lot_stock_id.id:
+                            stock += qua.quantity
+                    # stock = quant.quantity
+                self.quantity = stock
+            self.server = server.id
+
 
 
     #def check_category(self):

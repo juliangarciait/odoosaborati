@@ -16,6 +16,11 @@ class ProductProduct(models.Model):
     name_product_meli = fields.Text(string="Titulo")
     description_meli = fields.Text(string="Descripcion")
 
+    def action_open_quants(self):
+        res = super().action_open_quants()
+        #raise ValueError(res['domain'])
+        return res
+
 
     def update_conector_vex(self):
 

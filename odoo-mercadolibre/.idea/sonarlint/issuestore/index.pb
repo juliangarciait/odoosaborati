@@ -21,3 +21,5 @@ X
 (views/vex_soluciones_product_product.xml,5/b/5b541ee1edf0e72891b9697c1752627ae56469ab
 P
  wizard/vex_soluciones_export.xml,a/5/a5287a9281df9a7d64125d4253d2fedcfcaf49f7
+^
+.models/vex_soluciones_meli_synchro_instance.py,3/4/3485e6f91d029eb93cf627b815450cf1ab103dde
