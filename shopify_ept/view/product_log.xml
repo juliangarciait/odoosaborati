@@ -7,6 +7,7 @@
         <field name="model">product.log</field>
         <field name="arch" type="xml">
             <tree string="Product Log" create="false">
+                <field name="create_date" readonly="1"/>
                 <field name="product_id" readonly="1"/>
                 <field name="instance_id" readonly="1"/>
             </tree>
