@@ -13,6 +13,7 @@ class MrpProduction(models.Model):
         res = super(MrpProduction, self).button_mark_done()
         
         products = self.product_id.product_tmpl_id.shopify_product_template_ids.ids
+        process_import_export_obj = False
         for line in self.move_raw_ids: 
             for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
                 process_import_export_obj = self.env['shopify.process.import.export'].create({
@@ -29,6 +30,7 @@ class MrpProduction(models.Model):
         res = super(MrpProduction, self).button_scrap()
         
         products = self.product_id.product_tmpl_id.shopify_product_template_ids.ids
+        process_import_export_obj = False
         for line in self.move_raw_ids: 
             for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
                 process_import_export_obj = self.env['shopify.process.import.export'].create({
