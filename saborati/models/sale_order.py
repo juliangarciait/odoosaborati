@@ -37,7 +37,8 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self).action_confirm()
         
         products = []
-        for line in self.order_line: 
+        process_import_export_obj = False
+        for line in self.order_line:
             for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
                 process_import_export_obj = self.env['shopify.process.import.export'].create({
                     'shopify_instance_id' : product.shopify_instance_id.id,
@@ -53,6 +54,7 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self).action_cancel()
         
         products = []
+        process_import_export_obj = False
         for line in self.order_line: 
             for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
                 process_import_export_obj = self.env['shopify.process.import.export'].create({
