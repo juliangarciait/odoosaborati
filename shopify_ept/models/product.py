@@ -72,7 +72,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if product.detailed_type == 'product':
-                self.export_to_shopify(product)
+                self.with_delay().export_to_shopify(product)
                             
                             #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
                                            
@@ -224,7 +224,7 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
-            self.export_variant_to_shopify(product_variant)
+            self.with_delay().export_variant_to_shopify(product_variant)
             
             
         return res
