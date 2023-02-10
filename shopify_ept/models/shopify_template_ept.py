@@ -73,6 +73,16 @@ class ShopifyProductTemplateEpt(models.Model):
                     'shopify_is_publish'             : 'publish_product_global',
                 })
                 export_data.with_context({"active_ids" : [product.id]}).manual_update_product_to_shopify()
+                
+    def cron_update_stock(self):
+        for product in self.search([]): 
+            process_import_export_obj = False
+            process_import_export_obj = self.env['shopify.process.import.export'].create({
+                'shopify_instance_id' : product.shopify_instance_id.id,
+            })
+            
+            if process_import_export_obj: 
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
     
     @api.depends("shopify_product_ids.exported_in_shopify", "shopify_product_ids.variant_id")
     def _compute_total_sync_variants(self):
