@@ -325,11 +325,25 @@ class ShopifyProductProductEpt(models.Model):
                 self.update_products_details_shopify_third_layer(new_product, template, is_publish)
             if new_product and is_set_images:
                 self.export_product_images(instance, shopify_template=template)
+            if new_product and template.product_tmpl_id.product_collection_ids: 
+                self.export_collections(template.product_tmpl_id.product_collection_ids, new_product, template)
             self._cr.commit()
 
         if not log_book_id.log_lines:
             log_book_id.unlink()
         return True
+    
+    def export_collections(self, collections, shopify_product, template): 
+        for product_collection in collections:
+            product_collection.shopify_instance_id.connect_in_shopify()     
+            if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == template.shopify_instance_id:
+                self.add_product(product_collection, shopify_product)
+    
+    
+    def add_product(self, product_collection, shopify_product): 
+        collect = product_collection.request_collection(product_collection.shopify_collection_id)
+        if collect:
+            shopify_product.add_to_collection(collect) 
 
     def shopify_export_product_log_line(self, message, model_id, log_book_id):
         """This method is used to create log lines of the export product process.
@@ -505,7 +519,7 @@ class ShopifyProductProductEpt(models.Model):
         """
         variant_vals.update({"barcode": variant.product_id.barcode or "",
                              "grams": int(variant.product_id.weight * 1000),
-                             "weight": 60.0,#variant.product_id.weight,
+                             "weight": variant.product_id.weight,
                              "weight_unit": "kg",
                              "requires_shipping": "true", "sku": variant.default_code,
                              "taxable": variant.taxable and "true" or "false",
