@@ -15,4 +15,16 @@
 
     <menuitem id="menu_product_variants_template_meli" action="product_template_variants_meli"
               parent="odoo-mercadolibre.meli_main_list_sync" name="Products Variants"/>
+
+
+    <record id="product_product_vex_herencia_form" model="ir.ui.view">
+           <field name="name">Product.view</field>
+           <field name="model">product.product</field>
+           <field name="inherit_id" ref="base_conector_vex.product_product_vex_herencia_form"/>
+           <field name="arch" type="xml">
+              <xpath expr="//field[@name='id_vex_varition']" position="after">
+                   <field name="check_export_meli"  />
+              </xpath>
+           </field>
+    </record>
 </odoo>

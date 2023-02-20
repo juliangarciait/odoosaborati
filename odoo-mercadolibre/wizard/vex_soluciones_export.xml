@@ -58,6 +58,7 @@
                                   widget="selection"
                                   attrs="{'invisible': ['|',('id_vex', '!=', False),('id_vex_varition', '!=', False)]}"
                                   domain="[('parent_id','=', category_children)]" />
+                           <field name="print_data" groups="base_conector_vex.group_advanced_field_vex" />
 
                      </group>
 

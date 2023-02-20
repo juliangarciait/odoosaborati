@@ -72,7 +72,7 @@ class VexInstance(models.Model):
     user_sale_id = fields.Many2one('res.users',string="Vendedor Ventas")
     export_stock_min = fields.Integer(string="Stock Minimo a exportar")
     share_multi_instances = fields.Boolean(default=False,string="Compartir Productos entre cuentas")
-    export_stock_all_products = fields.Boolean(default=True,string="Exportar Stock todos los productos")
+    export_stock_all_products = fields.Boolean(default=True,string="Exportar  todos los productos")
     warehouse_stock_vex = fields.Many2one('stock.warehouse', string="Almacen x Exportar")
     type_document = fields.Many2one('l10n_latam.identification.type',string="Tipo de Identificacion")
     description_company = fields.Text(string="Descripcion Empresa",default='')

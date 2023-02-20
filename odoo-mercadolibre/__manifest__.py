@@ -29,7 +29,7 @@
         'security/ir.model.access.csv',
         'views/vex_instance.xml',
         #'views/vex_soluciones_product_attribute.xml',
-        'views/vex_soluciones_meli_synchro_instance.xml',
+
         'views/vex_soluciones_product_product.xml',
         'views/vex_soluciones_categories.xml',
         'views/vex_soluciones_orders.xml',

@@ -7,8 +7,6 @@ D
 __manifest__.py,f/b/fb5097a66c279662079e85c889e061a106c5ec0f
 @
 data/product.xml,c/7/c70ec5976c8f599ef47677beeb8be07da3f2b50d
-B
-security/group.xml,8/4/84d10c16da40a6e7c7eaf8a9c4c0583696b0b13d
 N
 views/vex_product_template.xml,6/a/6a7abca4d5ce50eeb1161bb5f3fb6dc7e82ec699
 R
@@ -21,7 +19,5 @@ B
 models/vex_logs.py,6/f/6f518d99455a5569be98ed214ab844d73b2f277c
 C
 views/vex_order.xml,7/f/7f076b7dc93d536111190c26e168985cf1b88a3e
-X
-(models/vex_soluciones_product_product.py,2/c/2c3d4dd7177e986dc9969dcb7d45c6a44f93c4c7
 I
 models/vex_stock_quant.py,b/0/b0803637f2dc623e96872ea8f07464baef4b186b

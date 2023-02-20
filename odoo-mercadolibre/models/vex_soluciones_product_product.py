@@ -15,6 +15,7 @@ class ProductProduct(models.Model):
                                         ('gold_special', 'gold special')])
     name_product_meli = fields.Text(string="Titulo")
     description_meli = fields.Text(string="Descripcion")
+    check_export_meli = fields.Boolean(default=False)
 
     def action_open_quants(self):
         res = super().action_open_quants()
@@ -93,6 +94,9 @@ class ProductProduct(models.Model):
                 n = ''
                 start_date = fields.Datetime.now()
                 for record in self:
+                    if not server.export_stock_all_products:
+                        if not record.check_export_meli:
+                            continue
                     if record.id_vex_varition or record.id_vex:
                         self.env['meli.export'].export_product(record, server,None,False)
                         name_products += record.display_name + ' , '

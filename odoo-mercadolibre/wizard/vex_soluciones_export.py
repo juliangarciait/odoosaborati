@@ -118,8 +118,14 @@ class MeliMultiExport(models.TransientModel):
 
                 }
             ]
-            #raise ValidationError(str(data))
+            if self2:
+                if self2.print_data:
+                    raise ValidationError(str(data))
+            if server.print_data_error_meli:
+                raise ValueError(data)
+
             r = requests.put(url, json=data, headers=headers)
+
             datax = r.json()
 
             url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
@@ -197,6 +203,12 @@ class MeliMultiExport(models.TransientModel):
 
             data['attributes'] = atributes
 
+            if self2:
+                if self2.print_data:
+                    raise ValidationError(str(data))
+            if server.print_data_error_meli:
+                raise ValueError(data)
+
             r = requests.post(url, json=data, headers=headers)
 
 
@@ -264,6 +276,7 @@ class MeliUnitExport(models.TransientModel):
                                           string="Tipo de Publicacion",default='bronze')
     name_product_meli = fields.Text(string="Titulo",required=True)
     description_meli = fields.Text(string="Descripcion",required=True)
+    print_data  = fields.Boolean()
 
     @api.onchange('product')
     def change_productx(self):
@@ -329,11 +342,6 @@ class MeliUnitExport(models.TransientModel):
             self.server = server.id
 
 
-
-    #def check_category(self):
-    #    if self.server:
-    #        #self.env['meli.action.synchro'].check_synchronize(self.server)
-    #        self.predict_category()
 
     @api.onchange('category_children2')
     def set_category_padre(self):

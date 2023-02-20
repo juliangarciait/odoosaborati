@@ -8,18 +8,8 @@ B
 B
 wizard/__init__.py,9/a/9a7bb951b8d2d2e191e5d30822e6fcf3d333634a
 S
-#views/vex_soluciones_categories.xml,1/5/1573be933a9dc779618033cb3539780d22a4936e
-S
 #models/vex_soluciones_categories.py,0/6/06f41ee6a0216f0c1305819dd7d6ff515b105ac7
-F
-views/vex_instance.xml,e/3/e3ecc074d4e65d628076fa996a3aa57e1b144ab4
 Y
 )models/vex_soluciones_meli_action_list.py,0/e/0e252b7bc913a41f9af19b921cddf2d531d72d85
 T
 $models/vex_soluciones_meli_config.py,5/7/576b1f4c5d9e895c1ca60a85b7a6e4b25f67e90f
-X
-(views/vex_soluciones_product_product.xml,5/b/5b541ee1edf0e72891b9697c1752627ae56469ab
-P
- wizard/vex_soluciones_export.xml,a/5/a5287a9281df9a7d64125d4253d2fedcfcaf49f7
-^
-.models/vex_soluciones_meli_synchro_instance.py,3/4/3485e6f91d029eb93cf627b815450cf1ab103dde

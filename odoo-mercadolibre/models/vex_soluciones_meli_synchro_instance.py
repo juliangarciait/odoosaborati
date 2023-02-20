@@ -19,6 +19,7 @@ class ApiSynchroInstance(models.Model):
     redirect_uri = fields.Char()
     access_token = fields.Char()
     refresh_token = fields.Char()
+    print_data_error_meli = fields.Boolean(default=False)
 
 
     url_get_server_code =  fields.Char(compute="get_server_code")

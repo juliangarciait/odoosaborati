@@ -285,6 +285,10 @@
                    <field name="field_brand"
                           attrs="{'invisible': [('conector','!=','meli')]}"
                            />
+                   <field name="print_data_error_meli"
+                          attrs="{'invisible': [('conector','!=','meli')]}"
+                          groups="base_conector_vex.group_advanced_field_vex"
+                           />
 
                </xpath>
 
