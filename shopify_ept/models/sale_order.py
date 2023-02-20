@@ -652,6 +652,7 @@ class SaleOrder(models.Model):
             "state": "draft",
             "pricelist_id": pricelist_id.id if pricelist_id else False,
             "team_id": instance.shopify_section_id.id if instance.shopify_section_id else False,
+            "medium_id": instance.shopify_medium_id.id if instance.shopify_medium_id else False,
         }
         ordervals = self.create_sales_order_vals_ept(ordervals)
         order_response_vals = self.prepare_order_vals_from_order_response(order_response, instance, workflow,

@@ -138,6 +138,8 @@ class ShopifyInstanceEpt(models.Model):
                                                 "currency from the pricelist set here, matches.")
     shopify_b2b_pricelist_id = fields.Many2one('product.pricelist', string='B2B Pricelist')
     shopify_wholesale_pricelist_id = fields.Many2one('product.pricelist', string='Wholesale Pricelist')
+    
+    shopify_medium_id = fields.Many2one('utm.medium', string="Medio")
 
     shopify_order_prefix = fields.Char(size=10, string='Order Prefix',
                                        help="Enter your order prefix")
