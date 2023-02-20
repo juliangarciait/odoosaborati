@@ -51,7 +51,7 @@ class ResPartner(models.Model):
                 if not res_partner:
                     partner_vals.update(
                         {'is_company': False, 'type': 'invoice', 'customer_rank': 0, 'is_shopify_customer': True})
-                    res_partner = self.create(partner_vals)
+                    res_partner = self.with_company(instance.company_id).create(partner_vals)
             return res_partner
 
         res_partner = self
