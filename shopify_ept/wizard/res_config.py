@@ -202,6 +202,7 @@ class ResConfigSettings(models.TransientModel):
     shopify_pricelist_id = fields.Many2one("product.pricelist", string="Shopify Pricelist")
     shopify_b2b_pricelist_id = fields.Many2one("product.pricelist", string="Shopify Consumer Pricelist")
     shopify_wholesale_pricelist_id = fields.Many2one("product.pricelist", string="Shopify Wholesale Pricelist")
+    shopify_medium_id = fields.Many2one("utm.medium", string="Medio")
     shopify_stock_field = fields.Many2one("ir.model.fields", string="Stock Field")
     shopify_section_id = fields.Many2one("crm.team", "Shopify Sales Team")
     shopify_is_use_default_sequence = fields.Boolean("Use Odoo Default Sequence in Shopify Orders",
@@ -297,6 +298,7 @@ class ResConfigSettings(models.TransientModel):
             self.shopify_pricelist_id = instance.shopify_pricelist_id and instance.shopify_pricelist_id.id or False
             self.shopify_b2b_pricelist_id = instance.shopify_b2b_pricelist_id and instance.shopify_b2b_pricelist_id or False
             self.shopify_wholesale_pricelist_id = instance.shopify_wholesale_pricelist_id and instance.shopify_wholesale_pricelist_id or False
+            self.shopify_medium_id = instance.shopify_medium_id and instance.shopify_medium_id.id or False
             self.shopify_stock_field = instance.shopify_stock_field and instance.shopify_stock_field.id or False
             self.shopify_section_id = instance.shopify_section_id.id or False
             self.shopify_order_prefix = instance.shopify_order_prefix
@@ -346,6 +348,7 @@ class ResConfigSettings(models.TransientModel):
             values["shopify_pricelist_id"] = self.shopify_pricelist_id and self.shopify_pricelist_id.id or False
             values["shopify_b2b_pricelist_id"] = self.shopify_b2b_pricelist_id and self.shopify_b2b_pricelist_id.id or False
             values["shopify_wholesale_pricelist_id"] = self.shopify_wholesale_pricelist_id and self.shopify_wholesale_pricelist_id.id or False
+            values["shopify_medium_id"] = self.shopify_medium_id and self.shopify_medium_id.id or False
             values["shopify_stock_field"] = self.shopify_stock_field and self.shopify_stock_field.id or False
             values["shopify_section_id"] = self.shopify_section_id and self.shopify_section_id.id or False
             values["shopify_order_prefix"] = self.shopify_order_prefix
@@ -464,6 +467,7 @@ class ResConfigSettings(models.TransientModel):
                 'shopify_pricelist_id': self.shopify_pricelist_id and self.shopify_pricelist_id.id or False,
                 'shopify_b2b_pricelist_id': self.shopify_b2b_pricelist_id and self.shopify_b2b_pricelist_id.id or False, 
                 'shopify_wholesale_pricelist_id': self.shopify_wholesale_pricelist_id and self.shopify_wholesale_pricelist_id.id or False,
+                'shopify_medium_id': self.shopify_medium_id and self.shopify_medium_id.id or False,
                 'shopify_section_id': self.shopify_section_id and self.shopify_section_id.id or False,
                 'is_use_default_sequence': self.shopify_is_use_default_sequence,
                 'shopify_order_prefix': self.shopify_order_prefix or False,
