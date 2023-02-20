@@ -19,7 +19,13 @@
         <field name="inherit_id" ref="product.product_pricelist_item_tree_view_from_product"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='min_quantity']" position="after">
-                <field name="percent_price" attrs="{'invisible': [('percent_price', '=', 0)]}" optional="show"/>
+                <field name="percent_price" optional="show"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='fixed_price']" position="after">
+                <field name="replacement_cost" optional="show"/>
+            </xpath>
+            <xpath expr="//tree/field[@name='product_id']" position="before">
+                <field name="compute_price" optional="show"/>
             </xpath>
         </field>
     </record>

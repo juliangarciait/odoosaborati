@@ -82,7 +82,7 @@ class ShopifyProductTemplateEpt(models.Model):
             })
             
             if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).with_delay().shopify_selective_product_stock_export()
     
     @api.depends("shopify_product_ids.exported_in_shopify", "shopify_product_ids.variant_id")
     def _compute_total_sync_variants(self):
