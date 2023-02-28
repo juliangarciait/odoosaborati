@@ -63,6 +63,7 @@
                                 <t t-set="size_status" t-value="'badge-success'"/>
                                 <span t-attf-class="badge #{size_status} o_product_image_size"
                                       t-esc="record.image.value" t-att-title="message"/>
+                                <field name="product_id"/>
                             </div>
                         </div>
                     </t>

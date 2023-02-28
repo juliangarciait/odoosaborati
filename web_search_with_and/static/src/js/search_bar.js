@@ -46,11 +46,7 @@ odoo.define("web_search_with_and/static/src/js/search_bar.js", function (require
                 // This case happens with an IME for example: we let it handle all key events.
                 return;
             }
-            if (ev.shiftKey) {
-                this.isShiftKey = true;
-            } else {
-                this.isShiftKey = false;
-            }
+            this.isShiftKey = true;
             const currentItem = this.state.sources[this.state.focusedItem] || {};
             switch (ev.key) {
                 case "ArrowDown":

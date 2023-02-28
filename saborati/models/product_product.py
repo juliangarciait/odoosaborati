@@ -15,6 +15,18 @@ class ProductProduct(models.Model):
     purchase_ok = fields.Boolean('Can be Purchased', default=True)
     sale_ok = fields.Boolean('Can be Sold', default=True)
     
+    product_prices_ids = fields.One2many('product.product.prices', 'product_id')
+    
+    available_quantity = fields.Float(compute='_search_available_quantity', string="Cantidad disponible")
+    
+    @api.depends('stock_quant_ids.available_quantity')
+    def _search_available_quantity(self): 
+        for product in self: 
+            product.available_quantity = 0.0
+            stock_quants = self.env['stock.quant'].search([('product_id', '=', product.id)])
+            for quant in stock_quants: 
+                product.available_quantity += quant.available_quantity
+    
     @api.depends('seller_ids', 'bom_ids')
     def _compute_replacement_cost(self): 
         for record in self:

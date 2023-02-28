@@ -260,4 +260,9 @@ class ProductProduct(models.Model):
                         shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
                         if product_instance.exported_in_shopify:
                             export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
-                    
+                            
+    def change_to_shopify_boolean(self): 
+        ids = self.env['product.product'].search([('id', 'in', self.env.context.get("active_ids", []))])
+        
+        for product in ids: 
+            product.to_shopify = True
