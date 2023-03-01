@@ -338,6 +338,20 @@
         </field>
     </record>
 
+    <record id="product_product_tree_view_inherited_shopify" model="ir.ui.view">
+        <field name="name">product.product.tree.view.inherited.shopify</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="to_shopify" optional="show"/>
+            </xpath>
+            <xpath expr="//tree/header" position="inside">
+                <button name="%(shopify_ept.product_to_shopify_action_server)d" type="action" string="Activar a Shopify"/>
+            </xpath>
+        </field>
+    </record>
+
 
     <!--<record id="product_template_search_inherit_filter" model="ir.ui.view">
         <field name="name">product.template.search.inherit.filter</field>
@@ -374,6 +388,14 @@
         <field name="binding_model_id" ref="model_shopify_product_template_ept"/>
         <field name="state">code</field>
         <field name="code">action = model.change_product_status()</field>
+    </record>
+
+    <record id="product_to_shopify_action_server" model="ir.actions.server">
+        <field name="name">Activar a Shopify</field>
+        <field name="model_id" ref="model_product_product"/>
+        <field name="binding_model_id" ref="model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">action = model.change_to_shopify_boolean()</field>
     </record>
 
 </odoo>

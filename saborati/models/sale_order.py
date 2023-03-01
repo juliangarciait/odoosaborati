@@ -19,9 +19,10 @@ class SaleOrder(models.Model):
             qty_percentage = 0
             dlv_percentage = 0
 
-            for line in record.order_line: 
-                qty_percentage += line.product_uom_qty * line.price_unit
-                dlv_percentage += line.qty_delivered * line.price_unit
+            for line in record.order_line:
+                if line.product_id.detailed_type == 'product':  
+                    qty_percentage += line.product_uom_qty * line.price_unit
+                    dlv_percentage += line.qty_delivered * line.price_unit
 
             record.delivery_percentage = dlv_percentage / qty_percentage if qty_percentage > 0 else 0.0
     
@@ -69,19 +70,38 @@ class SaleOrder(models.Model):
     
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
-    
-    def _compute_name(self):
-        for line in self:
-            if not line.product_id:
-                continue
 
-            name = line.with_context(lang=line.order_partner_id.lang)._get_sale_order_line_multiline_description_sale()
-            if line.is_downpayment and not line.display_type:
-                context = {'lang': line.order_partner_id.lang}
-                dp_state = line._get_downpayment_state()
-                if dp_state == 'draft':
-                    name = _("%(line_description)s (Draft)", line_description=name)
-                elif dp_state == 'cancel':
-                    name = _("%(line_description)s (Canceled)", line_description=name)
-                del context
-            line.name = name
+    @api.onchange('product_id')
+    def product_id_change(self):
+        res = super(SaleOrderLine, self).product_id_change()
+        
+        self._update_description()
+        
+        return res
+            
+    def _update_description(self):
+        if not self.product_id:
+            return
+        valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
+        # remove the is_custom values that don't belong to this template
+        for pacv in self.product_custom_attribute_value_ids:
+            if pacv.custom_product_template_attribute_value_id not in valid_values:
+                self.product_custom_attribute_value_ids -= pacv
+
+        # remove the no_variant attributes that don't belong to this template
+        for ptav in self.product_no_variant_attribute_value_ids:
+            if ptav._origin not in valid_values:
+                self.product_no_variant_attribute_value_ids -= ptav
+
+        vals = {}
+        if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
+            vals['product_uom'] = self.product_id.uom_id
+            vals['product_uom_qty'] = self.product_uom_qty or 1.0
+
+        lang = get_lang(self.env, self.order_id.partner_id.lang).code
+        product = self.product_id.with_context(
+            lang=lang,
+        )
+
+        self.update({'name': product.name})
+        

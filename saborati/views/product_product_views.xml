@@ -30,6 +30,14 @@
                         </tree>
                     </field>
                 </page>
+                <page string="Precios">
+                    <field name="product_prices_ids" context="{'default_product_id': active_id}" widget="one2many_list" nolabel="1">
+                        <tree string="Precios" editable="bottom">
+                            <field name="product_pricelist_id"/>
+                            <field name="price"/>
+                        </tree>
+                    </field>
+                </page>
             </xpath>
             <xpath expr="//form/sheet/notebook/page[@name='purchase']" position="attributes">
                 <attribute name="string">Vendor Pricelists</attribute>
@@ -44,6 +52,9 @@
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='lst_price']" position="after">
                 <field name="replacement_cost" widget="monetary" optional="show"/>
+            </xpath>
+            <xpath expr="//tree" position="inside">
+                <field name="available_quantity" optional="show"/>
             </xpath>
         </field>
     </record>
