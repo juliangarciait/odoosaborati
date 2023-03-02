@@ -8,7 +8,7 @@
             <tree create="false" sample="1">
                 <header>
                     <button name="%(shopify_ept.action_wizard_shopify_product_for_update)d" type="action" string="Update Existing Product"/>
-                    <button name="%(shopify_ept.action_wizard_shopify_update_stock)d" type="action" string="Export Stock"/>
+                    <!--<button name="%(shopify_ept.action_wizard_shopify_update_stock)d" type="action" string="Export Stock"/>-->
                 </header>
                 <field name="name"/>
                 <field name="product_status"/>
