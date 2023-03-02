@@ -346,6 +346,9 @@
             <xpath expr="//tree" position="inside">
                 <field name="to_shopify" optional="show"/>
             </xpath>
+            <xpath expr="//tree/header" position="inside">
+                <button name="%(shopify_ept.product_to_shopify_action_server)d" type="action" string="Activar a Shopify"/>
+            </xpath>
         </field>
     </record>
 
