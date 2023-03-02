@@ -12,7 +12,7 @@ class ProductPricelistItem(models.Model):
 
     replacement_cost = fields.Char('Costo de reposición', compute="_compute_replacement_cost")
     
-    @api.depends('applied_on')
+    @api.depends('applied_on', 'product_id.replacement_cost', 'product_tmpl_id.replacement_cost')
     def _compute_replacement_cost(self):
         for item in self: 
             if item.applied_on == '1_product': 

@@ -16,5 +16,6 @@
     'data' : [
         'views/product_template_view.xml',
         'views/mrp_bom_view.xml',
+        'views/account_move_views.xml',
     ],
 }
