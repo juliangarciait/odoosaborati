@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="inherited_view_move_form" model="ir.ui.view">
+        <field name="name">inherited.view.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
+                <field name="replacement_cost" optional="show"/>
+                <field name="margin_rc" optional="show"/>
+                <field name="margin_signed_rc" optional="show"/>
+                <field name="margin_percent_rc" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
