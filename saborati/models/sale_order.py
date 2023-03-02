@@ -71,37 +71,37 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
 
-    @api.onchange('product_id')
-    def product_id_change(self):
-        res = super(SaleOrderLine, self).product_id_change()
+    #@api.onchange('product_id')
+    #def product_id_change(self):
+    #    res = super(SaleOrderLine, self).product_id_change()
         
-        self._update_description()
+        #self._update_description()
         
-        return res
+    #    return res
             
-    def _update_description(self):
-        if not self.product_id:
-            return
-        valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
+    #def _update_description(self):
+    #    if not self.product_id:
+    #        return
+    #    valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
         # remove the is_custom values that don't belong to this template
-        for pacv in self.product_custom_attribute_value_ids:
-            if pacv.custom_product_template_attribute_value_id not in valid_values:
-                self.product_custom_attribute_value_ids -= pacv
+    #    for pacv in self.product_custom_attribute_value_ids:
+    #        if pacv.custom_product_template_attribute_value_id not in valid_values:
+    #            self.product_custom_attribute_value_ids -= pacv
 
         # remove the no_variant attributes that don't belong to this template
-        for ptav in self.product_no_variant_attribute_value_ids:
-            if ptav._origin not in valid_values:
-                self.product_no_variant_attribute_value_ids -= ptav
+    #    for ptav in self.product_no_variant_attribute_value_ids:
+    #        if ptav._origin not in valid_values:
+    #            self.product_no_variant_attribute_value_ids -= ptav
 
-        vals = {}
-        if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
-            vals['product_uom'] = self.product_id.uom_id
-            vals['product_uom_qty'] = self.product_uom_qty or 1.0
+    #    vals = {}
+    #    if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
+    #        vals['product_uom'] = self.product_id.uom_id
+    #        vals['product_uom_qty'] = self.product_uom_qty or 1.0
 
-        lang = get_lang(self.env, self.order_id.partner_id.lang).code
-        product = self.product_id.with_context(
-            lang=lang,
-        )
+    #    lang = get_lang(self.env, self.order_id.partner_id.lang).code
+    #    product = self.product_id.with_context(
+    #        lang=lang,
+    #    )
 
-        self.update({'name': product.name})
+    #    self.update({'name': product.name})
         
