@@ -38,7 +38,7 @@ class SaleOrder(models.Model):
                             if picking.product_id.id in products: 
                                 qty_done += picking.quantity_done
                         
-                        line.qty_delivered = (qty_done * line.product_uom_qty / qty_to_deliver)
+                        line.qty_delivered = (qty_done * line.product_uom_qty / qty_to_deliver) if qty_to_deliver > 0 else 0.0
                         
                     dlv_percentage += line.qty_delivered * line.price_unit
                     qty_percentage += line.product_uom_qty * line.price_unit
