@@ -20,9 +20,28 @@ class SaleOrder(models.Model):
             dlv_percentage = 0
 
             for line in record.order_line:
+                mrp_bom_id = False
                 if line.product_id.detailed_type == 'product':  
-                    qty_percentage += line.product_uom_qty * line.price_unit
+                    mrp_bom_id = self.env['mrp.bom'].search([('product_id', '=', line.product_id.id), ('type', '=', 'phantom')], order='write_date desc', limit=1)
+                    if mrp_bom_id: 
+                        products = []
+                        product_qty = 0
+                        for mrp_bom_line in mrp_bom_id.bom_line_ids: 
+                            if mrp_bom_line.product_id.detailed_type == 'product':
+                                products.append(mrp_bom_line.product_id.id)
+                                product_qty += mrp_bom_line.product_qty           
+                        qty_to_deliver = product_qty * line.product_uom_qty
+                        
+                        qty_done = 0
+                        pickings = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id), ('state', '=', 'done')])
+                        for picking in pickings.move_ids_without_package:
+                            if picking.product_id.id in products: 
+                                qty_done += picking.quantity_done
+                        
+                        line.qty_delivered = (qty_done * line.product_uom_qty / qty_to_deliver)
+                        
                     dlv_percentage += line.qty_delivered * line.price_unit
+                    qty_percentage += line.product_uom_qty * line.price_unit
 
             record.delivery_percentage = dlv_percentage / qty_percentage if qty_percentage > 0 else 0.0
     
@@ -104,4 +123,29 @@ class SaleOrderLine(models.Model):
     #    )
 
     #    self.update({'name': product.name})
+    
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        if not self.product_uom or not self.product_id:
+            self.price_unit = 0.0
+            return
+        if self.order_id.pricelist_id and self.order_id.partner_id:
+            product = self.product_id.with_context(
+                lang=self.order_id.partner_id.lang,
+                partner=self.order_id.partner_id,
+                quantity=self.product_uom_qty,
+                date=self.order_id.date_order,
+                pricelist=self.order_id.pricelist_id.id,
+                uom=self.product_uom.id,
+                fiscal_position=self.env.context.get('fiscal_position')
+            )
+            #self.price_unit = product._get_tax_included_unit_price(
+            #    self.company_id or self.order_id.company_id,
+            #    self.order_id.currency_id,
+            #    self.order_id.date_order,
+            #    'sale',
+            #    fiscal_position=self.order_id.fiscal_position_id,
+            #    product_price_unit=self._get_display_price(product),
+            #    product_currency=self.order_id.currency_id
+            #)
         

@@ -224,6 +224,8 @@ class ShopifyProcessImportExport(models.TransientModel):
                                                             self.shopify_is_set_image,
                                                             self.shopify_is_publish,
                                                             shopify_templates)
+                time.sleep(10)
+                self.with_context({'active_ids' : shopify_templates}).with_delay().shopify_selective_product_stock_export()
         end = time.time()
         _logger.info("Export Processed %s Products in %s seconds.", str(len(templates)), str(end - start))
         return True

@@ -25,14 +25,15 @@ class ProductProductPrices(models.Model):
     _name = 'product.product.prices'
     
     product_pricelist_id = fields.Many2one('product.pricelist', 'Lista de precios')
-    price = fields.Char('Precio', readonly="1", store=True, compute='_compute_product_variant_pricelist')
+    price = fields.Char('Precio', readonly="1", compute='_compute_product_variant_pricelist')
     product_id = fields.Many2one('product.product', 'Product')
     
     @api.depends('product_pricelist_id', 'product_pricelist_id.item_ids')
     def _compute_product_variant_pricelist(self): 
         for record in self: 
             product_id = record.product_id._origin
+            record.price = 0.0
             if record.product_pricelist_id: 
                 price = record.product_pricelist_id.get_product_price(product_id, 1.0, partner=False, uom_id=product_id.uom_id.id)
                 price_with_tax = product_id.product_tmpl_id.taxes_id.compute_all(float(price), product=product_id.product_tmpl_id, partner=self.env['res.partner'])
-                record.price = str(float(price)) + " (" + str(float(price_with_tax['total_included'])) + " con impuestos)"
+                record.price = str(round(float(price), 2)) + " (" + str(float(price_with_tax['total_included'])) + " con impuestos)"
