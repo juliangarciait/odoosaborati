@@ -32,13 +32,14 @@ class SaleOrder(models.Model):
                                 product_qty += mrp_bom_line.product_qty           
                         qty_to_deliver = product_qty * line.product_uom_qty
                         
-                        qty_done = 0
-                        pickings = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id), ('state', '=', 'done')])
-                        for picking in pickings.move_ids_without_package:
-                            if picking.product_id.id in products: 
-                                qty_done += picking.quantity_done
-                        
-                        line.qty_delivered = (qty_done * line.product_uom_qty / qty_to_deliver) if qty_to_deliver > 0 else 0.0
+                        if qty_to_deliver > 0: 
+                            qty_done = 0
+                            pickings = self.env['stock.picking'].search([('sale_id', '=', line.order_id.id), ('state', '=', 'done')])
+                            for picking in pickings.move_ids_without_package:
+                                if picking.product_id.id in products: 
+                                    qty_done += picking.quantity_done
+                            
+                            line.qty_delivered = (qty_done * line.product_uom_qty / qty_to_deliver) 
                         
                     dlv_percentage += line.qty_delivered * line.price_unit
                     qty_percentage += line.product_uom_qty * line.price_unit
