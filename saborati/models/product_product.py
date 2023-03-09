@@ -61,5 +61,6 @@ class ProductProduct(models.Model):
             margin = self.env['product.margin'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1).margin
             if margin and record.replacement_cost:   
                 _logger.info(record.replacement_cost)
+                _logger.info(margin)
                 _logger.info('$Replacement$'*1000)
                 record.list_price = record.replacement_cost / (1 - margin)
