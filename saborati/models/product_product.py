@@ -31,7 +31,7 @@ class ProductProduct(models.Model):
     def _compute_replacement_cost(self): 
         for record in self:
             record.replacement_cost = 0.0
-            has_mrp_bom = self.env['mrp.bom'].search([('product_id', '=', record.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
+            has_mrp_bom = self.env['mrp.bom'].search([('product_id', '=', record.id)], order='write_date desc', limit=1)
 
             if record.product_tmpl_id.product_variant_id.id == record.id:
                 if not has_mrp_bom:
@@ -40,7 +40,7 @@ class ProductProduct(models.Model):
                     record.replacement_cost = has_mrp_bom.replacement_cost_total
             else: 
                 if not has_mrp_bom: 
-                    vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)], order='create_date desc', limit=1)
+                    vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
                     if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
                         price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
                     else: 
