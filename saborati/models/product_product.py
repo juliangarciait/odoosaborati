@@ -66,4 +66,4 @@ class ProductProduct(models.Model):
                 _logger.info(record.replacement_cost)
                 _logger.info(margin)
                 _logger.info('$Replacement$'*1000)
-                record.list_price = record.with_context(force_company=self.env.company.id).replacement_cost / (1 - margin)
+                record.list_price = record.replacement_cost / (1 - margin)
