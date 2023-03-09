@@ -49,5 +49,5 @@ class MrpBomLine(models.Model):
     replacement_cost = fields.Float('Replacement Cost', compute="_compute_replacement_cost")
     
     def _compute_replacement_cost(self): 
-        self.ensure_one()
-        return self.product_id.replacement_cost
+        for record in self: 
+            record.replacement_cost = record.product_id.replacement_cost
