@@ -46,4 +46,8 @@ class MrpBomLine(models.Model):
     _inherit = 'mrp.bom.line'
 
 
-    replacement_cost = fields.Float('Replacement Cost', related='product_id.replacement_cost')
+    replacement_cost = fields.Float('Replacement Cost', compute="_compute_replacement_cost")
+    
+    def _compute_replacement_cost(self): 
+        self.ensure_one()
+        return self.product_id.replacement_cost
