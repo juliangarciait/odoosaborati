@@ -45,6 +45,9 @@ class ProductProduct(models.Model):
                         price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
                     else: 
                         price = vendor_pricelist.price
+                    _logger.info(vendor_pricelist)
+                    _logger.info(vendor_pricelist.price)
+                    _logger.info('*'*100)
                     record.replacement_cost = price
                 elif has_mrp_bom: 
                     record.replacement_cost = has_mrp_bom.replacement_cost_total
