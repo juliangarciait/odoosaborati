@@ -48,6 +48,7 @@ class MrpBomLine(models.Model):
 
     replacement_cost = fields.Float('Replacement Cost', compute="_compute_replacement_cost")
     
+    @api.depends('product_id.replacement_cost')
     def _compute_replacement_cost(self): 
         for record in self: 
             record.replacement_cost = record.product_id.replacement_cost
