@@ -45,9 +45,6 @@ class ProductProduct(models.Model):
                         price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
                     else: 
                         price = vendor_pricelist.price
-                    _logger.info(vendor_pricelist)
-                    _logger.info(vendor_pricelist.price)
-                    _logger.info('*'*100)
                     record.replacement_cost = price
                 elif has_mrp_bom: 
                     record.replacement_cost = has_mrp_bom.replacement_cost_total
@@ -62,8 +59,5 @@ class ProductProduct(models.Model):
         for record in self:
             record.list_price = 1.0
             margin = self.env['product.margin'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1).margin
-            if margin and record.replacement_cost:   
-                _logger.info(record.replacement_cost)
-                _logger.info(margin)
-                _logger.info('$Replacement$'*1000)
+            if margin and record.replacement_cost:
                 record.list_price = record.replacement_cost / (1 - margin)
