@@ -104,6 +104,36 @@ class ProductTemplate(models.Model):
             
         return res
     
+    def export_collections(self, product, product_instance): 
+        if product.product_collection_ids: 
+            for product_collection in product.product_collection_ids: 
+                product_collection.shopify_instance_id.connect_in_shopify()
+                if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
+                    shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
+                    collections = shopify_product.collections()
+                    if collections:
+                        n = 0 
+                        for collect in collections: 
+                            n += 1
+                            shopify_product.remove_from_collection(collect)
+                            
+                            if n == 10: 
+                                n = 0 
+                                time.sleep(5)
+            
+            i = 0
+            for product_collection in product.product_collection_ids:
+                product_collection.shopify_instance_id.connect_in_shopify()     
+                if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
+                    collect = product_collection.request_collection(product_collection.shopify_collection_id)
+                    if collect:
+                        i += 1
+                        shopify_product.add_to_collection(collect) 
+                    
+                    if i == 10: 
+                        i = 0
+                        time.sleep(5)
+    
     
     def export_to_shopify(self, product):
         for product_instance in product.shopify_product_template_ids:
@@ -128,22 +158,7 @@ class ProductTemplate(models.Model):
                 export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                 
             #Add to collection if it has collections
-                if product.product_collection_ids: 
-                    for product_collection in product.product_collection_ids: 
-                        product_collection.shopify_instance_id.connect_in_shopify()
-                        if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
-                            shopify_product = shopify.Product().find(product_instance.shopify_tmpl_id)
-                            collections = shopify_product.collections()
-                            if collections:
-                                for collect in collections: 
-                                    shopify_product.remove_from_collection(collect)
-                                    
-                    for product_collection in product.product_collection_ids:
-                        product_collection.shopify_instance_id.connect_in_shopify()     
-                        if product_collection.is_exported and product_collection.company_id.id == self.env.company.id and product_collection.shopify_instance_id == product_instance.shopify_instance_id:
-                            collect = product_collection.request_collection(product_collection.shopify_collection_id)
-                            if collect:
-                                shopify_product.add_to_collection(collect) 
+                self.with_delay().export_collections(product, product_instance)
                             
         return True
         
