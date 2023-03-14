@@ -286,6 +286,8 @@ class ShopifyProductProductEpt(models.Model):
                                     'instance_id': instance.id
                                 }
                             )
+                else: 
+                    variants.append(variant_vals)
                 
             new_product.variants = variants
         if is_set_basic_detail:
