@@ -494,6 +494,8 @@ class ShopifyProductProductEpt(models.Model):
             _logger.info(price)
             _logger.info('#'*1000)
             if float(price) > 0.0:
+                _logger.info(template.product_tmpl_id.taxes_id.company_id.id)
+                _logger.info(instance.shopify_company_id.id)
                 if template.product_tmpl_id.taxes_id.company_id.id == instance.shopify_company_id.id: 
                     total = template.product_tmpl_id.taxes_id.compute_all(float(price), product=template.product_tmpl_id, partner=self.env['res.partner'])
                     variant_vals.update({"price": float(total['total_included'])})
