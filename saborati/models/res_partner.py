@@ -10,6 +10,8 @@ class ResPartner(models.Model):
         compute='_compute_company_filter', store=True)
     
     address_reference = fields.Text('Referencia')
+
+    #partner_company_id = fields.Many2one('res.company', 'Compañía')
     
     @api.depends('company_type')
     def _compute_company_filter(self): 
@@ -19,7 +21,9 @@ class ResPartner(models.Model):
     def create(self, vals_list): 
         res = super(ResPartner, self).create(vals_list)
 
-        res.company_id = self.env.company.id
+        #if not res.partner_company_id: 
+        #    res.partner_company_id = self.env.company.id
+        #res.company_id = self.env.company.id
         res.lang = 'es_MX'
 
         return res
