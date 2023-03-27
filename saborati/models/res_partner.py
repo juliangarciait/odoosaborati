@@ -23,7 +23,7 @@ class ResPartner(models.Model):
 
         #if not res.partner_company_id: 
         #    res.partner_company_id = self.env.company.id
-        #res.company_id = self.env.company.id
+        res.company_id = self.env.company.id
         res.lang = 'es_MX'
 
         return res
