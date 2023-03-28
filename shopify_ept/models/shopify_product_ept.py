@@ -491,6 +491,8 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_price:
             price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
+            _logger.info(price)
+            _logger.info('^'*1000)
             if float(price) > 0.0:
                 if template.product_tmpl_id.taxes_id.company_id.id == instance.shopify_company_id.id: 
                     total = template.product_tmpl_id.taxes_id.compute_all(float(price), product=template.product_tmpl_id, partner=self.env['res.partner'])
