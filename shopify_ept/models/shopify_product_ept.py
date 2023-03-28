@@ -489,7 +489,7 @@ class ShopifyProductProductEpt(models.Model):
         if variant.variant_id:
             variant_vals.update({"id": variant.variant_id})
         if is_set_price:
-            price = instance.shopify_pricelist_id.with_company(instance.company_id.id).get_product_price(variant.product_id, 1.0, partner=False,
+            price = instance.shopify_pricelist_id.with_company(instance.shopify_company_id.id).get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
             _logger.info(price)
             _logger.info('^'*100)
