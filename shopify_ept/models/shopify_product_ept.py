@@ -497,10 +497,14 @@ class ShopifyProductProductEpt(models.Model):
                 if template.product_tmpl_id.taxes_id.company_id.id == instance.shopify_company_id.id: 
                     total = template.product_tmpl_id.taxes_id.compute_all(float(price), product=template.product_tmpl_id, partner=self.env['res.partner'])
                     variant_vals.update({"price": float(total['total_included'])})
+                else: 
+                    variant_vals.update({"price": float(price)})
             elif float(price) == 0.0 and template.product_tmpl_id.list_price > 0.0:
                 if template.product_tmpl_id.taxes_id.company_id.id == instance.shopify_company_id.id: 
                     total = template.product_tmpl_id.taxes_id.compute_all(float(template.product_tmpl_id.list_price), product=template.product_tmpl_id, partner=self.env['res.partner'])
                     variant_vals.update({"price": float(total['total_included'])})
+                else: 
+                    variant_vals.update({"price": float(price)})
             else: 
                 raise ValidationError("El producto no se puede mandar a shopify porque su precio (en la lista de precio seleccionada) es de 0")
             variant_vals.update({'cost': variant.product_id.replacement_cost, 'collections': 1})
