@@ -271,7 +271,7 @@ class ShopifyProductProductEpt(models.Model):
             for variant in template.shopify_product_ids:
                 variant_vals = self.shopify_prepare_variant_vals(instance, template, variant, is_set_price,
                                                             is_set_basic_detail)
-                if variant_vals.get('price') != None and instance.company_id.id == 2: 
+                if variant_vals.get('price') != None and instance.shopify_company_id.id == 2: 
                     if variant_vals.get('price') > 15.00: 
                         variants.append(variant_vals)
                         product_in_log_exist = self.env['product.log'].search([('product_id', '=', variant.product_id.id), ('instance_id', '=', instance.id)])
@@ -489,7 +489,7 @@ class ShopifyProductProductEpt(models.Model):
         if variant.variant_id:
             variant_vals.update({"id": variant.variant_id})
         if is_set_price:
-            price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
+            price = instance.shopify_pricelist_id.with_company(instance.shopify_company_id.id).get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
             if float(price) > 0.0:
                 if template.product_tmpl_id.taxes_id.company_id.id == instance.shopify_company_id.id: 
