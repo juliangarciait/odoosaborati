@@ -287,6 +287,8 @@ class ShopifyProductProductEpt(models.Model):
                                 }
                             )
                 else: 
+                    _logger.info('()'*100)
+                    _logger.info(variant_vals)
                     variants.append(variant_vals)
                 
             new_product.variants = variants
