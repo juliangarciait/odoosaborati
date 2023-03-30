@@ -15,5 +15,5 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         res = super().button_validate()
-        self.export_vex_product(False)
+        self.export_vex_product()
         return res
