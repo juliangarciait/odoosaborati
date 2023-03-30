@@ -1,15 +1,22 @@
 
-epython:S1192æ"LDefine a constant instead of duplicating this literal 'vex.synchro' 4 times.(õŠò¬
-qpython:S1192Æ"XDefine a constant instead of duplicating this literal 'product.public.category' 5 times.(¹²¬’
-Mpython:S1066»"/Merge this if statement with the enclosing one.(Š”ú·ıÿÿÿÿ
-;python:S125""Remove this commented out code.(ë¯µüÿÿÿÿ
-;python:S125("Remove this commented out code.( Ğ’ûÿÿÿÿ
-;python:S125R"Remove this commented out code.(áÍ“óÿÿÿÿÿ
-7python:S125›"Remove this commented out code.(‡Šø¯
-7python:S125¯"Remove this commented out code.(†µÖÑ
-Ipython:S1481¹"0Remove the unused local variable "access_token".(®­Ğª
-epython:S1764º"LCorrect one of the identical sub-expressions on both sides of operator "==".(·¥Â¼
-7python:S125Ô"Remove this commented out code.(÷§€
-<python:S125í"Remove this commented out code.(©«öºüÿÿÿÿ
-<python:S125ñ"Remove this commented out code.(¦ø¦Ûüÿÿÿÿ
-7python:S125"Remove this commented out code.(‡—áæ
+epython:S1192´"LDefine a constant instead of duplicating this literal 'vex.synchro' 5 times.(õŠò¬
+qpython:S1192‹"XDefine a constant instead of duplicating this literal 'product.public.category' 5 times.(¹²¬’
+Gpython:S1066P"/Merge this if statement with the enclosing one.(÷øûÛ
+Lpython:S1066z"/Merge this if statement with the enclosing one.(ÊÊ¢•ıÿÿÿÿ
+Mpython:S1066Ï"/Merge this if statement with the enclosing one.(ÊÊ¢•ıÿÿÿÿ
+Mpython:S1066€"/Merge this if statement with the enclosing one.(Š”ú·ıÿÿÿÿ
+;python:S1259"Remove this commented out code.(ë¯µüÿÿÿÿ
+;python:S125?"Remove this commented out code.( Ğ’ûÿÿÿÿ
+;python:S125A"Remove this commented out code.(›’ùúÿÿÿÿ
+;python:S125Q"Remove this commented out code.(›’ùúÿÿÿÿ
+;python:S125U"Remove this commented out code.(›’ùúÿÿÿÿ
+<python:S125‘"Remove this commented out code.(áÍ“óÿÿÿÿÿ
+7python:S125à"Remove this commented out code.(‡Šø¯
+7python:S125ô"Remove this commented out code.(†µÖÑ
+Ipython:S1481ş"0Remove the unused local variable "access_token".(®­Ğª
+epython:S1764ÿ"LCorrect one of the identical sub-expressions on both sides of operator "==".(·¥Â¼
+7python:S125›"Remove this commented out code.(÷§€
+<python:S125»"Remove this commented out code.(©«öºüÿÿÿÿ
+<python:S125¿"Remove this commented out code.(¦ø¦Ûüÿÿÿÿ
+7python:S125È"Remove this commented out code.(Ü­·Ğ
+7python:S125Ô"Remove this commented out code.(®ÕÏ¯

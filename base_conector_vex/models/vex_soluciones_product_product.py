@@ -36,7 +36,7 @@ class ProductProduct(models.Model):
             else:
                 product.lst_price = list_price + product.price_extra
 
-    def update_conector_vex(self):
+    def update_conector_vex(self,wizard=True):
         return
 
     def _get_display_price_meli(self, product,pricelist_id,datex,server_vex,qty):
@@ -81,4 +81,34 @@ class ProductProduct(models.Model):
                 server_vex.company or self.env.company, datex or fields.Date.today())
         # negative discounts (= surcharge) are included in the display price
         return max(base_price, final_price)
+
+
+    def stock_vex_conector(self,server):
+        self.env['vex.synchro'].check_synchronize(self.server)
+        stock = 0
+        type_stock = server.type_stock_export or 'hand'
+        if type_stock in ['hand','available'] :
+            domain_quant = self.action_open_quants()['domain']
+            quant = self.env['stock.quant'].search(domain_quant)
+            stock = 0
+            if quant:
+                for qua in quant:
+                    if qua.location_id.id == server.warehouse_stock_vex.lot_stock_id.id:
+                        if type_stock == 'hand':
+                            stock += qua.quantity
+                        if type_stock == 'hand':
+                            stock += qua.available_quantity
+
+        if type_stock == 'forecast':
+            warehouse_x_export = server.warehouse_stock_vex
+            data = self.env['report.stock.report_product_product_replenishment'].with_context(
+                warehouse=warehouse_x_export.id)._get_report_data(False, [self.id])
+            future_virtual_available = data['virtual_available']
+
+            if future_virtual_available < server.export_stock_min:
+                future_virtual_available = 0
+
+            stock = future_virtual_available
+
+        return stock
 

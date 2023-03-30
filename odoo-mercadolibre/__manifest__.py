@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Odoo Mercado Libre Vex Connector",
+    'name': "Mercado libre Odoo App Connector - Vex Soluciones ",
 
     'summary': """
         Module to synchronize odoo with Mercado Libre""",
@@ -18,7 +18,7 @@
     # for the full list
     'category': 'Uncategorized',
     'version': '0.1',
-    'price': 399.00,
+    'price': 1500.00,
     'currency': 'USD',
 
     # any module necessary for this one to work correctly

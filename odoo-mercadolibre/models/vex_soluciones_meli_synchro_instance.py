@@ -3,7 +3,7 @@ from odoo.addons.payment.models.payment_acquirer import ValidationError
 import threading
 from ..models.vex_soluciones_meli_config import API_URL, INFO_URL, get_token
 # from ..wizard.vex_soluciones_meli_action_synchro import MeliActionSynchro
-from .vex_soluciones_meli_config import AUTH_URL, get_token, COUNTRIES, CURRENCIES
+from .vex_soluciones_meli_config import AUTH_URL, get_token, COUNTRIES, CURRENCIES , COUNTRIES_DOMINIO
 from odoo.addons.payment.models.payment_acquirer import ValidationError
 import requests
 
@@ -16,7 +16,7 @@ class ApiSynchroInstance(models.Model):
     user_id = fields.Char(string="User ID")
     secret_key = fields.Char()
     server_code = fields.Char()
-    redirect_uri = fields.Char()
+    redirect_uri = fields.Char(default="https://www.vexsoluciones.com/")
     access_token = fields.Char()
     refresh_token = fields.Char()
     print_data_error_meli = fields.Boolean(default=False)
@@ -28,8 +28,8 @@ class ApiSynchroInstance(models.Model):
         for record in self:
             url = ''
             if record.app_id and record.redirect_uri and record.meli_country:
-                code_country = record.meli_country
-                code_country = code_country[1:].lower()
+                code_country = COUNTRIES_DOMINIO[record.meli_country]
+
                 url = 'https://auth.mercadolibre.com.{}/authorization?response_type=code&client_id={}&redirect_uri={}'.format(code_country,record.app_id,record.redirect_uri)
             record.url_get_server_code = url
 

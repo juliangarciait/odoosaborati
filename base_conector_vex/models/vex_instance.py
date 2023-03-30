@@ -11,6 +11,8 @@ class VexInstance(models.Model):
     picking_policy = fields.Selection([('direct', 'Deliver each product when available'),
                                        ('one', 'Deliver all products at once')], default='direct')
     warehouse = fields.Many2one('stock.warehouse')
+    type_stock_export = fields.Selection([('hand','A mano'),('available','Disponible'),('forecast','Pronosticado')],
+                                         string="Tipo de Stock (exportar)",required=True,default='hand')
     location_id = fields.Many2one('stock.location', string="Stock Location",related="warehouse.lot_stock_id")
 
     journal_id = fields.Many2one('account.journal', domain="[('type','in',('bank','cash'))]")

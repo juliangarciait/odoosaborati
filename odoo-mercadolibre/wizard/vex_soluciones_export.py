@@ -97,15 +97,7 @@ class MeliMultiExport(models.TransientModel):
                 if self2:
                     data['available_quantity'] = int(self2.quantity)
                 else:
-                    domain_quant = p.action_open_quants()['domain']
-                    quant = self.env['stock.quant'].search(domain_quant)
-                    stock = 0
-                    if quant:
-                        for qua in quant:
-                            if qua.location_id.id == server.warehouse_stock_vex.lot_stock_id.id:
-                                stock += qua.quantity
-
-
+                    stock = p.stock_vex_conector(server)
                     data['available_quantity'] = stock
             data['attributes'] = [
                 #{
@@ -332,12 +324,7 @@ class MeliUnitExport(models.TransientModel):
                 domain_quant = self.product.action_open_quants()['domain']
                 quant = self.env['stock.quant'].search(domain_quant)
                 self.server = server.id
-                stock = 0
-                if quant:
-                    for qua in quant:
-                        if qua.location_id.id == self.server.warehouse_stock_vex.lot_stock_id.id:
-                            stock += qua.quantity
-                    # stock = quant.quantity
+                stock = self.product.stock_vex_conector(server)
                 self.quantity = stock
             self.server = server.id
 

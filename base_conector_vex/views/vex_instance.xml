@@ -54,6 +54,7 @@
                                                <field name="journal_id"/>
                                                <field name="company" />
                                                <field name="warehouse"/>
+                                               <field name="type_stock_export"/>
                                                <!--<field name="type_document"/> -->
                                                <field name="payment_term"/>
                                                <field name="use_date_specific"/>

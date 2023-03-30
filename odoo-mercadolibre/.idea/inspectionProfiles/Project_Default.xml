@@ -8,6 +8,7 @@
           <option value="tuple.email" />
           <option value="bool.pricelist_id" />
           <option value="int.id" />
+          <option value="models.ingreso_analisis.xlsxwriter" />
         </list>
       </option>
     </inspection_tool>

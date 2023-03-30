@@ -14,7 +14,7 @@ COUNTRIES = [
     ('MLV', 'Venezuela'),
     ('MLB', 'Brasil'),
     ('MPE', 'Perú'),
-    ('MCU', 'Cuba'),
+    #('MCU', 'Cuba'),
     ('MNI', 'Nicaragua'),
     ('MRD', 'Dominicana'),
     ('MCO', 'Colombia'),
@@ -28,7 +28,30 @@ COUNTRIES = [
     ('MPA', 'Panamá'),
     ('MSV', 'El Salvador'),
     ('MLA', 'Argentina'),
-    ('MLU', 'Uruguay')]
+    ('MLU', 'Uruguay')
+]
+
+COUNTRIES_DOMINIO = {
+    'MLM': 'mx',
+    'MLV': 've',
+    'MLB': 'br',
+    'MPE': 'pe',
+    #'MCU': 'cu',
+    'MNI': 'ni',
+    'MRD': 'do',
+    'MCO': 'co',
+    'MCR': 'cr',
+    'MBO': 'bo',
+    'MHN': 'hn',
+    'MLC': 'cl',
+    'MGT': 'gt',
+    'MEC': 'ec',
+    'MPY': 'py',
+    'MPA': 'pa',
+    'MSV': 'sv',
+    'MLA': 'ar',
+    'MLU': 'uy'
+}
 
 CURRENCIES = [
     ('ARS', 'Peso argentino'),

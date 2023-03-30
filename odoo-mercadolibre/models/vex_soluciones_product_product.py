@@ -23,10 +23,10 @@ class ProductProduct(models.Model):
         return res
 
 
-    def update_conector_vex(self):
+    def update_conector_vex(self,wizard=True):
 
 
-        if len(self) == 1 :
+        if len(self) == 1 and wizard == True:
             name = self.name_product_meli or self.name
             if self.id_vex_varition or self.id_vex:
                 # id_vex =  self.id_vex_varition or self.id_vex
