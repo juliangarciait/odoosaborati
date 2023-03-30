@@ -84,7 +84,7 @@ class ProductProduct(models.Model):
 
 
     def stock_vex_conector(self,server):
-        self.env['vex.synchro'].check_synchronize(self.server)
+        self.env['vex.synchro'].check_synchronize(server)
         stock = 0
         type_stock = server.type_stock_export or 'hand'
         if type_stock in ['hand','available'] :
