@@ -21,3 +21,4 @@ from . import mrp_production
 from . import product_log
 from . import stock_production_lot
 from . import stock_move
+from . import purchase_order
