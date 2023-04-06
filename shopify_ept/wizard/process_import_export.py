@@ -224,11 +224,13 @@ class ShopifyProcessImportExport(models.TransientModel):
                                                             self.shopify_is_set_image,
                                                             self.shopify_is_publish,
                                                             shopify_templates)
-                time.sleep(10)
-                self.with_context({'active_ids' : shopify_templates}).with_delay().shopify_selective_product_stock_export()
+        self.with_delay().export_stock(shopify_products)
         end = time.time()
         _logger.info("Export Processed %s Products in %s seconds.", str(len(templates)), str(end - start))
         return True
+    
+    def export_stock(self, ids): 
+        self.with_context({'active_ids': ids}).shopify_selective_product_stock_export()
 
     def manual_update_product_to_shopify(self):
         """ This method is used to call child method for update products values from shopify layer products to Shopify
