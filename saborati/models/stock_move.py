@@ -16,14 +16,9 @@ class StockMove(models.Model):
         products = []
         for record in self: 
             if record.picking_id.sale_id: 
-                _logger.info(record.picking_id.sale_id)
-                _logger.info('%'*10)
                 for line in record.picking_id.sale_id.order_line: 
-                    _logger.info(line.product_id)
                     products.append(line.product_id.id)
             record.select_product_ids = products
-            _logger.info(record.select_product_ids)
-            _logger.info('$'*1000)
             
     @api.depends('bom_line_id')
     def _compute_description_bom_line(self):
