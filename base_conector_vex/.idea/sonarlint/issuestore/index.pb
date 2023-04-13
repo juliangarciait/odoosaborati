@@ -1,8 +1,6 @@
 
 B
 models/__init__.py,b/b/bb5e16ac59b350373b55d7ae678133d6e2cfadaa
-K
-models/vex_stock_picking.py,b/f/bfa984a728de1df59f7df479393157828cee2272
 X
 (models/vex_soluciones_product_product.py,2/c/2c3d4dd7177e986dc9969dcb7d45c6a44f93c4c7
 D
