@@ -16,12 +16,10 @@ class PurchaseOrderLine(models.Model):
         for line in self: 
             ids = []
             vendors = self.env['product.supplierinfo'].search([('name', '=', line.order_id.partner_id.id)])
-            for vendor in vendors: 
-                if vendor.product_id: 
-                    ids.append(vendor.product_id.id)
-                elif vendor.product_tmpl_id: 
-                    product = self.env['product.product'].search([('id', '=', vendor.product_tmpl_id.product_variant_id.id)])
-                    ids.append(product.id)
+            for vendor in vendors:  
+                product = self.env['product.template'].search([('id', '=', vendor.product_tmpl_id.id)])
+                for variant in product.product_variant_ids.ids: 
+                    ids.append(variant)
+                
             line.product_ids = ids
             line.product_ids = line.product_ids._origin
-    
