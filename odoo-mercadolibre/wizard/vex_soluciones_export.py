@@ -33,8 +33,8 @@ class MeliMultiExport(models.TransientModel):
 
             if not p.default_code:
                 raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
-            if not p.image_1920:
-                raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
+            #if not p.image_1920:
+            #    raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
 
             if not name_product:
                 raise ValidationError(f'NO SE INDICO NOMBRE DEL PRODUCTO {p.display_name}')
