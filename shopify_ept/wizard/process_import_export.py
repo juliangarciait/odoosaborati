@@ -467,9 +467,14 @@ class ShopifyProcessImportExport(models.TransientModel):
                                                            ('shopify_template_id', 'in', shopify_template_ids)])
             odoo_product_ids = shopify_products.product_id.ids
             if odoo_product_ids:
-                shopify_product_obj.with_context(is_process_from_selected_product=True).export_stock_in_shopify(
-                    instance, odoo_product_ids)
+                self.with_delay().export_stock_with_delay(shopify_product_obj, instance, odoo_product_ids)
+                #shopify_product_obj.with_context(is_process_from_selected_product=True).export_stock_in_shopify(
+                #    instance, odoo_product_ids)
         return True
+    
+    def export_stock_with_delay(self, shopify_product_obj, instance, odoo_product_ids): 
+        shopify_product_obj.with_context(is_process_from_selected_product=True).export_stock_in_shopify(
+                    instance, odoo_product_ids)
     
 
     def import_stock_in_odoo(self):
