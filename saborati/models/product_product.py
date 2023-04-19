@@ -22,10 +22,12 @@ class ProductProduct(models.Model):
     @api.depends('stock_quant_ids.available_quantity')
     def _search_available_quantity(self): 
         for product in self: 
-            product.available_quantity = 0.0
+            qty = 0
             stock_quants = self.env['stock.quant'].search([('product_id', '=', product.id)])
-            for quant in stock_quants: 
-                product.available_quantity += quant.available_quantity
+            for quant in stock_quants:
+                if quant.inventory_date: 
+                    qty += quant.available_quantity
+            product.available_quantity = float(qty)
     
     @api.depends('seller_ids', 'bom_ids')
     def _compute_replacement_cost(self): 
