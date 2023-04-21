@@ -96,7 +96,7 @@ class ProductProduct(models.Model):
                     if qua.location_id.id == server.warehouse_stock_vex.lot_stock_id.id:
                         if type_stock == 'hand':
                             stock += qua.quantity
-                        if type_stock == 'hand':
+                        if type_stock == 'available':
                             stock += qua.available_quantity
 
         if type_stock == 'forecast':
