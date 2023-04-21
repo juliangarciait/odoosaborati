@@ -260,7 +260,7 @@ class MeliUnitExport(models.TransientModel):
     category_children  = fields.Many2one('product.public.category',string="Sub Categoria")
     category_children2 = fields.Many2one('product.public.category', string="Sub Sub Categoria")
     brand              = fields.Char()
-    condition          = fields.Selection(CONDITIONS, string='Condición del producto')
+    condition          = fields.Selection(CONDITIONS, string='Condición del producto',default='new')
     quantity           = fields.Integer(required=True,default=10,string="Stock")
     buying_mode        = fields.Selection([('buy_it_now','Compre ya'),('classified','clasificado')],
                                           string="Modo de Compra",default='buy_it_now')
