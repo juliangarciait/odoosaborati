@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, api, _, fields
+from odoo.exceptions import ValidationError
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -39,6 +40,15 @@ class ProductProduct(models.Model):
                         
                         
             product.available_quantity = float(qty)
+            
+    def write(self, vals): 
+        res = super(ProductProduct, self).write(vals)
+        
+        for product in self: 
+            if product.detailed_type == 'product' and product.weight <= 0.0 and product.sale_ok:
+                raise ValidationError (_('El peso tiene un valor de 0.0. Coloque un valor válido'))
+        
+        return res
             
     def _get_product_available_quantity(self, product): 
         qty = 0 
