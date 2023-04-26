@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, api, _, fields
+from odoo.exceptions import ValidationError
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -23,11 +24,41 @@ class ProductProduct(models.Model):
     def _search_available_quantity(self): 
         for product in self: 
             qty = 0
-            stock_quants = self.env['stock.quant'].search([('product_id', '=', product.id)])
-            for quant in stock_quants:
-                if quant.inventory_date: 
-                    qty += quant.available_quantity
+            is_kit = self.env['mrp.bom'].search([('product_id', '=', product.id), ('type', '=', 'phantom')])
+            if not is_kit: 
+                qty = self._get_product_available_quantity(product)
+            else:
+                qty_bom = 0 
+                qty_quant = 0 
+                for line in is_kit.bom_line_ids: 
+                    if line.product_id.detailed_type == 'product': 
+                        qty_bom += line.product_qty
+                        
+                
+                
+                        
+                        
+                        
             product.available_quantity = float(qty)
+            
+    def write(self, vals): 
+        res = super(ProductProduct, self).write(vals)
+        
+        for product in self: 
+            if product.detailed_type == 'product' and product.weight <= 0.0 and product.sale_ok:
+                raise ValidationError (_('El peso tiene un valor de 0.0. Coloque un valor válido'))
+        
+        return res
+            
+    def _get_product_available_quantity(self, product): 
+        qty = 0 
+        stock_quants = self.env['stock.quant'].search([('product_id', '=', product.id)])
+        for quant in stock_quants:
+            if quant.inventory_date: 
+                qty += quant.available_quantity
+                
+        return qty
+        
     
     @api.depends('seller_ids', 'bom_ids')
     def _compute_replacement_cost(self): 

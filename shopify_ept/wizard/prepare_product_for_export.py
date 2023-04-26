@@ -72,7 +72,7 @@ class PrepareProductForExport(models.TransientModel):
             shopify_template, sequence, shopify_template_id = self.create_or_update_shopify_layer_template(
                 shopify_instance, product_template, variant, shopify_template_id, sequence)
 
-            self.create_shopify_template_images(shopify_template)
+            self.create_shopify_template_images(shopify_template, variant)
 
             if shopify_template and shopify_template.shopify_product_ids and \
                 shopify_template.shopify_product_ids[0].sequence:
@@ -276,7 +276,7 @@ class PrepareProductForExport(models.TransientModel):
         }
         return row
 
-    def create_shopify_template_images(self, shopify_template):
+    def create_shopify_template_images(self, shopify_template, variant):
         """
         For adding all odoo images into shopify layer only for template.
         @author: Maulik Barad on Date 19-Sep-2020.
@@ -289,7 +289,7 @@ class PrepareProductForExport(models.TransientModel):
             shopify_product_image = shopify_product_image_obj.search_read(
                 [("shopify_template_id", "=", shopify_template.id),
                  ("odoo_image_id", "=", odoo_image.id)], ["id"])
-            if not shopify_product_image:
+            if not shopify_product_image and variant.to_shopify:
                 shopify_product_image_list.append({
                     "odoo_image_id": odoo_image.id,
                     "shopify_template_id": shopify_template.id
@@ -311,7 +311,7 @@ class PrepareProductForExport(models.TransientModel):
                 [("shopify_template_id", "=", shopify_template.id),
                  ("shopify_variant_id", "=", shopify_variant.id),
                  ("odoo_image_id", "=", odoo_image[0].id)], ["id"])
-            if not shopify_product_image:
+            if not shopify_product_image and product_id.to_shopify:
                 shopify_product_image_obj.create({
                     "odoo_image_id": odoo_image[0].id,
                     "shopify_variant_id": shopify_variant.id,

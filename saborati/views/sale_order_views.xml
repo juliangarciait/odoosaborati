@@ -20,8 +20,17 @@
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
                 <attribute name="domain">[('product_tmpl_id.company_ids', '=', allowed_company_ids[0]), ('sale_ok', '=', True)]</attribute>
+                <attribute name="options">{'no_create_edit':True, 'no_create': True}</attribute>
             </xpath>
-
+            <xpath expr="//form/sheet/group[@name='sale_header']/group/field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('company_filter', '=', 'company')]</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group[@name='sale_header']/group/field[@name='partner_invoice_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group[@name='sale_header']/group/field[@name='partner_shipping_id']" position="attributes">
+                <attribute name="domain">['|', ('id', '=', partner_id), ('parent_id', '=', partner_id)]</attribute>
+            </xpath>
             <xpath expr="//form/sheet/group[@name='sale_header']/group[@name='partner_details']" position="inside">
                 <field name="colony" nolabel="1"/>
             </xpath>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from odoo.exceptions import ValidationError
 from odoo import fields, models, api, _ 
 from lxml import etree
 import logging
@@ -76,6 +77,14 @@ class ProductTemplate(models.Model):
         if not res.default_code: 
             res.default_code = 'OD{}'.format(str(res.id))
 
+        #if len(res.product_variant_ids.ids) == 1 and res.product_variant_ids.ids[0] == res.product_variant_id.id: 
+        #    if res.detailed_type == 'product' and res.weight <= 0.0 and res.sale_ok:
+        #        raise ValidationError (_('El peso tiene un valor de 0.0. Coloque un valor válido'))
+        #else: 
+        ##    for variant in res.product_variant_ids: 
+        #        if res.weight_for_variants != 0.0:
+        #            variant.weight = res.weight_for_variants
+                
         self.env['product.margin'].create(
             {
                 'margin' : self.env.company.default_company_margin,
