@@ -30,6 +30,14 @@ class ProductTemplate(models.Model):
     product_collection_ids = fields.Many2many('shopify.product.collection', string="Collections")
     
     product_prices_ids = fields.One2many('product.prices', 'product_tmpl_id')
+    
+    weight_for_variants = fields.Float(default=0.0, compute="_get_weight", store=True)
+    
+    @api.depends('weight')
+    def _get_weight(self): 
+        for product in self: 
+            if product.weight != 0.0: 
+                product.weight_for_variants = product.weight
 
     @api.depends('margin_ids', 'replacement_cost')
     def _compute_price(self): 
@@ -77,13 +85,13 @@ class ProductTemplate(models.Model):
         if not res.default_code: 
             res.default_code = 'OD{}'.format(str(res.id))
 
-        #if len(res.product_variant_ids.ids) == 1 and res.product_variant_ids.ids[0] == res.product_variant_id.id: 
-        #    if res.detailed_type == 'product' and res.weight <= 0.0 and res.sale_ok:
-        #        raise ValidationError (_('El peso tiene un valor de 0.0. Coloque un valor válido'))
-        #else: 
-        ##    for variant in res.product_variant_ids: 
-        #        if res.weight_for_variants != 0.0:
-        #            variant.weight = res.weight_for_variants
+        if len(res.product_variant_ids.ids) == 1 and res.product_variant_ids.ids[0] == res.product_variant_id.id: 
+            if res.detailed_type == 'product' and res.weight <= 0.0 and res.sale_ok:
+                raise ValidationError (_('El peso tiene un valor de 0.0. Coloque un valor válido'))
+        else: 
+            for variant in res.product_variant_ids: 
+                if res.weight_for_variants != 0.0:
+                    variant.weight = res.weight_for_variants
                 
         self.env['product.margin'].create(
             {
@@ -93,7 +101,20 @@ class ProductTemplate(models.Model):
         )
         
         return res
-
+    
+    def write(self, vals): 
+        res = super(ProductTemplate, self).write(vals)
+        
+        for product in self:                
+            if len(product.product_variant_ids.ids) == 1 and product.product_variant_ids.ids[0] == product.product_variant_id.id: 
+                if product.detailed_type == 'product' and product.weight <= 0.0 and product.sale_ok:
+                    raise ValidationError (_('El peso tiene un valor de 0.0. Coloque un valor válido'))
+            else: 
+                for variant in product.product_variant_ids: 
+                    if product.weight_for_variants != 0.0:
+                        variant.weight = product.weight_for_variants
+                    
+        return res
     
     def assign_product_margin(self): 
         return {
