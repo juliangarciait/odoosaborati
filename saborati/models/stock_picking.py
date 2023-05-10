@@ -14,6 +14,11 @@ class StockPicking(models.Model):
         products = []
         process_import_export_obj = False
         for line in self.move_ids_without_package: 
+            if line.product_id.detailed_type == 'product': 
+                line.product_id._compute_replacement_cost()
+                _logger.info(line.product_id.replacement_cost)
+                _logger.info('#'*100)
+           
             for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
                 process_import_export_obj = self.env['shopify.process.import.export'].create({
                     'shopify_instance_id' : product.shopify_instance_id.id,
@@ -22,6 +27,8 @@ class StockPicking(models.Model):
                 
         if process_import_export_obj: 
             process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
+
+        
         
         return res
     
