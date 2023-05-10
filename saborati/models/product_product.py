@@ -68,7 +68,7 @@ class ProductProduct(models.Model):
             if not has_mrp_bom: 
                 price = 0.0
                 vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
-                po_price = self.env['purchase.order.line'].search([('state', '=', 'purchase'), ('product_id', '=', record.id)], order='write_date desc', limit=1)
+                po_price = self.env['purchase.order.line'].search([('state', '=', 'purchase'), ('product_id', '=', record.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
                 vendor_date = datetime.strptime(str(vendor_pricelist.write_date), '%Y-%m-%d %H:%M:%S.%f')
                 po_date = datetime.strptime(str(po_price.write_date), '%Y-%m-%d %H:%M:%S.%f')
                 if po_price and vendor_pricelist: 
