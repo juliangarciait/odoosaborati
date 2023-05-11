@@ -61,13 +61,19 @@ class ProductProduct(models.Model):
 
             if record.product_tmpl_id.product_variant_id.id == record.id:
                 if not has_mrp_bom:
-                    record.replacement_cost = self.calculate_if_not_mrp_bom(record)
+                    record.replacement_cost = record.product_tmpl_id.replacement_cost
                 else:
-                    record.replacement_cost = has_mrp_bom.replacement_cost_total 
-            elif not has_mrp_bom: 
-                record.replacement_cost = self.calculate_if_not_mrp_bom(record)
-            elif has_mrp_bom: 
-                record.replacement_cost = has_mrp_bom.replacement_cost_total
+                    record.replacement_cost = has_mrp_bom.replacement_cost_total
+            else: 
+                if not has_mrp_bom: 
+                    vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
+                    if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
+                        price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
+                    else: 
+                        price = vendor_pricelist.price
+                    record.replacement_cost = price
+                elif has_mrp_bom: 
+                    record.replacement_cost = has_mrp_bom.replacement_cost_total
                 
             #costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)])
             #if costs:
