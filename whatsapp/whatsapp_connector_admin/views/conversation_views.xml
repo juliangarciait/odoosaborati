@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_whatsapp_connector_conversation_inline_chat_tree">
+        <field name="name">acrux.chat.conversation.inline.chat.tree</field>
+        <field name="model">acrux.chat.conversation</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" delete="false" create="false">
+                <field name="id" invisible="1"/>
+                <field name="connector_id" invisible="1" />
+                <field name="name" />
+                <field name="number_format" readonly="1" />
+                <field name="res_partner_id" optional="hide" options="{'no_create': True}"
+                       attrs="{'readonly':[('status','=', 'current')]}"/>
+                <field name="status" />
+                <field name="agent_id" options="{'no_open': True, 'no_create': True}"
+                    context="{'is_acrux_chat_room': True, 'filter_connector_id': connector_id, 'filter_conversation_id': id}"/>
+                <field name="last_activity" string="Activity" widget="remaining_days" optional="show" readonly="1"/>
+                <field name="company_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

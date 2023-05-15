@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-extend="acrux_chat_tabs">
+        <t t-jquery="ul.nav-tabs #tab_partner" t-operation="before">
+            <li id="tab_admin" class="nav-item">
+                <a data-toggle="tab" disable_anchor="true"
+                    href="#tab_content_admin" role="tab"
+                    class="nav-link">
+                    <i class="fa fa-cogs"/>
+                </a>
+            </li>
+        </t>
+        <t t-jquery="div.tab-content" t-operation="append">
+            <div id="tab_content_admin" class="tab-pane">
+                <div class="o_group">
+                </div>
+            </div>
+        </t>
+    </t>
+    
+    <t t-extend="acrux_chat_conversation">
+        <t t-jquery="span.o_number_new_msg" t-operation="after">
+            <t t-if="widget.admin_moved">
+                <i class="fa fa-exclamation-circle text-info h3 m-0 o_acrux_admin_moved" style="width:0.9em;" />
+            </t>
+        </t>
+    </t>
+
+</templates>
