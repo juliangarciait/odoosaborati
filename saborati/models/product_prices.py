@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductPrices(models.Model): 
     _name = 'product.prices'
+    _order = 'create_date desc'
     
     product_pricelist_id = fields.Many2one('product.pricelist', 'Lista de precios')
     price = fields.Char('Precio', readonly="1", store=True, compute='_compute_product_pricelist')
@@ -23,6 +24,7 @@ class ProductPrices(models.Model):
                 
 class ProductProductPrices(models.Model): 
     _name = 'product.product.prices'
+    _order = 'create_date desc'
     
     product_pricelist_id = fields.Many2one('product.pricelist', 'Lista de precios')
     price = fields.Char('Precio', readonly="1", compute='_compute_product_variant_pricelist')

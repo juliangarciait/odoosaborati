@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 
 class AdditionalCost(models.Model): 
     _name = 'additional.cost'
+    _order = 'create_date desc'
     
     company_id = fields.Many2one('res.company', string='Company',  default=lambda self: self.env.company.id, company_dependent=True)
     

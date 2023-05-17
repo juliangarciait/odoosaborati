@@ -21,6 +21,19 @@ class ProductProduct(models.Model):
     
     available_quantity = fields.Float(compute='_search_available_quantity', string="Cantidad disponible")
     
+    is_kit = fields.Boolean(compute="_compute_if_kit")
+    
+    @api.depends('bom_ids')
+    def _compute_if_kit(self): 
+        for rec in self: 
+            kit = self.env['mrp.bom'].search([('type', '=', 'phantom'), ('company_id', '=', self.env.company.id), ('product_id', '=', rec.id)], order='write_date desc', limit=1)
+            if kit: 
+                rec.is_kit = True
+            else: 
+                rec.is_kit = False
+            _logger.info(kit)
+            _logger.info('#'*100)
+    
     @api.depends('stock_quant_ids.available_quantity')
     def _search_available_quantity(self): 
         for product in self: 
@@ -61,20 +74,15 @@ class ProductProduct(models.Model):
 
             if record.product_tmpl_id.product_variant_id.id == record.id:
                 if not has_mrp_bom:
-                    record.replacement_cost = record.product_tmpl_id.replacement_cost
+                    record.replacement_cost = record.product_tmpl_id.replacement_cost if record.type != 'product' else self.calculate_if_not_mrp_bom(record)
                 else:
                     record.replacement_cost = has_mrp_bom.replacement_cost_total
             else: 
                 if not has_mrp_bom: 
-                    vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
-                    if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
-                        price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
-                    else: 
-                        price = vendor_pricelist.price
-                    record.replacement_cost = price
+                    record.replacement_cost = self.calculate_if_not_mrp_bom(record)
                 elif has_mrp_bom: 
                     record.replacement_cost = has_mrp_bom.replacement_cost_total
-                
+                    
             #costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)])
             #if costs:
             #    for cost in costs: 
