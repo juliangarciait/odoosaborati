@@ -19,6 +19,12 @@ class MrpBom(models.Model):
                 total += line.result
 
             mrp.replacement_cost_total = total
+            
+    @api.onchange('product_tmpl_id')
+    def _onchange_product_tmpl(self): 
+        for record in self: 
+            if len(record.product_tmpl_id.product_variant_ids.ids) == 1: 
+                record.product_id = record.product_tmpl_id.product_variant_id.id
 
 class MrpBomLine(models.Model): 
     _inherit = 'mrp.bom.line'
