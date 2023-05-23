@@ -11,8 +11,7 @@ class SaleOrder(models.Model):
 
     custom_state_delivery = fields.Char(string='State Delivery',
         compute='_compute_get_delivery_custom_state',
-        help='Automatic assignation state from custom state delivery:\n',
-        tracking=True)
+        help='Automatic assignation state from custom state delivery:\n', store=True)
 
     def write(self, vals):
         if self.custom_state_delivery in ['Ready (No Delivered)', 'Done (Delivered)']:
@@ -30,10 +29,10 @@ class SaleOrder(models.Model):
             record.custom_state_delivery = ''
             if record.state == 'draft' or record.state == 'sent' or record.state == 'cancel': 
                 record.custom_state_delivery = 'No Status'
-            else: 
+            else:
                 if record.delivery_percentage >= 1.0: 
                     record.custom_state_delivery = 'Done (Delivered)'
-                elif 0.0 > record.delivery_percentage < 1.0: 
+                elif record.delivery_percentage > 0 and record.delivery_percentage < 1.0: 
                     record.custom_state_delivery = 'Waiting'
                 elif record.delivery_percentage == 0:
                     record.custom_state_delivery = 'Ready (Not Delivered)'

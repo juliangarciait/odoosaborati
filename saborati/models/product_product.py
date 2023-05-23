@@ -21,9 +21,9 @@ class ProductProduct(models.Model):
     
     available_quantity = fields.Float(compute='_search_available_quantity', string="Cantidad disponible")
     
-    is_kit = fields.Boolean(compute="_compute_if_kit")
+    is_kit = fields.Boolean(compute="_compute_if_kit", store=True)
     
-    @api.depends('bom_ids')
+    @api.depends('bom_ids', 'bom_ids.type', 'bom_ids.bom_line_ids')
     def _compute_if_kit(self): 
         for rec in self: 
             kit = self.env['mrp.bom'].search([('type', '=', 'phantom'), ('company_id', '=', self.env.company.id), ('product_id', '=', rec.id)], order='write_date desc', limit=1)
@@ -31,8 +31,6 @@ class ProductProduct(models.Model):
                 rec.is_kit = True
             else: 
                 rec.is_kit = False
-            _logger.info(kit)
-            _logger.info('#'*100)
     
     @api.depends('stock_quant_ids.available_quantity')
     def _search_available_quantity(self): 
@@ -66,7 +64,7 @@ class ProductProduct(models.Model):
         return qty
         
     
-    @api.depends('seller_ids', 'bom_ids')
+    @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids')
     def _compute_replacement_cost(self): 
         for record in self:
             record.replacement_cost = 0.0
