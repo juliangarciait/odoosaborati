@@ -10,6 +10,7 @@
     'category' : "Inventory",
     'depends' : [
         'sale_management',
+        'saborati',
     ],
     'data' : [
         'views/sale_order_views.xml',
