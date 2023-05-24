@@ -13,23 +13,6 @@ class SaleOrder(models.Model):
     
     colony = fields.Char('Colonia', related="partner_id.l10n_mx_edi_colony")
     
-    custom_state_delivery = fields.Char(string='State Delivery',
-        compute='_compute_get_delivery_custom_state',
-        help='Automatic assignation state from custom state delivery:\n', store=True)
-    
-    @api.depends('delivery_percentage')
-    def _compute_get_delivery_custom_state(self):
-        for record in self:
-            record.custom_state_delivery = ''
-            if record.state == 'draft' or record.state == 'sent' or record.state == 'cancel': 
-                record.custom_state_delivery = 'No Status'
-            else:
-                if record.delivery_percentage >= 1.0: 
-                    record.custom_state_delivery = 'Done (Delivered)'
-                elif record.delivery_percentage > 0 and record.delivery_percentage < 1.0: 
-                    record.custom_state_delivery = 'Waiting'
-                elif record.delivery_percentage == 0:
-                    record.custom_state_delivery = 'Ready (Not Delivered)'
 
     @api.depends('order_line.product_uom_qty', 'order_line.qty_delivered', 'order_line.price_unit')
     def _compute_deliver_percentage(self): 
