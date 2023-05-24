@@ -63,12 +63,12 @@
         <field name="name">Product Variants</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.product</field>
-        <field name="context">{'search_default_product_tmpl_id': [active_id], 'default_product_tmpl_id': active_id, 'create': False}</field>
+        <field name="context">{'search_default_product_tmpl_id': [active_id], 'default_product_tmpl_id': active_id, 'create': True}</field>
         <field name="search_view_id" ref="product.product_search_form_view"/>
         <field name="view_ids"
                 eval="[(5, 0, 0),
-                        (0, 0, {'view_mode': 'tree'}),
-                        (0, 0, {'view_mode': 'form'}),
+                        (0, 0, {'view_mode': 'tree', 'view_id': ref('product.product_product_tree_view')}),
+                        (0, 0, {'view_mode': 'form', 'view_id': ref('product.product_normal_form_view')}),
                         (0, 0, {'view_mode': 'kanban'})]"/>
             <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

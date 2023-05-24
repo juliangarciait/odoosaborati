@@ -12,6 +12,24 @@ class SaleOrder(models.Model):
     delivery_percentage = fields.Float('Delivery %', compute='_compute_deliver_percentage')
     
     colony = fields.Char('Colonia', related="partner_id.l10n_mx_edi_colony")
+    
+    custom_state_delivery = fields.Char(string='State Delivery',
+        compute='_compute_get_delivery_custom_state',
+        help='Automatic assignation state from custom state delivery:\n', store=True)
+    
+    @api.depends('delivery_percentage')
+    def _compute_get_delivery_custom_state(self):
+        for record in self:
+            record.custom_state_delivery = ''
+            if record.state == 'draft' or record.state == 'sent' or record.state == 'cancel': 
+                record.custom_state_delivery = 'No Status'
+            else:
+                if record.delivery_percentage >= 1.0: 
+                    record.custom_state_delivery = 'Done (Delivered)'
+                elif record.delivery_percentage > 0 and record.delivery_percentage < 1.0: 
+                    record.custom_state_delivery = 'Waiting'
+                elif record.delivery_percentage == 0:
+                    record.custom_state_delivery = 'Ready (Not Delivered)'
 
     @api.depends('order_line.product_uom_qty', 'order_line.qty_delivered', 'order_line.price_unit')
     def _compute_deliver_percentage(self): 
@@ -91,39 +109,39 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
 
-    #@api.onchange('product_id')
-    #def product_id_change(self):
-    #    res = super(SaleOrderLine, self).product_id_change()
+    @api.onchange('product_id')
+    def product_id_change(self):
+        res = super(SaleOrderLine, self).product_id_change()
         
-        #self._update_description()
+        self._update_description()
         
-    #    return res
+        return res
             
-    #def _update_description(self):
-    #    if not self.product_id:
-    #        return
-    #    valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
+    def _update_description(self):
+        if not self.product_id:
+            return
+        valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
         # remove the is_custom values that don't belong to this template
-    #    for pacv in self.product_custom_attribute_value_ids:
-    #        if pacv.custom_product_template_attribute_value_id not in valid_values:
-    #            self.product_custom_attribute_value_ids -= pacv
+        for pacv in self.product_custom_attribute_value_ids:
+            if pacv.custom_product_template_attribute_value_id not in valid_values:
+                self.product_custom_attribute_value_ids -= pacv
 
         # remove the no_variant attributes that don't belong to this template
-    #    for ptav in self.product_no_variant_attribute_value_ids:
-    #        if ptav._origin not in valid_values:
-    #            self.product_no_variant_attribute_value_ids -= ptav
+        for ptav in self.product_no_variant_attribute_value_ids:
+            if ptav._origin not in valid_values:
+                self.product_no_variant_attribute_value_ids -= ptav
 
-    #    vals = {}
-    #    if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
-    #        vals['product_uom'] = self.product_id.uom_id
-    #        vals['product_uom_qty'] = self.product_uom_qty or 1.0
+        vals = {}
+        if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
+            vals['product_uom'] = self.product_id.uom_id
+            vals['product_uom_qty'] = self.product_uom_qty or 1.0
 
-    #    lang = get_lang(self.env, self.order_id.partner_id.lang).code
-    #    product = self.product_id.with_context(
-    #        lang=lang,
-    #    )
+        lang = get_lang(self.env, self.order_id.partner_id.lang).code
+        product = self.product_id.with_context(
+            lang=lang,
+        )
 
-    #    self.update({'name': product.name})
+        self.update({'name': product.name})
     
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
@@ -140,13 +158,13 @@ class SaleOrderLine(models.Model):
                 uom=self.product_uom.id,
                 fiscal_position=self.env.context.get('fiscal_position')
             )
-            #self.price_unit = product._get_tax_included_unit_price(
-            #    self.company_id or self.order_id.company_id,
-            #    self.order_id.currency_id,
-            #    self.order_id.date_order,
-            #    'sale',
-            #    fiscal_position=self.order_id.fiscal_position_id,
-            #    product_price_unit=self._get_display_price(product),
-            #    product_currency=self.order_id.currency_id
-            #)
+            self.price_unit = product._get_tax_included_unit_price(
+                self.company_id or self.order_id.company_id,
+                self.order_id.currency_id,
+                self.order_id.date_order,
+                'sale',
+                fiscal_position=self.order_id.fiscal_position_id,
+                product_price_unit=self._get_display_price(product),
+                product_currency=self.order_id.currency_id
+            )
         

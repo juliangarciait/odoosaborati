@@ -29,7 +29,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//form/sheet/group[@name='sale_header']/group/field[@name='partner_shipping_id']" position="attributes">
-                <attribute name="domain">['|', ('id', '=', partner_id), ('parent_id', '=', partner_id)]</attribute>
+                <attribute name="domain">['|', ('id', '=', partner_id), ('parent_id', '=', partner_id), ('type', '!=', 'invoice')]</attribute>
             </xpath>
             <xpath expr="//form/sheet/group[@name='sale_header']/group[@name='partner_details']" position="inside">
                 <field name="colony" nolabel="1"/>
