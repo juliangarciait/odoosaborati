@@ -124,7 +124,7 @@ class SaleOrderLine(models.Model):
             lang=lang,
         )
 
-        self.update({'name': product.name})
+        self.update({'name': product.display_name})
     
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
