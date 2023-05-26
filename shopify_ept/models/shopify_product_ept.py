@@ -745,7 +745,7 @@ class ShopifyProductProductEpt(models.Model):
                 continue
 
             odoo_product_ids = shopify_products.product_id.ids
-            product_stock = self.check_stock(instance, odoo_product_ids, product_obj,
+            product_stock = self.sudo().check_stock(instance, odoo_product_ids, product_obj,
                                              location_id.export_stock_warehouse_ids)
             commit_count = 0
             for shopify_product in shopify_products:
