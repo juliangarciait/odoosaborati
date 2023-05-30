@@ -89,25 +89,26 @@ class ProductProduct(models.Model):
     def calculate_if_not_mrp_bom(self, product):
         cost = 0.0
         vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', product.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
-        po_price = self.env['purchase.order.line'].search([('state', '=', 'purchase'), ('product_id', '=', product.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
+        stock_move = self.env['stock.move'].search([('state', '=', 'done'), ('product_id', '=', product.id), ('company_id', '=', self.env.company.id), ('picking_type_id', 'in', [1, 40])], order="write_date desc", limit=1)
+        #po_price = self.env['purchase.order.line'].search([('state', '=', 'purchase'), ('product_id', '=', product.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
 
-        if po_price and vendor_pricelist: 
+        if stock_move and vendor_pricelist: 
             vendor_date = datetime.strptime(str(vendor_pricelist.write_date), '%Y-%m-%d %H:%M:%S.%f')
-            po_date = datetime.strptime(str(po_price.write_date), '%Y-%m-%d %H:%M:%S.%f')
-            if po_date > vendor_date: 
-                cost = po_price.price_unit 
+            stock_move_date = datetime.strptime(str(stock_move.write_date), '%Y-%m-%d %H:%M:%S.%f')
+            if stock_move_date > vendor_date: 
+                cost = stock_move.purchase_line_id.price_unit 
             else: 
                 if vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
                     cost = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
                 else: 
                     cost = vendor_pricelist.price
-        elif vendor_pricelist and not po_price:
+        elif vendor_pricelist and not stock_move:
             if vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
                 cost = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
             else: 
                 cost = vendor_pricelist.price
-        elif not vendor_pricelist and po_price:
-            cost = po_price.price_unit
+        elif not vendor_pricelist and stock_move:
+            cost = stock_move.purchase_line_id.price_unit
             
         return cost
             
