@@ -89,7 +89,7 @@ class ProductProduct(models.Model):
     def calculate_if_not_mrp_bom(self, product):
         cost = 0.0
         vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', product.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
-        stock_move = self.env['stock.move'].search([('state', '=', 'done'), ('product_id', '=', product.id), ('company_id', '=', self.env.company.id), ('picking_type_id', 'in', [1, 40])], order="write_date desc", limit=1)
+        stock_move = self.env['stock.move'].search([('state', '=', 'done'), ('product_id', '=', product.id), ('company_id', '=', self.env.company.id), ('picking_type_id', 'in', [1, 40, 10, 19, 32])], order="write_date desc", limit=1)
         #po_price = self.env['purchase.order.line'].search([('state', '=', 'purchase'), ('product_id', '=', product.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
 
         if stock_move and vendor_pricelist: 
