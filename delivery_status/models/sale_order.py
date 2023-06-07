@@ -11,7 +11,7 @@ class SaleOrder(models.Model):
 
     custom_state_delivery = fields.Char(string='State Delivery',
         compute='_compute_get_delivery_custom_state',
-        help='Automatic assignation state from custom state delivery:\n', store=True)
+        help='Automatic assignation state from custom state delivery:\n')
 
     def write(self, vals):
         if self.custom_state_delivery in ['Ready (No Delivered)', 'Done (Delivered)']:
