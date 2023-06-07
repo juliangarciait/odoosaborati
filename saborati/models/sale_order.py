@@ -141,13 +141,13 @@ class SaleOrderLine(models.Model):
                 uom=self.product_uom.id,
                 fiscal_position=self.env.context.get('fiscal_position')
             )
-            #self.price_unit = product._get_tax_included_unit_price(
-            #    self.company_id or self.order_id.company_id,
-            #    self.order_id.currency_id,
-            #    self.order_id.date_order,
-            #    'sale',
-            #    fiscal_position=self.order_id.fiscal_position_id,
-            #    product_price_unit=self._get_display_price(product),
-            #    product_currency=self.order_id.currency_id
-            #)
+            self.price_unit = product._get_tax_included_unit_price(
+                self.company_id or self.order_id.company_id,
+                self.order_id.currency_id,
+                self.order_id.date_order,
+                'sale',
+                fiscal_position=self.order_id.fiscal_position_id,
+                product_price_unit=self._get_display_price(product),
+                product_currency=self.order_id.currency_id
+            )
         
