@@ -24,7 +24,7 @@ class StockPicking(models.Model):
                 products.append(product.id)
                 
         if process_import_export_obj: 
-            process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
+            process_import_export_obj.with_context({'active_ids' : products}).sudo().shopify_selective_product_stock_export()
 
         
         
@@ -53,7 +53,7 @@ class StockPicking(models.Model):
                 products.append(product.id)
                 
         if process_import_export_obj: 
-            process_import_export_obj.with_context({'active_ids' : products}).shopify_selective_product_stock_export()
+            process_import_export_obj.with_context({'active_ids' : products}).sudo().shopify_selective_product_stock_export()
             
         return res
     

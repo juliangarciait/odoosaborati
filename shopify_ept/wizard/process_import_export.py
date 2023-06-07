@@ -473,7 +473,7 @@ class ShopifyProcessImportExport(models.TransientModel):
         return True
     
     def export_stock_with_delay(self, shopify_product_obj, instance, odoo_product_ids): 
-        shopify_product_obj.with_context(is_process_from_selected_product=True).export_stock_in_shopify(
+        shopify_product_obj.with_context(is_process_from_selected_product=True).sudo().export_stock_in_shopify(
                     instance, odoo_product_ids)
     
 

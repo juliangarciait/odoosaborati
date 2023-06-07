@@ -21,7 +21,7 @@ class StockProductionLot(models.Model):
             })
             
             if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).sudo().shopify_selective_product_stock_export()
         
         return res
     
@@ -36,6 +36,6 @@ class StockProductionLot(models.Model):
             })
             
             if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).sudo().shopify_selective_product_stock_export()
         
         return res
