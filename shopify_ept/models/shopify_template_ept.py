@@ -125,13 +125,13 @@ class ShopifyProductTemplateEpt(models.Model):
         })
         if self.exported_in_shopify:
             export_data.with_context({"active_ids" : [self.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
-            self.product_tmpl_id.with_delay().export_collections(self.product_tmpl_id, self)
+            self.product_tmpl_id.with_delay().sudo().export_collections(self.product_tmpl_id, self)
             
         process_import_export_obj = self.env['shopify.process.import.export'].create({
             'shopify_instance_id' : self.shopify_instance_id.id,
         })
         if process_import_export_obj: 
-            process_import_export_obj.with_context({'active_ids' : [self.id]}).shopify_selective_product_stock_export()
+            process_import_export_obj.with_context({'active_ids' : [self.id]}).sudo().shopify_selective_product_stock_export()
 
     @api.model
     def find_template_attribute_values(self, template_options, product_template_id, variant):
