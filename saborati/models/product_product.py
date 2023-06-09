@@ -66,6 +66,7 @@ class ProductProduct(models.Model):
     
     @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids')
     def _compute_replacement_cost(self): 
+        self.flush()
         for record in self:
             record.replacement_cost = 0.0
             has_mrp_bom = self.env['mrp.bom'].search([('product_id', '=', record.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
