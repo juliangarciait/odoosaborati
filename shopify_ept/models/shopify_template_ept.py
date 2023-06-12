@@ -125,7 +125,7 @@ class ShopifyProductTemplateEpt(models.Model):
         })
         if self.exported_in_shopify:
             export_data.with_context({"active_ids" : [self.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
-            self.product_tmpl_id.with_delay().sudo().export_collections(self.product_tmpl_id, self)
+            self.product_tmpl_id.sudo().with_delay().export_collections(self.product_tmpl_id, self)
             
         process_import_export_obj = self.env['shopify.process.import.export'].create({
             'shopify_instance_id' : self.shopify_instance_id.id,
