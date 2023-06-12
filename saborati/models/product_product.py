@@ -84,10 +84,8 @@ class ProductProduct(models.Model):
             if record.product_tmpl_id.product_variant_id.id == record.id:       
                 costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
                 if costs:
-                    cont_cost = 0 
                     for cost in costs: 
-                        cont_cost += cost.cost
-                    record.replacement_cost += cont_cost
+                        record.replacement_co += cost.cost
             
     def calculate_if_not_mrp_bom(self, product):
         cost = 0.0
