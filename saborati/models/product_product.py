@@ -70,7 +70,6 @@ class ProductProduct(models.Model):
         for record in self:
             record.replacement_cost = 0.0
             has_mrp_bom = self.env['mrp.bom'].search([('product_id', '=', record.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
-
             if record.product_tmpl_id.product_variant_id.id == record.id:
                 if not has_mrp_bom:
                     record.replacement_cost = record.product_tmpl_id.replacement_cost if record.type != 'product' else self.calculate_if_not_mrp_bom(record)
@@ -82,10 +81,11 @@ class ProductProduct(models.Model):
                 elif has_mrp_bom: 
                     record.replacement_cost = has_mrp_bom.replacement_cost_total
                     
-            #costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)])
-            #if costs:
-            #    for cost in costs: 
-            #        record.replacement_cost += cost.cost
+            if record.product_tmpl_id.product_variant_id.id == record.id:       
+                costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
+                if costs:
+                    for cost in costs: 
+                        record.replacement_cost += cost.cost
             
     def calculate_if_not_mrp_bom(self, product):
         cost = 0.0
