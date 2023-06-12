@@ -87,7 +87,7 @@ class ProductProduct(models.Model):
                     cont_cost = 0 
                     for cost in costs: 
                         cont_cost += cost.cost
-                    record.replacement_cost = cont_cost
+                    record.replacement_cost += cont_cost
             
     def calculate_if_not_mrp_bom(self, product):
         cost = 0.0
