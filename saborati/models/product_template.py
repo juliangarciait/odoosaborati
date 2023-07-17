@@ -16,7 +16,8 @@ class ProductTemplate(models.Model):
 
     list_price = fields.Float(compute="_compute_price")
 
-    replacement_cost = fields.Float(compute="_compute_replacement_cost")
+    # replacement_cost = fields.Float(compute="_compute_replacement_cost")
+    replacement_cost = fields.Float(related="product_variant_id.replacement_cost", store=True)
     
     total_additional_cost = fields.Float(compute="_compute_total_addional_cost")
 
