@@ -10,8 +10,11 @@ _logger = logging.getLogger(__name__)
 class ProductProduct(models.Model): 
     _inherit = 'product.product'
 
+    @api.depends_context('force_company')
     @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids')
     def _compute_replacement_cost_new(self):
+        _logger.info("$"*900)
+        _logger.info(self.env.context)
         for record in self:
             new_replace_cost = 0.0
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
@@ -69,7 +72,7 @@ class ProductProduct(models.Model):
     
     list_price = fields.Float(compute="_compute_price")
     
-    replacement_cost = fields.Float(compute="_compute_replacement_cost_new", store=True)
+    replacement_cost = fields.Float(compute="_compute_replacement_cost_new")
     # new_replacement_cost = fields.Float(compute="_compute_replacement_cost_new")#, store=True)
     
     purchase_ok = fields.Boolean('Can be Purchased', default=True)
