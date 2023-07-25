@@ -856,7 +856,7 @@ class ShopifyProductProductEpt(models.Model):
         :return: This Method return product listing stock.
         """
         product_stock = {}
-
+        instance = instance.sudo()
         if product_ids:
             if instance.shopify_stock_field.name == "free_qty":
                 product_stock = prod_obj.get_free_qty_ept(warehouse, product_ids)
