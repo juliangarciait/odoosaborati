@@ -11,7 +11,7 @@ class ProductSupplierinfo(models.Model):
     def create(self, vals_list):
         res = super(ProductSupplierinfo, self).create(vals_list)
         
-        self.with_delay().update_prices_in_shopify(res.product_tmpl_id)
+        self.with_delay(eta=5).update_prices_in_shopify(res.product_tmpl_id)
         
         return res
     
@@ -19,13 +19,13 @@ class ProductSupplierinfo(models.Model):
         res = super(ProductSupplierinfo, self).write(vals)
         
         for vendor_pricelist in self: 
-            self.with_delay().update_prices_in_shopify(vendor_pricelist.product_tmpl_id)
+            self.with_delay(eta=5).update_prices_in_shopify(vendor_pricelist.product_tmpl_id)
         
         return res
     
     def unlink(self): 
         for vendor_pricelist in self: 
-            self.with_delay().update_prices_in_shopify(vendor_pricelist.product_tmpl_id)
+            self.with_delay(eta=5).update_prices_in_shopify(vendor_pricelist.product_tmpl_id)
             
         return super(ProductSupplierinfo, self).unlink()
     

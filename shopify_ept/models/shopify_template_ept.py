@@ -82,7 +82,7 @@ class ShopifyProductTemplateEpt(models.Model):
             })
             
             if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).with_delay().shopify_selective_product_stock_export()
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).with_delay(eta=5).shopify_selective_product_stock_export()
     
     @api.depends("shopify_product_ids.exported_in_shopify", "shopify_product_ids.variant_id")
     def _compute_total_sync_variants(self):
@@ -125,7 +125,7 @@ class ShopifyProductTemplateEpt(models.Model):
         })
         if self.exported_in_shopify:
             export_data.with_context({"active_ids" : [self.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
-            self.product_tmpl_id.sudo().with_delay().export_collections(self.product_tmpl_id, self)
+            self.product_tmpl_id.sudo().with_delay(eta=5).export_collections(self.product_tmpl_id, self)
             
         process_import_export_obj = self.env['shopify.process.import.export'].create({
             'shopify_instance_id' : self.shopify_instance_id.id,

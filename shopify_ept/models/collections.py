@@ -115,7 +115,7 @@ class ShopifyProductCollection(models.Model):
         res = super(ShopifyProductCollection, self).write(vals)
         
         for collection in self:
-            self.with_delay().export_to_shopify(collection)
+            self.with_delay(eta=5).export_to_shopify(collection)
              
         return res
     
@@ -166,7 +166,7 @@ class ShopifyProductCollection(models.Model):
         collections = self.env['shopify.product.collection'].search([('id', 'in', self.env.context.get('active_ids', []))])
         
         for collection in collections:
-            self.with_delay().export_to_shopify(collection)
+            self.with_delay(eta=5).export_to_shopify(collection)
                                     
     def remove_products(self, collect, collection): 
         products = collect.products()

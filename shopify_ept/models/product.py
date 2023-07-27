@@ -72,7 +72,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if product.detailed_type == 'product':
-                self.with_delay().export_to_shopify(product)
+                self.with_delay(eta=5).export_to_shopify(product)
                             
                             #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
                                            
@@ -158,7 +158,7 @@ class ProductTemplate(models.Model):
                 export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                 
             #Add to collection if it has collections
-                self.with_delay().export_collections(product, product_instance)
+                self.with_delay(eta=5).export_collections(product, product_instance)
                             
         return True
         
@@ -239,7 +239,7 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         
         for product_variant in self: 
-            self.with_delay().export_variant_to_shopify(product_variant)
+            self.with_delay(eta=5).export_variant_to_shopify(product_variant)
             
             
         return res
