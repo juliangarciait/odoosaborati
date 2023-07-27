@@ -20,7 +20,7 @@ class AssignMarginToProduct(models.Model):
                     'product_tmpl_id' : product.id,
                 }
             )
-            self.with_delay().export_products(product)
+            self.with_delay(eta=5).export_products(product)
     
     
     def export_products(self, product): 

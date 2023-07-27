@@ -12,7 +12,7 @@ class ProductPricelistItem(models.Model):
     def write(self, vals): 
         res = super(ProductPricelistItem, self).write(vals)
         for item in self: 
-            self.with_delay().update_prices_in_shopify(item)
+            self.with_delay(eta=5).update_prices_in_shopify(item)
                  
         return res
 
@@ -20,7 +20,7 @@ class ProductPricelistItem(models.Model):
     def create(self, vals_list): 
         res = super(ProductPricelistItem, self).create(vals_list)
 
-        self.with_delay().update_prices_in_shopify(res)
+        self.with_delay(eta=5).update_prices_in_shopify(res)
 
         return res
 
@@ -32,7 +32,7 @@ class ProductPricelistItem(models.Model):
             elif item.applied_on == '0_product_variant' and item.product_id.product_tmpl_id.shopify_product_template_ids:
                 item.product_id.product_tmpl_id.write({})
             elif item.applied_on == '2_product_category': 
-                self.with_delay().update_from_line_deleted(item)
+                self.with_delay(eta=5).update_from_line_deleted(item)
         return super(ProductPricelistItem, self).unlink()
     
     def update_from_line_deleted(self, item): 
