@@ -13,8 +13,6 @@ class ProductProduct(models.Model):
     @api.depends_context('force_company')
     @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids')
     def _compute_replacement_cost_new(self):
-        _logger.info("$"*900)
-        _logger.info(self.env.context)
         for record in self:
             new_replace_cost = 0.0
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
@@ -50,6 +48,9 @@ class ProductProduct(models.Model):
                             new_replace_cost = vendor_pricelist.price
                     elif not vendor_pricelist and stock_move:
                         new_replace_cost = stock_move.purchase_line_id.price_unit
+                    extra_costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
+                    for cost in extra_costs: 
+                        new_replace_cost += cost.cost
             record.replacement_cost = new_replace_cost
 
             # if record.product_tmpl_id.product_variant_id.id == record.id:
