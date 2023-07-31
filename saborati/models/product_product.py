@@ -17,11 +17,9 @@ class ProductProduct(models.Model):
             new_replace_cost = 0.0
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
             if len(has_mrp_bom) > 0:
-                
                 for line in has_mrp_bom.bom_line_ids:
                     new_replace_cost += line.product_id.replacement_cost * line.product_qty
             else:
-                
                 if record.product_tmpl_id.product_variant_id.id == record.id:
                     vendor_pricelist = self.env['product.supplierinfo'].search(
                         [('product_tmpl_id', '=', record.product_tmpl_id.id),
@@ -51,24 +49,9 @@ class ProductProduct(models.Model):
                     extra_costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
                     for cost in extra_costs: 
                         new_replace_cost += cost.cost
+                else:
+                    new_replace_cost = record.product_tmpl_id.replacement_cost
             record.replacement_cost = new_replace_cost
-
-            # if record.product_tmpl_id.product_variant_id.id == record.id:
-            #     if not has_mrp_bom:
-            #         record.replacement_cost = record.product_tmpl_id.replacement_cost if record.type != 'product' else self.calculate_if_not_mrp_bom(record)
-            #     else:
-            #         record.replacement_cost = has_mrp_bom.replacement_cost_total
-            # else: 
-            #     if not has_mrp_bom: 
-            #         record.replacement_cost = self.calculate_if_not_mrp_bom(record)
-            #     elif has_mrp_bom: 
-            #         record.replacement_cost = has_mrp_bom.replacement_cost_total
-                    
-            # if record.product_tmpl_id.product_variant_id.id == record.id:       
-            #     costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
-            #     if costs:
-            #         for cost in costs: 
-            #             record.replacement_cost += cost.cost
 
     
     list_price = fields.Float(compute="_compute_price")
