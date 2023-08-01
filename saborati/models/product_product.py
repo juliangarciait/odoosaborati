@@ -11,7 +11,7 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     @api.depends_context('force_company')
-    @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids')
+    # @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids', "additional_cost_ids")
     def _compute_replacement_cost_new(self):
         for record in self:
             new_replace_cost = 0.0
@@ -20,6 +20,7 @@ class ProductProduct(models.Model):
                 for line in has_mrp_bom.bom_line_ids:
                     new_replace_cost += line.product_id.replacement_cost * line.product_qty
             else:
+                new_replace_cost = record.product_tmpl_id.product_variant_id.replacement_cost
                 if record.product_tmpl_id.product_variant_id.id == record.id:
                     vendor_pricelist = self.env['product.supplierinfo'].search(
                         [('product_tmpl_id', '=', record.product_tmpl_id.id),
@@ -49,8 +50,6 @@ class ProductProduct(models.Model):
                     extra_costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
                     for cost in extra_costs: 
                         new_replace_cost += cost.cost
-                else:
-                    new_replace_cost = record.product_tmpl_id.replacement_cost
             record.replacement_cost = new_replace_cost
 
     
