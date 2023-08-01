@@ -8,6 +8,7 @@ from odoo.exceptions import ValidationError, UserError
 
 class PosConfig(models.Model):
     _inherit = 'pos.config'
+    limited_products_loading = fields.Boolean('Limited Product Loading', default=True)
 
     def get_limited_products_loading(self, fields):
         query = """
