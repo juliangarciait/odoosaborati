@@ -50,7 +50,7 @@ class ProductProduct(models.Model):
                     extra_costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.product_tmpl_id.id)])
                     for cost in extra_costs: 
                         new_replace_cost += cost.cost
-                elif new_replace_cost == 0.0:
+                else:
                     new_replace_cost = self.calculate_if_not_mrp_bom(record)
             record.replacement_cost = new_replace_cost
 
