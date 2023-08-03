@@ -58,36 +58,15 @@ class ProductTemplate(models.Model):
         @author: Haresh Mori @Emipro Technologies Pvt. Ltd on date 09/12/2019.
         :Task id: 158502
         """
-        #if 'active' in vals.keys():
-        #    shopify_product_template_obj = self.env['shopify.product.template.ept']
-        #    for template in self:
-        #        shopify_templates = shopify_product_template_obj.search(
-        #            [('product_tmpl_id', '=', template.id)])
-        #        if vals.get('active'):
-        #           shopify_templates = shopify_product_template_obj.search(
-        #                [('product_tmpl_id', '=', template.id), ('active', '=', False)])
-        #        shopify_templates.write({'active': vals.get('active')})
-        
+
         res = super(ProductTemplate, self).write(vals)
 
         for product in self:
             if product.detailed_type == 'product':
                 self.with_delay(eta=5).export_to_shopify(product)
+                for bom_line in product.bom_line_ids:
+                    self.with_delay(eta=3).export_to_shopify(bom_line.bom_id.product_tmpl_id)
                             
-                            #if product_collection.shopify_instance_id == product_instance.shopify_instance_id: 
-                                           
-                                            
-                                           
-                #else: 
-                #    shopify_prepare_product_id = self.env['shopify.prepare.product.for.export.ept'].create({
-                #        'shopify_instance_id' : instance.id, 
-                #        'export_method' : "direct",
-                #    })
-                #    shopify_prepare_product_id.with_context({"active_ids": [product.id], "lang": self.env.user.lang}).prepare_product_for_export()
-                #    product_instance = self.env['shopify.product.template.ept'].search([('product_tmpl_id', '=', product.id)])
-                #    export_data.with_context({"active_ids" : [product_instance.id]}).manual_export_product_to_shopify()
-                    
-
             shopify_templates = self.env['shopify.product.template.ept'].search(
                         [('product_tmpl_id', '=', product.id)])
             if product.active:
