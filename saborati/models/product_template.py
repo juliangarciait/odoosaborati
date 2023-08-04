@@ -16,8 +16,8 @@ class ProductTemplate(models.Model):
 
     list_price = fields.Float(compute="_compute_price")
 
-    # replacement_cost = fields.Float(compute="_compute_replacement_cost")
-    replacement_cost = fields.Float(related="product_variant_id.replacement_cost")
+    replacement_cost = fields.Float(compute="_compute_replacement_cost")
+    # replacement_cost = fields.Float(related="product_variant_id.replacement_cost")
     
     total_additional_cost = fields.Float(compute="_compute_total_addional_cost")
 
@@ -48,26 +48,16 @@ class ProductTemplate(models.Model):
             if margin and record.replacement_cost:   
                 record.list_price = record.replacement_cost / (1 - margin)
 
-
-    @api.depends('seller_ids', 'bom_ids', 'additional_cost_ids')
+    @api.depends_context('force_company')
     def _compute_replacement_cost(self): 
         for record in self: 
-            has_mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', record.id), ('product_id', '=', record.product_variant_id.id)], order='write_date desc', limit=1)
-            
-            if not has_mrp_bom:
-                vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', record.id)], order='create_date desc', limit=1)
-                if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
-                    price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
-                else: 
-                    price = vendor_pricelist.price
-                record.replacement_cost = price
-            elif has_mrp_bom:
-                record.replacement_cost = has_mrp_bom.replacement_cost_total
-                
-            costs = self.env['additional.cost'].search([('product_tmpl_id', '=', record.id)])
-            if costs:
-                for cost in costs: 
-                    record.replacement_cost += cost.cost
+            replacement_cost = 0
+            if record.product_variant_id.bom_count >= 0:
+                variant_bom = record.product_variant_ids.filtered(lambda v: v.bom_count == 0)
+                replacement_cost = variant_bom and variant_bom[0].replacement_cost
+            else:
+                replacement_cost = record.product_variant_id.replacement_cost
+            record.replacement_cost = replacement_cost
                 
     @api.depends('additional_cost_ids.cost')
     def _compute_total_addional_cost(self): 
