@@ -24,8 +24,8 @@ class ProductPricelistItem(models.Model):
                 
     def _get_replacement_cost(self, product): 
         replacement_cost = 0.0
-        has_mrp_bom = self.env['mrp.bom'].search([('product_id', '=', product.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
-
+        has_mrp_bom = self.env['mrp.bom'].sudo().search([('product_id', '=', product.id), ('company_id', '=', self.env.company.id)], order='write_date desc', limit=1)
+        product = product.sudo()
         if product.product_tmpl_id.product_variant_id.id == product.id:
             if not has_mrp_bom:
                 replacement_cost = product.product_tmpl_id.replacement_cost
@@ -33,7 +33,7 @@ class ProductPricelistItem(models.Model):
                 replacement_cost = has_mrp_bom.replacement_cost_total
         else: 
             if not has_mrp_bom: 
-                vendor_pricelist = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', product.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
+                vendor_pricelist = self.env['product.supplierinfo'].sudo().search([('product_tmpl_id', '=', product.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1)
                 if vendor_pricelist and vendor_pricelist.currency_id.id != self.env.company.currency_id.id: 
                     price = vendor_pricelist.currency_id._convert(vendor_pricelist.price, self.env.company.currency_id, self.env.company, vendor_pricelist.create_date)
                 else: 

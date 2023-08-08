@@ -15,7 +15,9 @@ class ProductProduct(models.Model):
     def _compute_replacement_cost_new(self):
         for record in self:
             new_replace_cost = 0.0
+            record = record.sudo()
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
+            
             if len(has_mrp_bom) > 0:
                 for line in has_mrp_bom.bom_line_ids:
                     new_replace_cost += line.product_id.replacement_cost * line.product_qty
