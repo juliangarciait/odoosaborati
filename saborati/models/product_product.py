@@ -13,7 +13,7 @@ class ProductProduct(models.Model):
     @api.depends_context('force_company')
     # @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids', "additional_cost_ids")
     def _compute_replacement_cost_new(self):
-        for record in self:
+        for record in self.sorted("bom_count"):
             new_replace_cost = 0.0
             record = record.sudo()
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
