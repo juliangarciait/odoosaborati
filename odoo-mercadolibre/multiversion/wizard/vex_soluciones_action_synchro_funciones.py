@@ -484,7 +484,7 @@ class MeliActionSynchro(models.TransientModel):
 
                     # raise ValidationError(ppp)
                 else:
-                    if not creado and not server.create_not_exists:
+                    if  not server.create_not_exists:
                         return queryx
 
 
