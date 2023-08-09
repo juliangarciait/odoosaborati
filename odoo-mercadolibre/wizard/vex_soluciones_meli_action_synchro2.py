@@ -3,12 +3,15 @@ import threading
 import base64
 from ..models.vex_soluciones_meli_config  import API_URL, INFO_URL, get_token
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
 from ..models.vex_soluciones_meli_config  import API_URL, CATEGORIES_REQUIRED_ATRR , CATEGORIES_REQUIRED_BRAND
 import logging
 _logger = logging.getLogger(__name__)
 from datetime import datetime
 import math
+import time
+
+from datetime import datetime, timedelta
 
 id_api       = 'id_vex'
 server_api   = 'server_vex'
@@ -50,6 +53,8 @@ class MeliActionSynchro(models.TransientModel):
                 return self.get_category(id_vex)
                 #raise ValidationError(str(res))
             #raise ValidationError(str(item))
+            
+        #raise ValueError([server,query])
 
         return res
 
@@ -98,11 +103,15 @@ class MeliActionSynchro(models.TransientModel):
             products_url = '{}/users/{}/items/search?search_type=scan&scroll_id={}&access_token={}'.format(API_URL,
                                                                                                            str(server.user_id),
                                                                                                            scroll_id,
-                                                                                                           str(server.access_token))
+
+                                                                                              str(server.access_token))
+
             res = requests.get(products_url).json()
             if res['results']:
                 self.insert_import_lines(server,accion,products_url,res)
             else:
+                return 0
+                raise ValueError(res)
                 #raise ValidationError('oshee')
                 #activar el cron
                 update_cron = "UPDATE ir_cron SET accion={} , server_vex={}  WHERE argument = 'vex_cron' ".format(accion.id,server.id)
@@ -132,7 +141,7 @@ class MeliActionSynchro(models.TransientModel):
         '''
         return resx
     @api.model
-    def meli_api(self, server, query, accion,filtro,offset=0):
+    def meli_api(self, server, query, accion,filtro,offset=None):
         finish_loop = False
         if query == "products":
 
@@ -201,9 +210,15 @@ class MeliActionSynchro(models.TransientModel):
                 'finish_loop': finish_loop
             }
         if query == "orders":
+            if offset == None:
+                offset = server.last_number_import
+                #if offset > 0:
+                offset = offset  + 50
+
             orders_url = '{}/orders/search?seller={}&access_token={}&offset={}'.format(API_URL, str(server.user_id),
                                                                              str(server.access_token),offset)
-            #raise ValidationError(orders_url)
+
+
             if server.order_after:
                 datex = server.order_after
                 mes = datex.month
@@ -213,20 +228,25 @@ class MeliActionSynchro(models.TransientModel):
                 if dayx < 10:
                     dayx = '0'+str(dayx)
                 #datxstr = f'''{datex.year}-{mes}-%{datex.day}T00:00:00'''
-                datxstr = f'''{datex.year}-{mes}-{datex.day}T00:00:00.000-04:00'''
+                datxstr = f'''{datex.year}-{mes}-{dayx}T00:00:00.000-04:00'''
                 #raise ValueError(datxstr)
                 orders_url += f'''&order.date_created.from={datxstr}'''
-
+            _logger.info(F'URL: %s {orders_url}')
             #raise ValidationError(orders_url)
             res = requests.get(orders_url)
             res = res.json()
+
+            if not res[filtro]:
+                finish_loop = True
+                server.last_number_import = 0
 
             #raise ValidationError(str([len(res['results']),str(res['results'])]))
 
             return {
                 'data': res[filtro],
                 'finish_loop': finish_loop ,
-                'res': res
+                'res': res ,
+                'offset': offset
             }
 
 
@@ -253,7 +273,7 @@ class MeliActionSynchro(models.TransientModel):
             create = {}
             write = {}
             if query == "products":
-                #raise ValidationError(str(data))
+                #raise ValueError(str(data))
                 if not 'body' in data:
                     import json
                     raise ValidationError('ka')
@@ -266,6 +286,8 @@ class MeliActionSynchro(models.TransientModel):
 
                 if not server.categ_id:
                     raise ValidationError('not indicate category product')
+
+                #raise ValidationError(str(data))
 
 
                 #if body['id'] == 'MLM1650434284':
@@ -286,6 +308,7 @@ class MeliActionSynchro(models.TransientModel):
                     'active_meli': active,
                     'permalink': "'{}'".format(body['permalink']),
                     'base_unit_count': 0,
+                    'create_of_meli': "'t'"
                     #'default_code': "'" + body['id'] + "'",
                     #'public_categ_ids': [(6, 0, [self.check_categories(body['category_id'], server, None).id])]
                 }
@@ -311,9 +334,14 @@ class MeliActionSynchro(models.TransientModel):
                 #raise ValidationError(str(create))
 
             if query == "orders":
-                d = str(data['date_created']).split('.')
                 #raise ValidationError(str(data))
+                d = str(data['date_created']).split('.')
+
                 fecha = datetime.strptime(d[0], '%Y-%m-%dT%H:%M:%S')
+                #raise ValidationError(fecha)
+
+                fecha = fecha + timedelta(hours=3)
+
                 pricelist = server.pricelist
                 if not pricelist:
                     raise ValidationError("Set Up pricelist")
@@ -335,30 +363,40 @@ class MeliActionSynchro(models.TransientModel):
 
                 #raise ValidationError(str(envio))
 
-                nam = "{}".format(str(data['buyer']['nickname']))
+                #nam = "{}".format(str(data['buyer']['nickname']))
+                nam = 'Cliente Mercado Libre'
                 dx['customer']['name'] , dx['customer']['display_name'] = nam , nam
                 if 'phone' in dx['customer']:
                     dx['customer']['phone'] = "'{}'".format(str(data['buyer']['phone']['area_code'])+"-"+str(data['buyer']['phone']['number']))
 
                 customer = self.check_customer(dx, server , data['buyer']['id'] ,accion)
+                #raise ValueError(customer)
                 sqx = server.sequence_id
                 if not sqx:
                     raise ValidationError('sequence not found in instance')
                 seq = self.env['ir.sequence'].next_by_code(sqx.code)
-                state = self.env['vex.instance.status.orders'].search([('instance','=',server.id),('value','=',data['status'])])
+                #state = self.env['vex.instance.status.orders'].search([('instance','=',server.id),('value','=',data['status'])])
+                #INSERT INTO  sale_order ( team_id, conector, server_vex, id_vex, client_order_ref, name, partner_id, partner_invoice_id, partner_shipping_id, pricelist_id, date_order, create_date, amount_untaxed, amount_total, meli_status, meli_shipping_id, payment_term_id, picking_policy, warehouse_id, state, company_id, meli_pack_id) VALUES ( 7, 'meli', 1, '2000004527802317', '2000004527802317', 'S317987', 6874, 6874, 6874, 1, '2023-06-10 00:33:00', '2023-06-10', 44.99, 44.99, 'paid', '42343914557', 1, 'direct', 1, 'draft', 1, '2000004527802317') ;
 
-                if state:
-                    state =state.odoo_state
-                    #raise ValidationError(state)
-                else:
-                    state = 'draft'
+                #if state:
+                #    state =state.odoo_state
+                #    #raise ValidationError(state)
+                #else:
+                #    state = 'draft'
                 #raise ValidationError(state)
+
+                pack_id = data['pack_id']
+                id_meli = data['id']
+                if pack_id:
+                    id_meli = pack_id
+
+
                 create = {
 
                     'conector': "'meli'",
                     'server_vex': server.id,
-                    'id_vex': "'" + str(data['id']) + "'",
-                    'client_order_ref': "'" + str(data['id']) + "'",
+                    'id_vex': "'" + str(id_meli) + "'",
+                    'client_order_ref': "'" + str(id_meli) + "'",
                     'name': "'" + str(seq) + "'",
                     'partner_id': customer['customer'].id,
                     'partner_invoice_id': customer['invoice'].id,
@@ -368,23 +406,31 @@ class MeliActionSynchro(models.TransientModel):
                     'create_date': "'" + str(fecha.date()) + "'",
                     'amount_untaxed': float(data['total_amount']),
                     'amount_total': float(data['total_amount']),
-                    #'woo_status': "'"+str(['status']) + "'",
-                    #'woo_customer_ip_address': "'"+str(data['customer_ip_address']) + "'",
+                    'meli_status': "'"+str(data['status']) + "'",
+                    'meli_shipping_id': "'"+str(data['shipping']['id']) + "'",
                     #'team_id': salesteam.id,
                     #'woo_date_created': "'"+str(data['date_created']) + "'",
                     #'woo_payment_method': "'"+str(data['payment_method_title']) + "'",
                     'payment_term_id': server.payment_term.id,
                     'picking_policy': "'" + str(server.picking_policy) + "'",
                     'warehouse_id': server.warehouse.id,
-                    'state': "'{}'".format(state),
+                    'state': "'draft'",
                     'company_id' : server.company.id ,
 
                 }
+
                 write = {
                     #'state': "''".format(state),
                     'client_order_ref': "'" + str(data['id']) + "'",
-
+                    'meli_status': "'" + str(data['status']) + "'",
+                    'date_order': "'" + str(fecha) + "'",
                 }
+
+                if pack_id:
+                    create['meli_pack_id'] = "'" + str(pack_id) + "'"
+                    write['meli_pack_id'] ="'" + str(pack_id) + "'"
+
+                #raise ValidationError(str(write))
             if query == "categories":
                 create = {
                     'conector': "'meli'",
@@ -415,7 +461,7 @@ class MeliActionSynchro(models.TransientModel):
             data_request = rt['data']
             finish_loop = rt['finish_loop']
             
-            #raise ValidationError(str(data_request))
+            #raise ValueError(str(rt))
             #self.synchro_threading(data_request,query, server, str(accion.model), accion, None , api)
             # importar stock
             data = data_request
@@ -423,37 +469,100 @@ class MeliActionSynchro(models.TransientModel):
                 products = []
                 ids_vex = []
 
+
                 for d in data:
+                    #raise ValidationError('ok:'+str(d['body']))
                     #raise ValidationError(str(d['body']))
                     #if d['body']['status'] == 'active':
-                    if 1 == 1:
+                    continue_d = True
+                    #meli_logistic_type = d['body']['shipping']['logistic_type']
+                    #raise ValueError(meli_logistic_type)
+                    try:
+                        meli_logistic_type =  d['body']['shipping']['logistic_type']
+                        if meli_logistic_type == 'fulfillment' and server.not_products_full:
+                            continue_d = False
+                    except:
+                        pass
+                   
+
+                    if continue_d:
                         id_vex = d['body']['id']
+
+                        #raise ValidationError(str(d['varitions']))
                         queryx += self.synchro(d, query, server, str(accion.model), accion, id_vex, None)
-                        pro = self.env['product.template'].search([('id_vex', '=', str(id_vex))])
-                        products.append(pro)
+                        #if accion.stock_import:
+                        #   pro = self.env['product.template'].search([('id_vex', '=', str(id_vex))])
+                        #    products.append(pro)
+
 
                 #raise ValidationError(ids_vex)
                 if accion.stock_import:
                     self.import_stock(server, products)
 
-            elif accion.argument == 'orders':
+            elif accion.argument == 'orders' and data :
+
+                ids_orders_meli = []
                 #raise ValidationError(str(rt))
                 for d in data:
-                    self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
+                    id_meli = d['id']
+                    pack_id = d['pack_id']
+                    if pack_id:
+                        id_meli = pack_id
+                    #    raise ValidationError(str(d))
+
+
+                    _logger.info(f'''id: %s {d['id']}''')
+                    if not d['id'] in ids_orders_meli:
+                        ids_orders_meli.append(d['id'])
+                    self.synchro(d, query, server, str(accion.model), accion, id_meli, None)
+
+                #raise ValueError('uuu')
 
                 #get offsets
                 total_offset = rt['res']['paging']['total']
+                total_offset = total_offset / 51
+                total_offset = math.ceil(total_offset) - 1
+                #total_offset = rt['offset '] + accion.per_page
+
+                ctd = rt['offset']
+
+
+                #for n in range(accion.per_page):
+                for n in range(total_offset):
+                    ctd = ctd + 50
+                    #_logger.info(F'CTD: %s {ctd}')
+                    #raise ValueError(ctd)
+                    #time.sleep(5)
+                    ret = self.meli_api(server, query, accion, 'results', ctd)
+
+                    data_requestx = ret['data']
+                    _logger.info(F'''IDR: %s , %S {len(data_requestx), ctd}''')
+                    if not data_requestx:
+                        ctd = 0
+                        break
+                    for d in data_requestx:
+                        if not d['id'] in ids_orders_meli:
+                            ids_orders_meli.append(d['id'])
+                            id_meli = d['id']
+                            pack_id = d['pack_id']
+                            if pack_id:
+                                id_meli = pack_id
+                            self.synchro(d, query, server, str(accion.model), accion, id_meli, None)
+                        else:
+                            _logger.info(F'''IDR: %s , %S {d['id'],ctd}''')
+
+
+
+                #total_orders = self.env['sale.order'].search_count([('conector','=','meli')])
+
+                #raise ValueError([ctd, total_orders,len(ids_orders_meli)])
+                server.last_number_import = ctd
+
+
 
                 #raise ValidationError(str(total_offset))
-                if total_offset > 51:
-                    total_offset = total_offset / 51
-                    total_offset = math.ceil(total_offset)
-                    for n in range(total_offset):
-                        ret = self.meli_api(server, query, accion, 'results',n+1)
-                        data_requestx = ret['data']
-                        for d in data_requestx:
-                            self.synchro(d, query, server, str(accion.model), accion, d['id'], None)
-                        #raise ValidationError(str(data_requestx))
+
+                #raise ValidationError(str(data_requestx))
 
                 # raise ValidationError(total_offset)
 
@@ -469,6 +578,16 @@ class MeliActionSynchro(models.TransientModel):
 
         if server.conector == 'meli':
             if query == "products":
+                
+                data['body']['variantes'] = []
+                if 'variations' in data['body']:
+                    if data['body']['variations']:
+                        for varirition in data['body']['variations']:
+                            url = f'''https://api.mercadolibre.com/items/{data['body']['id']}/variations/{varirition['id']}?access_token={str(server.access_token)}'''
+                            resv = requests.get(url)
+                            resv = resv.json()
+                            data['body']['variantes'].append(resv)
+                            # raise ValidationError(str(resv))
                 #raise ValidationError(str(data))
                 try:
                     data = data[0]
@@ -492,8 +611,11 @@ class MeliActionSynchro(models.TransientModel):
 
             try:
                id_vex = data['body']['id'] if query == "products" else data['id']
+               if  query == 'orders':
+                   if data['pack_id']:
+                       id_vex = data['pack_id']
             except:
-                raise ValidationError(str(data))
+                raise ValueError([id_vex,data])
 
             if query == "categories":
                 if not server.meli_country:
@@ -506,11 +628,14 @@ class MeliActionSynchro(models.TransientModel):
         res = super(MeliActionSynchro, self).synchro(data, query, server, table, accion, id_vex, api,queryx ,default_code)
         return res
 
-    def synchro_ext(self,dr, query, server, table, accion, id_vex , api ,exist,queryx='',is_exist_sku=False):
-        #raise ValidationError(exist)
+
+    def synchro_ext(self,dr, query, server, table, accion, id_vex , api ,exist,queryx='',sku=False):
+        
         if server.conector == 'meli':
             if query == "products":
-                queryx += self.insert_variations(dr['body'], server, exist,accion)
+
+                queryx += self.insert_variations(dr['body'], server, exist,accion,sku)
+                #raise ValueError([exist.id_vex, exist.product_variant_ids])
 
 
                 if accion.import_images:
@@ -549,14 +674,15 @@ class MeliActionSynchro(models.TransientModel):
 
                             cat_id = self.env['product.public.category'].search([('id_vex', '=', dr['body']['category_id'])])
 
+                        if exist and len(exist) == 1:
+                            queryh = f'''
+                                                            INSERT INTO product_public_category_product_template_rel (product_public_category_id,product_template_id)
+                                                            VALUES 
+                                                            ({cat_id.id},{exist.id}) 
+                                                            ON CONFLICT (product_public_category_id,product_template_id) DO NOTHING ;
+                                                            '''
+                            self.env.cr.execute(queryh)
 
-                        queryh = f'''
-                                INSERT INTO product_public_category_product_template_rel (product_public_category_id,product_template_id)
-                                VALUES 
-                                ({cat_id.id},{exist.id}) 
-                                ON CONFLICT (product_public_category_id,product_template_id) DO NOTHING ;
-                                '''
-                        self.env.cr.execute(queryh)
 
             if query == "categories":
                 #raise ValidationError('ss'+str(dr))
@@ -603,8 +729,10 @@ class MeliActionSynchro(models.TransientModel):
                             #raise ValidationError(pt)
                             if not exist.id:
                                 raise ValidationError(d['name'])
+                            namex = d['name']
+                            namex = namex.replace("'","")
                             datav.append({
-                                'name': d['name'],
+                                'name': namex ,
                                 'id_vex': d['id'],
                                 'conector': 'meli',
                                 'parent_id': exist.id,
@@ -619,110 +747,151 @@ class MeliActionSynchro(models.TransientModel):
                         self.env['vex.web.services'].create_update(datar)
 
 
-
             if query == 'orders':
+                #raise ValueError(exist)
                 id_customer = str(dr['buyer']['id'])
                 #raise ValidationError(id_customer)
                 #_logger.info(F'CREADO VENTA: %s {exist.id}')
-                if not  exist.order_line :
+
+                pack_id = dr['pack_id']
+                id_meli = dr['id']
+                id_meli_origin = id_meli
+                if pack_id:
+                    id_meli = pack_id
+
+                exist_lines = exist.order_line
+
+                if pack_id  and exist.state == 'draft':
+                    #raise ValueError('okkk')
+                    exist_lines = self.env['sale.order.line'].search([
+                        ('meli_shop_id','=',dr['id']),('order_id','=',exist.id)
+                    ])
+                #raise ValueError([exist,exist_lines,exist.id_vex,exist.meli_pack_id,pack_id,id_meli_origin])
+
+                if not  exist_lines :
                     #raise   ValidationError('whatss')
 
-                    self.insert_lines(dr['order_items'], server, exist, accion)
-                    if server.discount_fee:
-                        total_fee = self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
-                                                          'sale_fee', -1)
-                    self.envio_meli(dr,query,server,exist)
-                    #if server.shipment:
-                    #    #raise ValidationError(str(dr))
-                    #    self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
-                    #                          'sale_fee', -1,True)
-                    #_logger.info(F'INSERTANDO VENTAS: %s {exist.id} , {exist.id_vex}')
+                    if pack_id:
+                        enviop = self.envio_meli(dr, query, server, exist,True)
+                        #raise ValueError(enviop)
+                        total_fee = 0
+                        if server.discount_fee:
+                            total_fee = self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
+                                                              'sale_fee', -1)
+                        create_lines = self.insert_lines(dr['order_items'], server, exist, accion, dr['id'],enviop,total_fee)
+                    else:
+                        create_lines = self.insert_lines(dr['order_items'], server, exist, accion, dr['id'])
+                        if server.discount_fee:
+                            total_fee = self.insert_fee_lines(dr['order_items'], exist, server, 'listing_type_id',
+                                                              'sale_fee', -1)
+
+
+                    if not create_lines:
+                        return ''
+                    
+
+                    self.insert_meli_payment(dr['payments'], server, exist, accion)
+                    if not pack_id:
+                        self.envio_meli(dr, query, server, exist)
+                    else:
+                        envioz = 0
+                        feez = 0
+                        for linef in exist.order_line:
+                            envioz +=  linef.shipping_vex
+                            feez +=  linef.fee_vex
+                            
+                        #raise ValueError(feez)
+                        exist.shipping_vex = envioz
+                        exist.fee_vex = feez
+
+
+                  
+                else:
+                    
+                    if server.print_shipping_with_error:
+                        
+                        self.envio_meli(dr,query,server,exist)
+                        
+                #raise ValueError('okk')
+                
 
                 if not exist.state:
                     exist.state = 'draft'
 
-                state = self.env['vex.instance.status.orders'].search(
-                    [('instance', '=', server.id), ('value', '=', dr['status'])])
-
-                if state:
-                    state = state.odoo_state
-                    # raise ValidationError(state)
-                else:
-                    state = 'draft'
-
-                if exist.state not in ['sale','done'] and state in ['sale']:
-                    exist.action_confirm()
-                else:
-                    if state in ['cancel'] and exist.state not in ['cancel']:
-                        exist.action_cancel()
-                    else:
-                        exist.state = state
-
-                #_logger.info(F'actualizando estado VENTAS: %s {exist.id} , {exist.id_vex}')
+                if not pack_id:
+                    exist.order_validate_state_meli()
 
 
 
 
-
-                #raise ValidationError(exist.state)
-
-
-        res = super(MeliActionSynchro, self).synchro_ext(dr, query, server, table, accion, id_vex, api, exist,queryx,is_exist_sku)
+        res = super(MeliActionSynchro, self).synchro_ext(dr, query, server, table, accion, id_vex, api, exist,queryx,sku)
 
         return res
 
     #def execute_after_create(self, data, query, server, table, accion, id_vex, api, exist, queryx, is_exist_sku):
 
-    def envio_meli(self,data, query, server , exist):
+    def envio_meli(self,data, query, server , exist , return_cost=False):
         if server.conector == 'meli':
             if query == 'orders':
 
                 id_customer = str(data['buyer']['id'])
                 # raise ValidationError(str([exist.partner_id.id_vex,id_customer]))
                 if exist.partner_id.id_vex == id_customer :
-                    # url_customer = f'''https://api.mercadolibre.com/users/{id_customer}'''
-                    # data_customer = requests.get(url_customer,params={'access_token': server.access_token}).json()
-                    # raise ValidationError(str(data_customer))
-                    url_envio = f'''https://api.mercadolibre.com/shipments/{str(data['shipping']['id'])}'''
-                    envio = requests.get(url_envio, params={'access_token': server.access_token}).json()
+
+                    #url_envio = f'''https://api.mercadolibre.com/shipments/{str(data['shipping']['id'])}/cost'''
+                    url_envio = f'''https://api.mercadolibre.com/orders/{str(data['id'])}/shipments'''
+                    envio = requests.get(url_envio, params={
+                        'access_token': server.access_token,
+                        'x-format-new': True ,
+                        #'x-costs-new' : True
+                    }).json()
                     #raise ValidationError(str(envio))
+                    if server.print_shipping_with_error:
+                        raise ValueError(envio)
 
-                    exist.shipping_vex = envio['base_cost']
+                    enviox = envio['base_cost'] if 'base_cost' in envio else 0
+                    if 'receiver_address' in envio:
+                        name_customer = envio['receiver_address']['receiver_name'] if 'receiver_name' in envio[
+                            'receiver_address'] else None
+                        if name_customer:
+                            exist.partner_id.name = name_customer
+                        receiver_phone = envio['receiver_address']['receiver_phone'] if 'receiver_phone' in envio[
+                            'receiver_address'] else None
+                        if receiver_phone:
+                            exist.partner_id.phone = receiver_phone
 
-                    name_customer = envio['receiver_address']['receiver_name'] if 'receiver_name' in envio[
-                        'receiver_address'] else None
+                        zip_code = envio['receiver_address']['zip_code'] if 'zip_code' in envio[
+                            'receiver_address'] else ''
+                        exist.partner_id.zip = zip_code
 
-                    if name_customer:
-                        exist.partner_id.name = name_customer
+                        neighborhood = envio['receiver_address']['neighborhood']['name'] if 'neighborhood' in envio[
+                            'receiver_address'] else ''
 
-                    receiver_phone = envio['receiver_address']['receiver_phone'] if 'receiver_phone' in envio[
-                        'receiver_address'] else None
-                    if receiver_phone:
-                        exist.partner_id.phone = receiver_phone
+                        street_line = envio['receiver_address']['street_name'] if 'street_name' in envio[
+                            'receiver_address'] else ''
+                        street_number = envio['receiver_address']['street_number'] if 'street_number' in envio[
+                            'receiver_address'] else ''
+                        country = envio['receiver_address']['country']['name'] if 'country' in envio[
+                            'receiver_address'] else ''
+                        city = envio['receiver_address']['city']['name'] if 'city' in envio['receiver_address'] else ''
+                        state = envio['receiver_address']['state']['name'] if 'state' in envio[
+                            'receiver_address'] else ''
 
-                    zip_code = envio['receiver_address']['zip_code'] if 'zip_code' in envio['receiver_address'] else ''
-                    exist.partner_id.zip = zip_code
+                        direccion = f''' {street_line}   {street_number}   {neighborhood}  {state} , {city} ,  {country}  '''
+                        exist.partner_id.street = direccion
 
-                    neighborhood = envio['receiver_address']['neighborhood']['name'] if 'neighborhood' in envio[
-                        'receiver_address'] else ''
+                        comment = envio['receiver_address']['comment'] if 'comment' in envio['receiver_address'] else ''
+                        exist.partner_id.street2 = comment
+                        if 'logistic_type' in envio:
+                            exist.meli_logistic_type = envio['logistic_type']
 
-                    street_line = envio['receiver_address']['street_name'] if 'street_name' in envio[
-                        'receiver_address'] else ''
-                    street_number = envio['receiver_address']['street_number'] if 'street_number' in envio[
-                        'receiver_address'] else ''
-                    country = envio['receiver_address']['country']['name'] if 'country' in envio[
-                        'receiver_address'] else ''
-                    city = envio['receiver_address']['city']['name'] if 'city' in envio['receiver_address'] else ''
-                    state = envio['receiver_address']['state']['name'] if 'state' in envio['receiver_address'] else ''
+                        # raise ValidationError(str(envio))
 
-                    direccion = f''' {street_line}   {street_number}   {neighborhood}  {state} , {city} ,  {country}  '''
-                    exist.partner_id.street = direccion
-
-                    comment = envio['receiver_address']['comment'] if 'comment' in envio['receiver_address'] else ''
-                    exist.partner_id.street2 = comment
-                    # raise ValidationError(str(envio))
-
-
+                    if return_cost:
+                        return enviox
+                    else:
+                        exist.shipping_vex = enviox
+                        
     def start_sync_sale_meli(self):
         #importar solo info de productos
         servers = self.env['vex.instance'].search([('active_automatic', '=', True)])
@@ -753,8 +922,26 @@ class MeliActionSynchro(models.TransientModel):
         return
 
     def start_sync_stock_meli(self):
-        products = self.env['product.product'].search(['|',('id_vex','!=',False),('id_vex_varition','!=',False)])
-        #,limit=150
-        products.update_conector_vex()
+
+        sql = ' SELECT id_vex FROM product_template WHERE id_vex IS NOT NULL GROUP BY id_vex;'
+        self.env.cr.execute(sql)
+        res = self._cr.dictfetchall()
+        for re in res:
+            product = self.env['product.product'].search([('id_vex','=',re['id_vex']),('id_vex_varition','!=',False),('meli_logistic_type','!=','fulfillment')],limit=1)
+            #raise ValueError(product)
+            
+            if product:
+                product.update_conector_vex(False)
+
+    def meli_validate_status_pending_orders(self):
+        orders = self.env['sale.order'].search([('state','=','draft'),('id_vex','!=',False),('conector','!=',False)])
+        orders.order_validate_state_meli()
+
+    def start_import(self):
+        res = super().start_import()
+        for i in range(5):
+            self.meli_validate_status_pending_orders()
+        
+        return res
 
 

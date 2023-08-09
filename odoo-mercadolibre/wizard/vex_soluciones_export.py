@@ -3,7 +3,7 @@ import threading
 import requests
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
 from ..sdk.meli.configuration import  Configuration
 from ..sdk.meli.api_client import ApiClient
 from ..sdk.meli.api import RestClientApi
@@ -33,8 +33,8 @@ class MeliMultiExport(models.TransientModel):
 
             if not p.default_code:
                 raise ValidationError('ESTE PRODUCTO NO TIENE UN CODIGO DE REFERENCIA')
-            #if not p.image_1920:
-            #    raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
+            if not p.image_1920:
+                raise ValidationError('THIS PRODUCT DONT HAVE IMAGE')
 
             if not name_product:
                 raise ValidationError(f'NO SE INDICO NOMBRE DEL PRODUCTO {p.display_name}')
@@ -42,13 +42,9 @@ class MeliMultiExport(models.TransientModel):
         name_product = name_product or ''
 
 
-
-
         plain_text = p.description_meli or ''+'\n'+server.description_company
         if server.include_name_init_descripton:
             plain_text = name_product  + '\n' + plain_text
-
-
 
 
         base_url = self.env["ir.config_parameter"].get_param("web.base.url")
@@ -86,19 +82,27 @@ class MeliMultiExport(models.TransientModel):
 
 
         if p.id_vex or p.id_vex_varition:
-            id_vex = p.id_vex_varition or p.id_vex
+            #id_vex = p.id_vex_varition or p.id_vex
+            id_vex = p.id_vex
             url = f'https://api.mercadolibre.com/items/{id_vex}?access_token=' + str(server.access_token)
-            data = {
-                "price": round(price,2),
+            data = {}
+
+            logistic = self.env['vex.status.meli.shipment'].search([('instance', '=', server.id), ('state', '=', p.meli_logistic_type)])
 
 
-            }
-            if server.update_stock:
-                if self2:
-                    data['available_quantity'] = int(self2.quantity)
-                else:
-                    stock = p.stock_vex_conector(server)
-                    data['available_quantity'] = stock
+            logistic_or_server = logistic or server
+            if logistic_or_server:
+                if logistic_or_server.update_price:
+                    data['price'] = round(price, 2)
+                if logistic_or_server.update_stock:
+                    if self2:
+                        data['available_quantity'] = int(self2.quantity)
+                    else:
+                        stock = p.stock_vex_conector(server)
+                        data['available_quantity'] = stock
+
+
+            
             data['attributes'] = [
                 #{
                 #    "id": "MANUFACTURER",
@@ -110,26 +114,63 @@ class MeliMultiExport(models.TransientModel):
 
                 }
             ]
+
+
+            if p.id_vex_varition != p.id_vex:
+                datavaritians = self.env['vex.synchro'].get_data_id(p.id_vex,server,"products")
+                datavaritians = datavaritians['body']['variations']
+                varitions = []
+                for vd in datavaritians:
+                    dx = {
+                            'id': vd['id'] ,
+                        }
+                    if logistic_or_server:
+                        if logistic_or_server.update_price:
+                            dx['price'] = round(price, 2)
+                        if logistic_or_server.update_stock:
+                            if p.id_vex_varition == vd['id']:
+                                if self2:
+                                    dx['available_quantity'] = int(self2.quantity)
+                                else:
+                                    stock = p.stock_vex_conector(server)
+                                    dx['available_quantity'] = stock
+                            else:
+                                stockx = vd['available_quantity']
+                                exist_in_odoo = self.env['product.product'].search([('id_vex_varition','=',vd['id'])])
+                                if exist_in_odoo:
+                                    stockx = exist_in_odoo.stock_vex_conector(server)
+                                    dx['available_quantity'] = stockx
+                                    
+
+                    varitions.append(dx)
+                #raise ValidationError(str(varitions))
+                data = {
+                    "variations": varitions
+                }
+
             if self2:
                 if self2.print_data:
                     raise ValidationError(str(data))
+
             if server.print_data_error_meli:
                 raise ValueError(data)
+
+
+
 
             r = requests.put(url, json=data, headers=headers)
 
             datax = r.json()
+            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex}/description?access_token=' + str(server.access_token)
 
-            url_desc = f'https://api.mercadolibre.com/items/{p.id_vex_varition}/description?access_token=' + str(server.access_token)
-            data_des = {
-                "plain_text": plain_text
-            }
-            r_desc = requests.put(url_desc, json=data_des, headers=headers).json()
+            if server.update_description:
+                data_des = {
+                    "plain_text": plain_text
+                }
+                r_desc = requests.put(url_desc, json=data_des, headers=headers).json()
 
-            p.log_meli_txt = str(data)+'\n'+str(datax)+'\n'+str(r_desc)
-
-
-
+                p.log_meli_txt = str(data) + '\n' + str(datax) + '\n' + str(r_desc)
+            
         else:
             url = 'https://api.mercadolibre.com/items?access_token=' + str(server.access_token)
 
@@ -260,7 +301,7 @@ class MeliUnitExport(models.TransientModel):
     category_children  = fields.Many2one('product.public.category',string="Sub Categoria")
     category_children2 = fields.Many2one('product.public.category', string="Sub Sub Categoria")
     brand              = fields.Char()
-    condition          = fields.Selection(CONDITIONS, string='Condición del producto',default='new')
+    condition          = fields.Selection(CONDITIONS, string='Condición del producto')
     quantity           = fields.Integer(required=True,default=10,string="Stock")
     buying_mode        = fields.Selection([('buy_it_now','Compre ya'),('classified','clasificado')],
                                           string="Modo de Compra",default='buy_it_now')
@@ -321,8 +362,6 @@ class MeliUnitExport(models.TransientModel):
             server = self.server
             self.env['vex.synchro'].check_synchronize(self.server)
             if self.server.warehouse_stock_vex and self.product:
-                domain_quant = self.product.action_open_quants()['domain']
-                quant = self.env['stock.quant'].search(domain_quant)
                 self.server = server.id
                 stock = self.product.stock_vex_conector(server)
                 self.quantity = stock

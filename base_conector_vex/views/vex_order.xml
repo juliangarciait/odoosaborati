@@ -16,6 +16,7 @@
                            <field name="fee_vex"  readonly="1"/>
                            <field name="primary_order_id"  readonly="1"/>
                            <field name="secundary_order_ids"  readonly="1"/>
+                           <field name="date_vex_order"  readonly="1" />
                        </group>
                    </page>
                </xpath>

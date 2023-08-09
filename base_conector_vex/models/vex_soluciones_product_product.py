@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
@@ -7,9 +7,11 @@ class ProductProduct(models.Model):
     vex_regular_price = fields.Float()
     stock_vex = fields.Float()
     log_meli_txt = fields.Text()
+    vex_conector_ids = fields.One2many('vex.product.product.conector', 'product_id')
+
 
     _sql_constraints = [
-        ('uni_id_variante_prro_vex', 'unique(product_tmpl_id,server_vex)',
+        ('unique_id_prod_vex', 'unique(id_vex_varition,active)',
          'There can be no duplication of synchronized products Variations')
     ]
 

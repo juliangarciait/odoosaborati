@@ -1,26 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+      <record id="order_status_confirmed" model="vex.status.orders">
+            <field name="name">Confirmado</field>
+            <field name="value">confirmed</field>
+            <field name="conector">meli</field>
+      </record>
+
+      <record id="order_status_payment_required" model="vex.status.orders">
+            <field name="name">Pago requerido</field>
+            <field name="value">payment_required</field>
+            <field name="conector">meli</field>
+      </record>
+
+      <record id="order_status_payment_in_process" model="vex.status.orders">
+            <field name="name">Pago en proceso</field>
+            <field name="value">payment_in_process</field>
+            <field name="conector">meli</field>
+      </record>
+
+      <record id="order_status_payment_in_process" model="vex.status.orders">
+            <field name="name">Parcialmente Pagado</field>
+            <field name="value">partially_paid</field>
+            <field name="conector">meli</field>
+      </record>
 
       <record id="order_status_pending_meli" model="vex.status.orders">
             <field name="name">Paid</field>
             <field name="value">paid</field>
             <field name="conector">meli</field>
+
       </record>
-      <!--
-      <record id="order_status_processing" model="woo.status.orders">
-            <field name="name">Processing</field>
-            <field name="value">processing</field>
+
+      <record id="order_status_partially_refunded" model="vex.status.orders">
+            <field name="name">Devolución Parcial</field>
+            <field name="value">partially_refunded</field>
+            <field name="conector">meli</field>
       </record>
-      <record id="order_status_hold" model="woo.status.orders">
-            <field name="name">0n Hold</field>
-            <field name="value">on-hold</field>
+
+      <record id="order_status_pending_cancel" model="vex.status.orders">
+            <field name="name">Cancelacion Pendiente</field>
+            <field name="value">pending_cancel</field>
+            <field name="conector">meli</field>
       </record>
-      <record id="order_status_completed" model="woo.status.orders">
-            <field name="name">Completed</field>
-            <field name="value">completed</field>
-      </record>
-      -->
+
+
       <record id="order_status_cancelled_meli" model="vex.status.orders">
             <field name="name">Cancelled</field>
             <field name="value">cancelled</field>

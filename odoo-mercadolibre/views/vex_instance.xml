@@ -285,10 +285,36 @@
                    <field name="field_brand"
                           attrs="{'invisible': [('conector','!=','meli')]}"
                            />
+                   <field name="not_products_full"
+                          attrs="{'invisible': [('conector','!=','meli')]}"
+                           />
                    <field name="print_data_error_meli"
                           attrs="{'invisible': [('conector','!=','meli')]}"
                           groups="base_conector_vex.group_advanced_field_vex"
                            />
+
+               </xpath>
+               <xpath expr="//page[@name='state_orders']" position="after" >
+                   <page string="Logistic State"
+                         attrs="{'invisible': ['|',('conector','!=','meli'),('state_meli','!=','setting')]}"
+                         name="state_orders">
+
+                       <field name="meli_logistics">
+                           <tree editable="bottom">
+                               <field name="conector" invisible="1" />
+                               <field name="state" />
+                               <field name="warehouse_id" />
+                               <field name="journal_id" />
+                               <field name="odoo_state" />
+                               <field name="confirm_albaran" />
+                               <field name="created_invoice" />
+                               <field name="confirm_invoice" />
+                               <field name="update_price" />
+                               <field name="update_stock" />
+
+                           </tree>
+                       </field>
+                   </page>
 
                </xpath>
 

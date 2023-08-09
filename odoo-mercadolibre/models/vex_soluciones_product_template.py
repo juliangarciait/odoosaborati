@@ -1,8 +1,9 @@
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
 import base64
 import requests
-from .vex_soluciones_meli_config import CONDITIONS
+from  ..multiversion.models.vex_soluciones_meli_config import CONDITIONS
+
 
 class Product(models.Model):
     _name             = 'product.template'
@@ -14,6 +15,7 @@ class Product(models.Model):
     questions_count   = fields.Integer(required=False,compute='_count_questions')
     questions         = fields.One2many('meli.questions','product_id')
     active_meli       = fields.Boolean(default=True)
+    create_of_meli    = fields.Boolean()
 
 
     

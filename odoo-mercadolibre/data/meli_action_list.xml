@@ -51,6 +51,7 @@
             <field name="export">False</field>
             <field name="importv">True</field>
             <field name="conector">meli</field>
+            <field name="per_page">3</field>
         </record>
 
         <record id="meli_action_questions" model="vex.restapi.list">

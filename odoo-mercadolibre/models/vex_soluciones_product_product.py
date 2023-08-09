@@ -1,7 +1,8 @@
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
 import requests
-from .vex_soluciones_meli_config import CONDITIONS
+from  ..multiversion.models.vex_soluciones_meli_config import CONDITIONS
+from  ..multiversion.models.vex_soluciones_meli_config  import MELI_STATUS , MELI_SHIPPINGS
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
@@ -11,11 +12,12 @@ class ProductProduct(models.Model):
     #questions = fields.One2many('meli.questions', 'product_id')
     active_meli = fields.Boolean(default=True)
     buying_mode = fields.Selection([('buy_it_now', 'buy it now'), ('classified', 'classified')])
-    listing_type_id = fields.Selection([('free', 'free'), ('bronze', 'bronze'),
-                                        ('gold_special', 'gold special')])
+    listing_type_id = fields.Selection([('free', 'free'), ('bronze', 'bronze'), ('gold_special', 'gold special')])
     name_product_meli = fields.Text(string="Titulo")
     description_meli = fields.Text(string="Descripcion")
     check_export_meli = fields.Boolean(default=False)
+    meli_logistic_type = fields.Selection(MELI_SHIPPINGS, string="Meli Tipo de logística")
+
 
     def action_open_quants(self):
         res = super().action_open_quants()
@@ -24,8 +26,6 @@ class ProductProduct(models.Model):
 
 
     def update_conector_vex(self,wizard=True):
-
-
         if len(self) == 1 and wizard == True:
             name = self.name_product_meli or self.name
             if self.id_vex_varition or self.id_vex:
@@ -102,6 +102,7 @@ class ProductProduct(models.Model):
                         name_products += record.display_name + ' , '
                         n += str(record.id) + ' ,'
                 end_date = fields.Datetime.now()
+                #raise ValueError([n,record.id_vex_varition,record.id_vex,server.export_stock_all_products, record.check_export_meli])
                 if n != '':
                     dx = {
                         'start_date': "'{}'".format(start_date),

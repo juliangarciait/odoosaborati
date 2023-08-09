@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+
+
       <record id="demo_product_template" model="product.product">
             <field name="name">Producto temporal conector</field>
             <field name="id_vex_varition">tmp</field>
       </record>
-
-
-
 
 
       <!--
@@ -18,7 +17,7 @@
 			<field name="binding_model_id" ref="base_conector_vex.model_product_template" />
 			<field name="state">code</field>
 			<field name="code">action = records.export_conector_vex()</field>
-     </record>
+      </record>
       -->
 
 

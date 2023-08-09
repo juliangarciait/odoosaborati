@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+
 class VexCron(models.Model):
     _inherit = 'ir.cron'
     argument   = fields.Char()

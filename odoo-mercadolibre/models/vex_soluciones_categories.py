@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
 
 class Categories(models.Model):
     _inherit                = 'product.public.category'

@@ -59,6 +59,8 @@ class VexInstance(models.Model):
 
 
 
+
+
     discount_fee = fields.Selection([
         ('save','Guardar como Dato'),
         ('save_line','Guardar como Linea')

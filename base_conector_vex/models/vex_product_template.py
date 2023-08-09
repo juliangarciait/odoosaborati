@@ -2,7 +2,7 @@
 import logging
 import threading
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+
 
 
 _logger = logging.getLogger(__name__)
@@ -23,10 +23,10 @@ class Product(models.Model):
     warehouse_stock_vex = fields.Many2one('stock.warehouse',string="Almacen x Exportar")
 
 
-    _sql_constraints = [
-        ('unique_id_prod_vex', 'unique(id_vex, conector, server_vex)',
-         'There can be no duplication of synchronized Products Template')
-    ]
+    #_sql_constraints = [
+    #    ('unique_id_prod_vex', 'unique(id_vex, conector, server_vex)',
+    #     'There can be no duplication of synchronized Products Template')
+    #]
 
     def export_conector_vex(self):
         return

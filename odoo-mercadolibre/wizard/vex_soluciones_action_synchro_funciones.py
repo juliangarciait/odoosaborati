@@ -5,13 +5,67 @@ import logging
 _logger = logging.getLogger(__name__)
 import pprint
 import base64
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 id_api       = 'id_vex'
 server_api   = 'server_vex'
 class MeliActionSynchro(models.TransientModel):
     _inherit       = "vex.synchro"
     server_meli    = fields.Many2one('meli.synchro.instance',"Instance")
+    
+    
+    def insert_meli_payment(self, lines, server, creado, accion):
+        for line in lines:
+            if line['operation_type'] == 'payment_addition':
+                existe = server.product_payment_add
+                if not existe:
+                    raise ValidationError('NO DEFINIO UN PRODUCTO PARA DINERO AGREGADO')
+                tax_product = server.tax_id
+                if server.use_tax_product:
+                    tax_product = existe.taxes_id
+                    if tax_product:
+                        if len(tax_product) > 1:
+                            raise ValidationError('EL PRODUCTO TIENE MAS DE UN IMPUESTO')
+
+                price_unit = float(line['total_paid_amount'])
+
+                if tax_product:
+                    if tax_product.amount != 0:
+                        with_tax = float(line['total_paid_amount'])
+                        without_tax = (100 * with_tax) / (100 + tax_product.amount)
+                        price_unit = without_tax
+
+                    # raise ValidationError(str([p['unit_price'],tax_amount,price_unit,creado.id_vex]))
+
+                new_line = {
+                    # 'name':str(existe.name),
+                    'name': "'" + str(line['reason']) + "'",
+                    'product_id': existe.id,
+                    'product_uom_qty': 1,
+                    'price_unit': price_unit,
+                    # 'price_reduce': float(p['unit_price']),
+                    # 'price_reduce_taxinc': float(p['unit_price']),
+                    # 'price_reduce_taxexcl': float(p['unit_price']),
+                    'order_id': creado.id,
+                    # 'price_subtotal': float(p['unit_price']) * int(p['quantity']),
+                    # 'price_total': float(p['unit_price']) * int(p['quantity']),
+                    # 'price_tax': 0.0,
+                    # campos requeridos
+                    'customer_lead': 1.0,
+                    # 'invoice_status': "'no'",
+                    'company_id': server.company.id,
+                    'currency_id': server.pricelist.currency_id.id,
+                    'product_uom': 1,
+                    # 'discount': 0
+
+                }
+                if tax_product:
+                    new_line['tax_id'] = [(6, 0, [tax_product.id])]
+
+                self.env['sale.order.line'].create(new_line)
+
+        return 
 
     @api.model
     def check_terminos(self, t, server, atr,creado=None):
@@ -84,28 +138,85 @@ class MeliActionSynchro(models.TransientModel):
 
     def start_import(self):
         res = super(MeliActionSynchro, self).start_import()
-        if self.conector == 'meli':
+        if self.conector == 'meli' :
+            server = self.server_vex
             id_action = 'odoo-mercadolibre.action_view_meli_synchro'
-            return self.vex_import(id_action,None)
+            res = self.vex_import(id_action,None)
+            if self.accion.argument == 'products':
+                lines_wait = self.env['vexlines.import'].search([('accion', '=', self.accion.id),
+                                                                 ('instance', '=', server.id),
+                                                                 ('instance', '=', server.id), ('state', '=', 'wait')],
+                                                                limit=1)
+                if lines_wait:
+                    for line in lines_wait:
+                        res = self.start_import()
+            
+            return res
         return res
 
     @api.model
-    def insert_variations(self, dr, server, creado, accion, queryx = '' ):
+    def insert_variations(self, dr, server, creado, accion, sku,queryx = '' ):
+        creado.id_vex = dr['id']
+        #raise ValidationError(str([sku,creado,dr]))
+
+
         # recorrer las variantes y chekar todas los atrbutos
         # guardar el id por atributo y luego colocarlo en el respect
         variantes_array = {'ja'}
         values_array = {'ja'}
         #obtener las variantes
-        variants = dr['variations']
+
+        variants = dr['variantes']
         #raise ValidationError(str(len(variants)))
 
         if variants:
             #bucle a las variantes
             master_data_values_ids = []
-            ct = 0
+
             insert_vari = ''
+            #raise ValidationError(str(variants))
             for index, v in enumerate(variants):
-                ct += 1
+                creadox = creado
+                if len(creadox) > 1 :
+                    creadox = self.env['product.product'].search([('id_vex_varition', '=', v['id'])]).product_tmpl_id
+                if not creadox:
+                    creadox = self.env['product.template'].search([('id_vex', '=', dr['id']),('create_of_meli','=',True)])
+
+                exist_vari = False
+                sku_vari = None
+
+                for atributes in v['attributes']:
+                    if atributes['id'] == 'SELLER_SKU':
+                        sku_vari = atributes['value_name']
+                        default_code = atributes['value_name']
+                        exist_product = self.env['product.product'].search(
+                            [('default_code', '=', default_code)])
+                        if exist_product and len(exist_product) > 1:
+                            raise ValidationError(
+                                f'''El Producto con sku {default_code} tiene mas de un registro''')
+                        if  exist_product:
+                            if  exist_product.id_vex_varition != v['id'] :
+                                exist_product.id_vex_varition = v['id']
+                            if  exist_product.product_tmpl_id != dr['id']:
+                                exist_product.product_tmpl_id.id_vex = dr['id']
+
+                            try:
+                                exist_product.meli_logistic_type = dr['shipping']['logistic_type']
+                            except:
+                                exist_product.meli_logistic_type = False
+
+                            exist_vari = True
+
+
+
+                #raise ValueError(creado)
+                if exist_vari:
+                    continue
+
+                if not server.create_not_exists:
+                    continue
+
+
                 data_values_ids = []
                 for vi in v['attribute_combinations']:
                     # verificar el atributo
@@ -114,32 +225,32 @@ class MeliActionSynchro(models.TransientModel):
                     variantes_array.add(at.id)
                     json_at = []
                     if at:
-                        '''
-                        data = {
-                            'active': True,
-                            'attribute_id': int(at.id),
-                            'product_tmpl_id': int(creado.id),
 
-                        }
-                        '''
-                        #self.env['vex.web.services'].create_update()
+
+
 
                         # buscar si existe el atributo en atribute line
                         atl = self.env['product.template.attribute.line'].search(
-                            [('attribute_id', '=', int(at.id)), ('product_tmpl_id', '=', int(creado.id))])
+                            [('attribute_id', '=', int(at.id)), ('product_tmpl_id', '=', int(creadox.id))])
 
                         if not atl:
                             data = {
                                 ' active ': "'t'",
                                 'attribute_id': int(at.id),
-                                'product_tmpl_id': int(creado.id),
+                                'product_tmpl_id': int(creadox.id),
 
                             }
+                            if len(creado) > 1 or creado == 0 or creado.id == 0 or not creado:
+                                raise ValueError([creado, at.display_name, v, data, dr])
+
                             self.json_execute_create('product.template.attribute.line', data)
+
+
+
                             # currents = self._cr.dictfetchall()
                             # raise ValidationError(currents)
                             atl = self.env['product.template.attribute.line'].search(
-                                [('product_tmpl_id', '=', creado.id), ('attribute_id', '=', at.id)])
+                                [('product_tmpl_id', '=', creadox.id), ('attribute_id', '=', at.id)])
 
                         if atl:
                             # verificar si existe ese valor  en ese atributo line
@@ -154,7 +265,7 @@ class MeliActionSynchro(models.TransientModel):
                                 vv = None
 
                                 if not vx['name'] in va_array:
-                                    vv = self.check_terminos(vx['name'], server, at,creado)
+                                    vv = self.check_terminos(vx['name'], server, at,creadox)
 
                                     #raise ValidationError('aabt' + str(pppi))
                                     # raise ValidationError('que')
@@ -168,7 +279,7 @@ class MeliActionSynchro(models.TransientModel):
                                 if vv:
                                     line_v = self.env['product.template.attribute.value'].search(
                                         [('product_attribute_value_id', '=', vv.id), ('attribute_id', '=', at.id),
-                                         ('product_tmpl_id', '=', creado.id),
+                                         ('product_tmpl_id', '=', creadox.id),
                                          ('attribute_line_id', '=', atl.id)])
                                     data_values_ids.append(line_v.id)
 
@@ -178,42 +289,74 @@ class MeliActionSynchro(models.TransientModel):
                             raise ValidationError('errorr')
                     else:
                         raise ValidationError('o noo')
+                    
+                domainx = [('id_vex_varition', '=',v['id'])]
 
-                domain_varition = [('product_tmpl_id', '=', int(creado.id)), ('id_vex_varition', '=', False)]
-                #'|', ('active', '=', True), ('active', '=', False)
+                pppi = self.env['product.product'].search(domainx)
+                if not pppi:
+                    domain_varition = [('product_tmpl_id', '=', int(creadox.id)), ('id_vex_varition', '=', False)]
+                    if server.search_archive_products:
+                        domain_varition.append('|')
+                        domain_varition.append(('active', '=', True))
+                        domain_varition.append(('active', '=', False))
+                    else:
+                        domain_varition.append(('active', '=', True))
+                        
+                    # '|', ('active', '=', True), ('active', '=', False)
+                    # raise ValidationError(str([v,dr]))
+                    domainx = domain_varition
+                    pppi = self.env['product.product'].search(domain_varition)
+                #if int(v['id']) == 54941526582:
+                #    raise ValidationError(str([sku_vari,exist_vari]))
+                
+                
+                
 
-                #raise ValidationError(str([v,dr]))
-
-
-                pppi = self.env['product.product'].search(domain_varition)
 
                 if pppi:
+                    if len(pppi) > 1 :
+                        raise ValueError([domainx,v['id'],sku_vari,dr])
                     write = {
                         ' active ': "'t'",
                         'id_vex_varition': "'"+str(v['id'])+"'",
                         'stock_vex': v['available_quantity'],
                         'vex_regular_price': v['price'],
-                        'base_unit_count': 0
+                        'base_unit_count': 0 ,
+
                     }
-                   
+                    if sku_vari:
+                        write['default_code'] = f"'{sku_vari}'"
+
+                    try:
+                        write['meli_logistic_type'] = f"'{dr['shipping']['logistic_type']}'"
+                    except:
+                        write['meli_logistic_type'] = " NULL "
+
+                    
 
                     self.json_execute_update('product.product', write, pppi.id)
 
 
                 master_data_values_ids.append(data_values_ids)
-                ppp = self.env['product.product'].search(
-                    [('product_tmpl_id', '=', int(creado.id)), ('id_vex_varition', '=', str(v['id'])),
-                     '|', ('active', '=', True), ('active', '=', False)])
+                ppp = self.env['product.product'].search( [('id_vex_varition', '=', str(v['id'])),'|', ('active', '=', True), ('active', '=', False)])
                 if not ppp:
                     #raise ValidationError('porque')
                     create = {
                         'active': "'t'",
-                        'product_tmpl_id': creado.id,
+                        'product_tmpl_id': creadox.id,
                         'id_vex_varition': "'" + str(v['id']) + "'",
                         'vex_regular_price': v['price'],
                         'stock_vex': v['available_quantity'],
-                        'base_unit_count': 0
+                        'base_unit_count': 0 ,
+
                     }
+                    if sku_vari:
+                        create['default_code'] = f"'{sku_vari}'"
+                        
+                    try:
+                        create['meli_logistic_type'] = f"'{dr['shipping']['logistic_type']}'"
+                    except:
+                        create['meli_logistic_type'] = " NULL "
                     insert_vari += self.json_execute_create('product.product', create,True)
 
                 else:
@@ -223,6 +366,13 @@ class MeliActionSynchro(models.TransientModel):
                         'stock_vex': v['available_quantity'],
                         'base_unit_count': 0
                     }
+                    if sku_vari:
+                        write['default_code'] = f"'{sku_vari}'"
+                        
+                    try:
+                        write['meli_logistic_type'] = f"'{dr['shipping']['logistic_type']}'"
+                    except:
+                        write['meli_logistic_type'] = " NULL "
                     insert_vari +=  self.json_execute_update('product.product', write, ppp.id,True)
 
 
@@ -241,7 +391,9 @@ class MeliActionSynchro(models.TransientModel):
 
             #queryx += insert_vari
             #raise ValidationError(insert_vari)
-            self.env.cr.execute(insert_vari)
+            if insert_vari and insert_vari != '':
+                self.env.cr.execute(insert_vari)
+
 
 
             if accion.import_images:
@@ -269,24 +421,95 @@ class MeliActionSynchro(models.TransientModel):
             #raise ValidationError(str(insert_vari))
 
         else:
-            #crear product de template
-            ppp = self.env['product.product'].search([('product_tmpl_id', '=', int(creado.id)),
-                                                      ('id_vex_varition', '=', str(creado.id_vex)),
-                                                      '|', ('active', '=', True), ('active', '=', False)])
-            if not ppp:
-            # 1==1:
-                create = {
-                    ' active ': "'t'",
-                    'product_tmpl_id': creado.id,
-                    'id_vex_varition': "'" + str(creado.id_vex) + "'",
-                    'stock_vex': dr['available_quantity'],
-                    'base_unit_count': 0
-                    #'vex_regular_price': v['price']
-                }
-                #raise ValidationError(str(dr))
-                self.json_execute_create('product.product', create)
+            #raise ValidationError(sku)
+            if sku:
+                #raise ValueError([exist.id_vex, exist.product_variant_ids])
+                if len(creado.product_variant_ids) == 1:
+                    ppp = self.env['product.product'].search([('default_code', '=', sku)])
+                    ppp.id_vex_varition = dr['id']
 
-        self.invalidate_cache()
+                    ppp.stock_vex = dr['available_quantity']
+                    try:
+                        ppp.meli_logistic_type = dr['shipping']['logistic_type']
+                    except:
+                        ppp.meli_logistic_type = False
+
+                    # raise ValidationError(ppp)
+                else:
+                    # crear product de template
+                    ppp = self.env['product.product'].search([('product_tmpl_id', '=', int(creado.id)),
+                                                              ('id_vex_varition', '=', str(creado.id_vex)),
+                                                              '|', ('active', '=', True), ('active', '=', False)])
+                    if not ppp and server.create_not_exists:
+                        # 1==1:
+
+                        if not creado:
+                            raise ValueError([dr, creado])
+                        create = {
+                            ' active ': "'t'",
+                            'product_tmpl_id': creado.id,
+                            'id_vex_varition': "'" + str(dr['id']) + "'",
+
+                            'stock_vex': dr['available_quantity'],
+                            'base_unit_count': 0,
+                            'default_code': f"'{sku}'"
+                            # 'vex_regular_price': v['price']
+                        }
+                        try:
+                            create['meli_logistic_type'] = f"'{dr['shipping']['logistic_type']}'"
+                        except:
+                            create['meli_logistic_type'] = f" NULL "
+                        # raise ValidationError(str(dr))
+                        self.json_execute_create('product.product', create)
+                        ppp = self.env['product.product'].search([('product_tmpl_id', '=', int(creado.id)),
+                                                                  ('id_vex_varition', '=', str(creado.id_vex)),
+                                                                  '|', ('active', '=', True), ('active', '=', False)])
+                        if not creado:
+                            raise ValueError([dr, creado])
+                        #raise ValueError([ppp,creado.product_variant_ids])
+                        
+                    
+                
+            else:
+                if len(creado.product_variant_ids) == 1:
+                    ppp = creado.product_variant_ids[0]
+                    ppp.stock_vex = dr['available_quantity']
+                    try:
+                        ppp.meli_logistic_type = dr['shipping']['logistic_type']
+                    except:
+                        pp.meli_logistic_type = False
+                else:
+                    # crear product de template
+                    ppp = self.env['product.product'].search([('product_tmpl_id', '=', int(creado.id)),
+                                                              ('id_vex_varition', '=', str(creado.id_vex)),
+                                                              '|', ('active', '=', True), ('active', '=', False)])
+                    if not ppp and server.create_not_exists:
+                        # 1==1:
+
+                        if not creado:
+                            raise ValueError([dr,creado])
+                        create = {
+                            ' active ': "'t'",
+                            'product_tmpl_id': creado.id,
+                            'id_vex_varition': "'" + str(dr['id']) + "'",
+                            'stock_vex': dr['available_quantity'],
+                            'base_unit_count': 0
+                            # 'vex_regular_price': v['price']
+                        }
+                        try:
+                            create['meli_logistic_type'] = f"'{dr['shipping']['logistic_type']}'"
+                        except:
+                            create['meli_logistic_type'] = " NULL "
+
+                        # raise ValidationError(str(dr))
+                        self.json_execute_create('product.product', create)
+
+
+
+
+        #raise ValidationError('OKKK')
+
+        #self.invalidate_cache()
         return queryx
 
     @api.model
@@ -449,3 +672,64 @@ class MeliActionSynchro(models.TransientModel):
                 }
                 self.env['vex.web.services'].create_update(datar)
 
+    def execute_before_create(self,data, query, server, table, accion, id_vex,queryx ):
+        create_tmp = super().execute_before_create(data, query, server, table, accion, id_vex,  queryx)
+        if  query == "products":
+            body = data['body']
+            #raise ValidationError(str(body))
+
+            if 'variantes' in body:
+                if body['variations']:
+                    exist_all_variants = True
+                    for variant in body['variantes']:
+                        if 'attributes' in body:
+                            have_sku = False
+                            for atributes in variant['attributes']:
+                                if atributes['id'] == 'SELLER_SKU':
+                                    have_sku = True
+                                    default_code = atributes['value_name']
+                                    exist_product = self.env['product.product'].search([('default_code','=',default_code)])
+                                    if exist_product and len(exist_product) > 1 :
+                                        raise ValidationError(f'''El Producto con sku {default_code} tiene mas de un registro''')
+                                    if not exist_product:
+                                        exist_all_variants = False
+                                    #else:
+                                    #    raise ValidationError(default_code)
+                            if not have_sku:
+                                exist_product = self.env['product.product'].search([('id_vex_varition', '=', variant['id'])])
+                                if exist_product and len(exist_product) > 1:
+                                    raise ValidationError(
+                                        f'''El Producto con ID Varition {variant['id']} tiene mas de un registro''')
+                                if not exist_product:
+                                    exist_all_variants = False
+
+
+
+
+
+                    if exist_all_variants:
+                        create_tmp = False
+
+        #raise ValidationError(create_tmp)
+
+
+        return create_tmp
+ 
+ 
+    def aditional_validatione_exist(self,exist,query,server,data):
+        #raise ValueError(exist)
+
+        res = super().aditional_validatione_exist(exist, query, server, data)
+        if server.conector == 'meli' and query == 'orders':
+
+            domain = [('id_vex', '=', str(data['id'])),('server_vex', '=', int(server.id)), ('primary_order_id', '=', False)]
+            exist = self.env['sale.order'].search(domain)
+
+            #raise ValueError(exist, exist.id_vex,domain )
+            #raise ValueError(exist)
+            if exist:
+                return exist
+
+        #raise ValueError(res)
+
+        return res

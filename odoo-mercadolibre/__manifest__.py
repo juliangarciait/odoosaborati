@@ -2,6 +2,7 @@
 {
     'name': "Mercado libre Odoo App Connector - Vex Soluciones ",
 
+
     'summary': """
         Module to synchronize odoo with Mercado Libre""",
 
@@ -25,9 +26,10 @@
     'depends': ['base_conector_vex'],
 
     # always loaded
-    'data': [
-        'security/ir.model.access.csv',
-        'views/vex_instance.xml',
+'data': [
+        'multiversion/security/ir.model.access.csv',
+        'multiversion/security/group.xml',
+        'multiversion/views/vex_instance.xml',
         #'views/vex_soluciones_product_attribute.xml',
 
         'views/vex_soluciones_product_product.xml',
@@ -37,14 +39,14 @@
         #'views/vex_soluciones_questions.xml',
         'views/vex_soluciones_product_template.xml',
         'views/vex_soluciones_customers.xml',
-        'wizard/vex_soluciones_meli_action_synchro.xml',
+        'multiversion/wizard/vex_soluciones_meli_action_synchro.xml',
         #'wizard/vex_soluciones_stock.xml',
-        'wizard/vex_soluciones_export.xml',
+        'multiversion/wizard/vex_soluciones_export.xml',
         'data/meli_action_list.xml',
         'data/order_status.xml',
         'data/vex_cron.xml',
         #'views/conectado.xml',
-        'views/vex_soluciones_meli_action_list.xml',
+        'multiversion/views/vex_soluciones_meli_action_list.xml',
     ],
 
     'images': ['static/description/odoo-mercadolibre.gif'],

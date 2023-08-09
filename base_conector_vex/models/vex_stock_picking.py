@@ -5,8 +5,10 @@ class StockPicking(models.Model):
     def export_vex_product(self):
         export_stock = False
         instances = self.env['vex.instance'].search([])
+        max_products = 0
         if instances:
             for instance in instances:
+                max_products += instance.max_export_stock_from_pickind
                 if instance.update_stock:
                     export_stock = True
         if export_stock:
@@ -17,11 +19,11 @@ class StockPicking(models.Model):
                         products.append(line.product_id.id)
 
             if products:
-                productss = self.env['product.product'].search([('id', 'in', products)])
+                productss = self.env['product.product'].search([('id', 'in', products)],limit=max_products)
                 productss.update_conector_vex()
 
 
     def button_validate(self):
         res = super().button_validate()
-        self.export_vex_product()
+        #self.export_vex_product()
         return res

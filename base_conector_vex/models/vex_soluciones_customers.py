@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+
 
 class Customers(models.Model):
     _name           = 'res.partner'

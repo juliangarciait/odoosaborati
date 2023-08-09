@@ -1,4 +1,5 @@
 <odoo>
+
     <data noupdate="1" >
         <record id="vex_soluciones_ir_cron_automatico_meli_sale" model="ir.cron">
         <field name="name">CRON AUTOMATICO VENTAS MELI</field>
@@ -27,6 +28,7 @@
     </record>
 
     </data>
+
 
 
 </odoo>
