@@ -64,8 +64,10 @@ class ProductTemplate(models.Model):
         for product in self:
             if product.detailed_type == 'product':
                 self.with_delay(eta=5).export_to_shopify(product)
+                time.sleep(2)
                 for bom_line in product.bom_line_ids:
                     self.with_delay(eta=3).export_to_shopify(bom_line.bom_id.product_tmpl_id)
+                    time.sleep(2)
                             
             shopify_templates = self.env['shopify.product.template.ept'].search(
                         [('product_tmpl_id', '=', product.id)])
