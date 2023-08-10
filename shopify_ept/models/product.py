@@ -139,6 +139,7 @@ class ProductTemplate(models.Model):
                 export_data.with_context({"active_ids" : [product_instance.id], "lang": self.env.user.lang}).manual_update_product_to_shopify()
                 
             #Add to collection if it has collections
+                time.sleep(3)
                 self.with_delay(eta=5).export_collections(product, product_instance)
                             
         return True
