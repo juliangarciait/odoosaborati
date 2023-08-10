@@ -13,6 +13,7 @@ class ProductProduct(models.Model):
     @api.depends_context('force_company')
     # @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids', "additional_cost_ids")
     def _compute_replacement_cost_new(self):
+        self = self.sudo()
         for record in self.sorted("bom_count"):
             new_replace_cost = 0.0
             record = record.sudo()
@@ -53,7 +54,7 @@ class ProductProduct(models.Model):
                     for cost in extra_costs: 
                         new_replace_cost += cost.cost
                 else:
-                    new_replace_cost = self.calculate_if_not_mrp_bom(record)
+                    new_replace_cost = record.calculate_if_not_mrp_bom(record)
             record.replacement_cost = new_replace_cost
 
     

@@ -50,6 +50,7 @@ class ProductTemplate(models.Model):
 
     @api.depends_context('force_company')
     def _compute_replacement_cost(self): 
+        self = self.sudo()
         for record in self: 
             replacement_cost = 0
             if record.product_variant_id.bom_count >= 0:
