@@ -20,6 +20,10 @@ class ProductProduct(models.Model):
             if variant.bom_count == 0:
                 order = "default_code"
             else:
+                has_mrp_bom = variant.bom_ids.filtered(lambda bom: bom.product_id.id == variant.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
+                if has_mrp_bom:
+                    if not product_template.product_variant_ids.ids in [line.product_id.id for line in has_mrp_bom.bom_line_ids]:
+                        order = "default_code"
                 order = "bom_count"
             
         for record in self.sorted(order):
