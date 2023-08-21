@@ -13,7 +13,7 @@ class ProductProduct(models.Model):
     @api.depends_context('force_company')
     def _compute_replacement_cost_new(self):
         self = self.sudo()
-        order = False
+        order = "id"
         product_template = self[0].product_tmpl_id
         if product_template:
             variant = product_template.product_variant_id
