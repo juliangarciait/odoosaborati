@@ -11,10 +11,18 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     @api.depends_context('force_company')
-    # @api.depends('seller_ids', 'bom_ids', 'bom_ids.bom_line_ids', "additional_cost_ids")
     def _compute_replacement_cost_new(self):
         self = self.sudo()
-        for record in self.sorted("bom_count"):
+        order = False
+        product_template = self[0].product_tmpl_id
+        if product_template:
+            variant = product_template.product_variant_id
+            if variant.bom_count == 0:
+                order = "default_code"
+            else:
+                order = "bom_count"
+            
+        for record in self.sorted(order):
             new_replace_cost = 0.0
             record = record.sudo()
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
@@ -166,6 +174,11 @@ class ProductProduct(models.Model):
     def _compute_price(self): 
         for record in self:
             record.list_price = 1.0
+            _logger.info("$"*900)
+            _logger.info(record.id)
+            _logger.info(record.replacement_cost)
+            _logger.info(record.with_company(self.company_id).replacement_cost)
             margin = self.env['product.margin'].search([('product_tmpl_id', '=', record.product_tmpl_id.id), ('company_id', '=', self.env.company.id)], order='create_date desc', limit=1).margin
-            if margin and record.replacement_cost:
-                record.list_price = record.replacement_cost / (1 - margin)
+            _logger.info(margin)
+            if margin and record.with_company(self.company_id).replacement_cost:
+                record.list_price = record.with_company(self.company_id).replacement_cost / (1 - margin)
