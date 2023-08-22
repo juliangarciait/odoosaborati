@@ -17,16 +17,17 @@ class ProductProduct(models.Model):
         product_template = self[0].product_tmpl_id
         if product_template:
             variant = product_template.product_variant_id
-            if variant.bom_count == 0:
-                order = "default_code"
+            if variant.variant_bom_ids:
+                for bom in  variant.variant_bom_ids:
+                    if self.ids in [line.product_id.id for line in bom.bom_line_ids]:
+                        order = "bom_count"
             else:
-                has_mrp_bom = variant.bom_ids.filtered(lambda bom: bom.product_id.id == variant.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
-                if has_mrp_bom:
-                    if not product_template.product_variant_ids.ids in [line.product_id.id for line in has_mrp_bom.bom_line_ids]:
-                        order = "default_code"
-                order = "bom_count"
-            
-        for record in self.sorted(order):
+                order = "default_code"
+            if False in [variant.default_code for variant in product_template.product_variant_ids]:
+                order = "id"
+        if self.env.context.get("active_model", "") == "product.template":
+            self = self.sorted(order)
+        for record in self:
             new_replace_cost = 0.0
             record = record.sudo()
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
