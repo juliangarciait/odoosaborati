@@ -21,6 +21,8 @@ class ProductProduct(models.Model):
                 for bom in  variant.variant_bom_ids:
                     if self.ids in [line.product_id.id for line in bom.bom_line_ids]:
                         order = "bom_count"
+                    else:
+                        order = "default_code"
             else:
                 order = "default_code"
             if False in [variant.default_code for variant in product_template.product_variant_ids]:
