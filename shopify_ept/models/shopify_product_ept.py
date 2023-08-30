@@ -654,6 +654,7 @@ class ShopifyProductProductEpt(models.Model):
             result = shopify_image.save()
             if result:
                 image.write({"shopify_image_id": shopify_image.id})
+            time.sleep(2)
             #if not image.shopify_image_id:
             #    shopify_image = shopify.Image()
             #    shopify_image.product_id = shopify_template.shopify_tmpl_id
