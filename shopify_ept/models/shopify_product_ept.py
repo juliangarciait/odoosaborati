@@ -630,6 +630,17 @@ class ShopifyProductProductEpt(models.Model):
 
         return True
 
+    def request_for_shopify_product_variant(self, shopify_variant_id):
+        shopify_variant = False
+        try:
+            shopify_variant = shopify.Product().find(variant_id=shopify_variant_id)
+        except ClientError as error:
+            if hasattr(error, "response") and error.response.code == 429 and error.response.msg == "Too Many Requests":
+                time.sleep(int(float(error.response.headers.get('Retry-After', 5))))
+                shopify_variant = shopify.Product().find(variant_id=shopify_variant_id)
+
+        return shopify_variant
+
     def update_product_images(self, shopify_template):
         """
         This method is used for the update Shopify product images if image is new in product then export image in
@@ -649,9 +660,12 @@ class ShopifyProductProductEpt(models.Model):
             shopify_image.product_id = shopify_template.shopify_tmpl_id
             shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
             shopify_image.position = position
+            exists_variant = False
             if image.shopify_variant_id:
                 shopify_image.variant_ids = [int(image.shopify_variant_id.variant_id)]
-            result = shopify_image.save()
+                exists_variant = self.request_for_shopify_product_variant(image.shopify_variant_id.variant_id)
+            if not exists_variant:
+                result = shopify_image.save()
             if result:
                 image.write({"shopify_image_id": shopify_image.id})
             time.sleep(2)
