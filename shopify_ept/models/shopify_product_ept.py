@@ -667,7 +667,7 @@ class ShopifyProductProductEpt(models.Model):
             if not exists_variant:
                 shopify_image.save()
             else:
-                shopify_image = exists_variant
+                shopify_image = exists_variant[0]
             image.write({"shopify_image_id": shopify_image.id})
             time.sleep(2)
             #if not image.shopify_image_id:
