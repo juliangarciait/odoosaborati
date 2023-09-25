@@ -665,9 +665,10 @@ class ShopifyProductProductEpt(models.Model):
                 shopify_image.variant_ids = [int(image.shopify_variant_id.variant_id)]
                 exists_variant = self.request_for_shopify_product_variant(image.shopify_variant_id.variant_id)
             if not exists_variant:
-                result = shopify_image.save()
-            if result:
-                image.write({"shopify_image_id": shopify_image.id})
+                shopify_image.save()
+            else:
+                shopify_image = exists_variant
+            image.write({"shopify_image_id": shopify_image.id})
             time.sleep(2)
             #if not image.shopify_image_id:
             #    shopify_image = shopify.Image()
