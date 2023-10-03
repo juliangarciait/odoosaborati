@@ -660,15 +660,17 @@ class ShopifyProductProductEpt(models.Model):
             shopify_image.product_id = shopify_template.shopify_tmpl_id
             shopify_image.attachment = image.odoo_image_id.image.decode("utf-8")
             shopify_image.position = position
-            exists_variant = False
+            #exists_variant = False
             if image.shopify_variant_id:
                 shopify_image.variant_ids = [int(image.shopify_variant_id.variant_id)]
-                exists_variant = self.request_for_shopify_product_variant(image.shopify_variant_id.variant_id)
-            if not exists_variant:
-                shopify_image.save()
-            else:
-                shopify_image = exists_variant[0]
-            image.write({"shopify_image_id": shopify_image.id})
+                #exists_variant = self.request_for_shopify_product_variant(image.shopify_variant_id.variant_id)
+            #if not exists_variant:
+                #shopify_image.save()
+            result = shopify_image.save()
+            #else:
+                #shopify_image = exists_variant[0]
+            if result:    
+                image.write({"shopify_image_id": shopify_image.id})
             time.sleep(2)
             #if not image.shopify_image_id:
             #    shopify_image = shopify.Image()
