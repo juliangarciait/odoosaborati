@@ -75,7 +75,7 @@ class AccountPayment(models.Model):
             query_res = self._cr.dictfetchall()
             for res in query_res:
                     #details.append(res)
-                    details += res['name']+"  $"+str(res["amount_total"]) + "\n"
-                    cantidad_pagada += float(res["amount_total"])
+                    details += res['name']+"  $"+str(res["amount"]) + "\n"
+                    cantidad_pagada += float(res["amount"])
             record.importe_pendiente = record.amount - cantidad_pagada
             record.invoice_details = details
