@@ -51,7 +51,7 @@ class AccountPayment(models.Model):
             #         # Aquí puedes formatear la información como prefieras
             self._cr.execute('''
                              SELECT
-                invoice.name, invoice.amount_total
+                invoice.name, part.amount
             FROM account_payment payment
             JOIN account_move move ON move.id = payment.move_id
             JOIN account_move_line line ON line.move_id = move.id

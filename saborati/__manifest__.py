@@ -19,6 +19,7 @@
         'sale',
         'sale_management',
         'queue_job',
+        'base_conector_vex'
     ],
     'data' : [
         'security/ir.model.access.csv',
