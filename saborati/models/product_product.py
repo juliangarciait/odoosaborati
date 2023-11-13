@@ -28,12 +28,15 @@ class ProductProduct(models.Model):
             if False in [variant.default_code for variant in product_template.product_variant_ids]:
                 order = "id"
         if self.env.context.get("active_model", "") == "product.template":
-            self = self.sorted(order)
+            try:
+                self = self.sorted(order)
+            except:
+                print("nada")
         for record in self:
             new_replace_cost = 0.0
             record = record.sudo()
             has_mrp_bom = record.bom_ids.filtered(lambda bom: bom.product_id.id == record.id and bom.company_id.id == self.env.company.id).sorted('write_date', True)
-            
+            #aqui va a estar el problema
             if len(has_mrp_bom) > 0:
                 for line in has_mrp_bom.bom_line_ids:
                     new_replace_cost += line.product_id.replacement_cost * line.product_qty

@@ -44,6 +44,7 @@
         #'views/stock_picking_views.xml',
         'views/stock_quant_views.xml',
         'views/mrp_production_views.xml',
+        'views/account_payments.xml',
         'views/pos_config_view.xml',
         'wizard/assign_margin_to_product_views.xml',
         'wizard/assign_collection_to_product_views.xml',
