@@ -21,4 +21,15 @@
         </field>
     </record>
 
+        <record id="payment_tree_inherid_id" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherid.id</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_formaccount.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_company_currency_signed']" position="after">
+                <field name="importe_pendiente" widget="monetary" string="Importe pendiente" />
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
