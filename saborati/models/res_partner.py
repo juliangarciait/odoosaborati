@@ -18,6 +18,7 @@ class ResPartner(models.Model):
         for partner in self: 
             partner.company_filter = partner.company_type
 
+    @api.model
     def create(self, vals_list): 
         res = super(ResPartner, self).create(vals_list)
 
