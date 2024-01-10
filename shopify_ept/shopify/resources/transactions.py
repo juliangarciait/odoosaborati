@@ -1,5 +1,5 @@
 from ..base import ShopifyResource
-from .. import mixins
+from shopify import mixins
 
 
 class Transactions(ShopifyResource, mixins.Metafields):

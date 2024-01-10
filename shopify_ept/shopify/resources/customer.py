@@ -1,5 +1,5 @@
 from ..base import ShopifyResource
-from .. import mixins
+from shopify import mixins
 from .customer_invite import CustomerInvite
 from .order import Order
 

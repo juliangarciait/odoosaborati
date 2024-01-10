@@ -10,8 +10,8 @@ except ImportError:
 import re
 from contextlib import contextmanager
 from six.moves import urllib
-from .api_access import ApiAccess
-from .api_version import ApiVersion, Release, Unstable
+from shopify.api_access import ApiAccess
+from shopify.api_version import ApiVersion, Release, Unstable
 import six
 
 

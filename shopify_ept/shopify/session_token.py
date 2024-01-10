@@ -3,7 +3,7 @@ import re
 import six
 import sys
 
-from .utils import shop_url
+from shopify.utils import shop_url
 
 if sys.version_info[0] < 3:  # Backwards compatibility for python < v3.0.0
     from urlparse import urljoin
@@ -14,6 +14,7 @@ else:
 ALGORITHM = "HS256"
 PREFIX = "Bearer "
 REQUIRED_FIELDS = ["iss", "dest", "sub", "jti", "sid"]
+LEEWAY_SECONDS = 10
 
 
 class SessionTokenError(Exception):
@@ -54,6 +55,9 @@ def _decode_session_token(session_token, api_key, secret):
             secret,
             audience=api_key,
             algorithms=[ALGORITHM],
+            # AppBridge frequently sends future `nbf`, and it causes `ImmatureSignatureError`.
+            # Accept few seconds clock skew to avoid this error.
+            leeway=LEEWAY_SECONDS,
             options={"require": REQUIRED_FIELDS},
         )
     except jwt.exceptions.PyJWTError as exception:

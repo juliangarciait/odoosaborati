@@ -1,24 +1,21 @@
-from . import pyactiveresource
-from . pyactiveresource.activeresource import ActiveResource, ResourceMeta, formats
-from . import yamlobjects
-from . import mixins as mixins
-from .. import shopify
+import pyactiveresource.connection
+from pyactiveresource.activeresource import ActiveResource, ResourceMeta, formats
+import shopify.yamlobjects
+import shopify.mixins as mixins
+import shopify
 import threading
 import sys
 from six.moves import urllib
 import six
 
-from .collection import PaginatedCollection
-from . pyactiveresource.collection import Collection
+from shopify.collection import PaginatedCollection
+from pyactiveresource.collection import Collection
 
 # Store the response from the last request in the connection object
 
 
 class ShopifyConnection(pyactiveresource.connection.Connection):
     response = None
-
-    def __init__(self, site, user=None, password=None, timeout=None, format=formats.JSONFormat):
-        super(ShopifyConnection, self).__init__(site, user, password, timeout, format)
 
     def _open(self, *args, **kwargs):
         self.response = None

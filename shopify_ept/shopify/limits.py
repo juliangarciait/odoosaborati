@@ -1,4 +1,4 @@
-from .. import shopify
+import shopify
 
 
 class Limits(object):

@@ -1,4 +1,4 @@
-from . import resources
+import shopify.resources
 
 
 class Countable(object):

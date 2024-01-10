@@ -1,5 +1,5 @@
 from ..base import ShopifyResource
-from .. import mixins
+from shopify import mixins
 
 
 class Page(ShopifyResource, mixins.Metafields, mixins.Events):
