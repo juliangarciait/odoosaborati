@@ -9,7 +9,7 @@ from six.moves import urllib
 import six
 
 from .collection import PaginatedCollection
-from pyactiveresource.collection import Collection
+from .pyactiveresource.collection import Collection
 
 # Store the response from the last request in the connection object
 

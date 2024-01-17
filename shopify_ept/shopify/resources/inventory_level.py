@@ -1,5 +1,5 @@
 from ..base import ShopifyResource
-import shopify
+from ... import shopify
 import json
 
 

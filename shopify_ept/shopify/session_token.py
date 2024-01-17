@@ -3,7 +3,7 @@ import re
 import six
 import sys
 
-from shopify.utils import shop_url
+from .utils import shop_url
 
 if sys.version_info[0] < 3:  # Backwards compatibility for python < v3.0.0
     from urlparse import urljoin

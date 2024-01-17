@@ -1,4 +1,4 @@
-import shopify
+from ... import shopify
 from ..base import ShopifyResource
 from six.moves import urllib
 import json

@@ -1,5 +1,5 @@
 from ..base import ShopifyResource
-from shopify import mixins
+from .. import mixins
 from .comment import Comment
 
 
