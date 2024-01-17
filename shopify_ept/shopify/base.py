@@ -1,14 +1,14 @@
-import pyactiveresource.connection
-from pyactiveresource.activeresource import ActiveResource, ResourceMeta, formats
-import shopify.yamlobjects
-import shopify.mixins as mixins
-import shopify
+from . import pyactiveresource
+from .pyactiveresource.activeresource import ActiveResource, ResourceMeta, formats
+from . import yamlobjects
+from . import mixins as mixins
+from .. import shopify
 import threading
 import sys
 from six.moves import urllib
 import six
 
-from shopify.collection import PaginatedCollection
+from .collection import PaginatedCollection
 from pyactiveresource.collection import Collection
 
 # Store the response from the last request in the connection object
