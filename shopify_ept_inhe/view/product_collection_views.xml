@@ -18,24 +18,7 @@
         <field name="code">action = model.update_collections_in_shopify()</field>
     </record>
 
-    <record id="product_collection_shopify_views_inhe" model="ir.ui.view">
-        <field name="name">product.collection.shopify.views.inhe</field>
-        <field name="model">product.collection</field>
-        <field name="inherit_id" ref="shopify_ept_inhe.product_collection_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="/form/sheet/notebook/page[@name='info']" position="after">
-                <page string="Online" name="online">
-                    <field name="shopify_product_collection_ids" context="{'default_collection_id': active_id}" widget="many2one_list" nolabel="1">
-                        <tree string="Collections in Shopify" editable="bottom" create="false">
-                            <field name="is_exported" readonly="1"/>
-                            <field name="name" readonly="1"/>
-                            <field name="shopify_instance_id" readonly="1"/>
-                        </tree>
-                    </field>
-                </page>
-            </xpath>
-        </field>
-    </record>
+
     <!-- SHOPIFY PRODUCT COLLECTIONS-->
 
     <record id="shopify_product_collection_update_action_server" model="ir.actions.server">
@@ -80,6 +63,25 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="product_collection_shopify_views_inhe" model="ir.ui.view">
+        <field name="name">product.collection.shopify.views.inhe</field>
+        <field name="model">product.collection</field>
+        <field name="inherit_id" ref="shopify_ept_inhe.product_collection_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@name='info']" position="after">
+                <page string="Online" name="online">
+                    <field name="shopify_product_collection_ids" context="{'default_collection_id': active_id}" widget="many2one_list" nolabel="1">
+                        <tree string="Collections in Shopify" editable="bottom" create="false">
+                            <field name="is_exported" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="shopify_instance_id" readonly="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 
