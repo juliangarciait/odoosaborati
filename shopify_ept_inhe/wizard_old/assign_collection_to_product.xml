@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="assign_collection_to_product_view_inherit" model="ir.ui.view">
+        <field name="name">assign.collection.to.product.wizard.view.inherit</field>
+        <field name="model">assign.collection.to.product</field>
+        <field name="inherit_id" ref="shopify_ept_inhe.assign_collection_to_product_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group/field[@name='collection_ids']" position="before">
+                <field name="instance_id" string="Selecciona la instancia para colecciones:" options="{'no_create_edit':True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//form/group/field[@name='collection_ids']" position="attributes">
+                <attribute name="domain">[('company_id', '=', allowed_company_ids[0]), ('shopify_instance_id', '=', instance_id)]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

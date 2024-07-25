@@ -28,7 +28,7 @@ class ProductTemplate(models.Model):
 
     company_ids = fields.Many2many('res.company', string="Companies")
 
-    product_collection_ids = fields.Many2many('shopify.product.collection', string="Collections")
+    #product_collection_ids = fields.Many2many('shopify.product.collection', string="Collections")
     
     product_prices_ids = fields.One2many('product.prices', 'product_tmpl_id')
     
@@ -114,7 +114,7 @@ class ProductTemplate(models.Model):
             'type' : 'ir.actions.act_window', 
             'res_model' : 'assign.margin.to.product', 
             'target' : 'new', 
-            'view_id' : self.env.ref('saborati.assign_margin_to_product_view').id,
+            'view_id' : self.env.ref('shopify_ept_inhe.assign_margin_to_product_view').id,
             'context' : {'ids' : self.env.context.get('active_ids', [])}
         }
         
@@ -124,7 +124,7 @@ class ProductTemplate(models.Model):
             'type'      : 'ir.actions.act_window', 
             'res_model' : 'assign.collection.to.product',
             'target'    : 'new', 
-            'view_id'   : self.env.ref('saborati.assign_collection_to_product_view').id,
+            'view_id'   : self.env.ref('shopify_ept_inhe.assign_collection_to_product_view').id,
             'context'   : {'ids' : self.env.context.get('active_ids', [])}
         }
 

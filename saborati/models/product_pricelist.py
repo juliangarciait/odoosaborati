@@ -43,3 +43,4 @@ class ProductPricelistItem(models.Model):
                 replacement_cost = has_mrp_bom.replacement_cost_total
                 
         return replacement_cost
+    

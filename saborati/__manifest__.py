@@ -38,7 +38,7 @@
         'views/res_company.xml',
         'views/crm_lead_views.xml',
         'views/res_partner.xml',
-        'views/product_collection_views.xml',
+        #'views/product_collection_views.xml',
         'views/product_pricelist_views.xml',
         'views/purchase_order_views.xml',
         'views/utm_medium_views.xml',
@@ -48,7 +48,7 @@
         'views/account_payments.xml',
         'views/pos_config_view.xml',
         'wizard/assign_margin_to_product_views.xml',
-        'wizard/assign_collection_to_product_views.xml',
+        #'wizard/assign_collection_to_product_views.xml',
 
         'report/shopify_report_prices.xml',
         'report/sale_report_templates.xml',

@@ -12,13 +12,13 @@ class StockQuant(models.Model):
     def action_apply_inventory(self):
         res = super(StockQuant, self).action_apply_inventory()
         
-        for product in self.product_id.product_tmpl_id.shopify_product_template_ids:
+        # for product in self.product_id.product_tmpl_id.shopify_product_template_ids:
             
-            process_import_export_obj = self.env['shopify.process.import.export'].create({
-                'shopify_instance_id' : product.shopify_instance_id.id,
+        #     process_import_export_obj = self.env['shopify.process.import.export'].create({
+        #         'shopify_instance_id' : product.shopify_instance_id.id,
                 
-            })
-            process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
+        #     })
+        #     process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
 
         return res        
         

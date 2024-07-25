@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="product_collection_action_server" model="ir.actions.server">
+        <field name="name">Exportar Collections a Shopify</field>
+        <field name="model_id" ref="model_product_collection"/>
+        <field name="binding_model_id" ref="model_product_collection"/>
+        <field name="state">code</field>
+        <field name="code">action = model.export_collections()</field>
+    </record>
+
+    <record id="product_collection_update_action_server" model="ir.actions.server">
+        <field name="name">Actualizar Collections en Shopify</field>
+        <field name="model_id" ref="model_product_collection"/>
+        <field name="binding_model_id" ref="model_product_collection"/>
+        <field name="state">code</field>
+        <field name="code">action = model.update_collections_in_shopify()</field>
+    </record>
+
+    <record id="product_collection_shopify_views_inhe" model="ir.ui.view">
+        <field name="name">product.collection.shopify.views.inhe</field>
+        <field name="model">product.collection</field>
+        <field name="inherit_id" ref="shopify_ept_inhe.product_collection_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@name='info']" position="after">
+                <page string="Online" name="online">
+                    <field name="shopify_product_collection_ids" context="{'default_collection_id': active_id}" widget="many2one_list" nolabel="1">
+                        <tree string="Collections in Shopify" editable="bottom" create="false">
+                            <field name="is_exported" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="shopify_instance_id" readonly="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <!-- SHOPIFY PRODUCT COLLECTIONS-->
+
+    <record id="shopify_product_collection_update_action_server" model="ir.actions.server">
+        <field name="name">Actualizar Collections en Shopify</field>
+        <field name="model_id" ref="model_shopify_product_collection"/>
+        <field name="binding_model_id" ref="model_shopify_product_collection"/>
+        <field name="state">code</field>
+        <field name="code">action = model.update_collections_in_shopify()</field>
+    </record>
+
+    <record id="product_collection_tree_view" model="ir.ui.view">
+        <field name="name">Product Collection Tree View</field>
+        <field name="model">product.collection</field>
+        <field name="arch" type="xml">
+            <tree string="Collections">
+                <field name="name" string="Name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_collection_form_view" model="ir.ui.view">
+        <field name="name">Product Collection Form View</field>
+        <field name="model">product.collection</field>
+        <field name="arch" type="xml">
+            <form string="Collections">
+                <sheet>
+                    <h1>
+                        <field name="image_1920" widget="image" class="oe_avatar" nolabel="1"/>
+                        <field name="name"/>
+                    </h1>
+                    <notebook>
+                        <page string="Information" name="info">
+                            <group>
+                                <group>
+                                    <field name="body_html" string="Description"/>
+                                </group>
+                                <group>
+                                    <field name="company_ids" string="Companies" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_collection" model="ir.actions.act_window">
+        <field name="name">Collections</field>
+        <field name="res_model">product.collection</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('company_ids', '=', allowed_company_ids[0])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No collections registered
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="product_collection" name="Collections" action="action_product_collection" parent="stock.menu_product_in_config_stock" sequence="6" groups="saborati.group_admin_in_all_companies"/>
+
+</odoo>

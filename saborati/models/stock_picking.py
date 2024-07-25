@@ -17,14 +17,14 @@ class StockPicking(models.Model):
             if line.product_id.detailed_type == 'product': 
                 line.product_id._compute_replacement_cost()
            
-            for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
-                process_import_export_obj = self.env['shopify.process.import.export'].create({
-                    'shopify_instance_id' : product.shopify_instance_id.id,
-                })
-                products.append(product.id)
+        #     for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
+        #         process_import_export_obj = self.env['shopify.process.import.export'].create({
+        #             'shopify_instance_id' : product.shopify_instance_id.id,
+        #         })
+        #         products.append(product.id)
                 
-        if process_import_export_obj: 
-            process_import_export_obj.with_context({'active_ids' : products}).sudo().shopify_selective_product_stock_export()
+        # if process_import_export_obj: 
+        #     process_import_export_obj.with_context({'active_ids' : products}).sudo().shopify_selective_product_stock_export()
 
         
         
@@ -40,20 +40,20 @@ class StockPicking(models.Model):
     
     def _action_done(self): 
         res = super(StockPicking, self)._action_done()
-        products = []
-        process_import_export_obj = False
-        for line in self.move_ids_without_package: 
-            if line.product_id.detailed_type == 'product': 
-                line.product_id._compute_replacement_cost()
+        # products = []
+        # process_import_export_obj = False
+        # for line in self.move_ids_without_package: 
+        #     if line.product_id.detailed_type == 'product': 
+        #         line.product_id._compute_replacement_cost()
            
-            for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
-                process_import_export_obj = self.env['shopify.process.import.export'].create({
-                    'shopify_instance_id' : product.shopify_instance_id.id,
-                })
-                products.append(product.id)
+        #     for product in line.product_id.product_tmpl_id.shopify_product_template_ids: 
+        #         process_import_export_obj = self.env['shopify.process.import.export'].create({
+        #             'shopify_instance_id' : product.shopify_instance_id.id,
+        #         })
+        #         products.append(product.id)
                 
-        if process_import_export_obj: 
-            process_import_export_obj.with_context({'active_ids' : products}).sudo().shopify_selective_product_stock_export()
+        # if process_import_export_obj: 
+        #     process_import_export_obj.with_context({'active_ids' : products}).sudo().shopify_selective_product_stock_export()
             
         return res
     

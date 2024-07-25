@@ -13,29 +13,29 @@ class StockProductionLot(models.Model):
     def create(self, vals_list): 
         res = super(StockProductionLot, self).create(vals_list)
         
-        process_import_export_obj = False
-        for product in res.product_id.product_tmpl_id.shopify_product_template_ids:
+        # process_import_export_obj = False
+        # for product in res.product_id.product_tmpl_id.shopify_product_template_ids:
             
-            process_import_export_obj = self.env['shopify.process.import.export'].create({
-                'shopify_instance_id' : product.shopify_instance_id.id,
-            })
+        #     process_import_export_obj = self.env['shopify.process.import.export'].create({
+        #         'shopify_instance_id' : product.shopify_instance_id.id,
+        #     })
             
-            if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).sudo().shopify_selective_product_stock_export()
+        #     if process_import_export_obj: 
+        #         process_import_export_obj.with_context({'active_ids' : [product.id]}).sudo().shopify_selective_product_stock_export()
         
         return res
     
     def write(self, vals): 
         res = super(StockProductionLot, self).write(vals)
         
-        process_import_export_obj = False
-        for product in self.product_id.product_tmpl_id.shopify_product_template_ids:
+        # process_import_export_obj = False
+        # for product in self.product_id.product_tmpl_id.shopify_product_template_ids:
             
-            process_import_export_obj = self.env['shopify.process.import.export'].create({
-                'shopify_instance_id' : product.shopify_instance_id.id,
-            })
+        #     process_import_export_obj = self.env['shopify.process.import.export'].create({
+        #         'shopify_instance_id' : product.shopify_instance_id.id,
+        #     })
             
-            if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).sudo().shopify_selective_product_stock_export()
+        #     if process_import_export_obj: 
+        #         process_import_export_obj.with_context({'active_ids' : [product.id]}).sudo().shopify_selective_product_stock_export()
         
         return res
