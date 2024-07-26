@@ -59,13 +59,13 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model): 
     _inherit = 'sale.order.line'
 
-    @api.onchange('product_id')
-    def product_id_change(self):
-        res = super(SaleOrderLine, self).product_id_change()
+    # @api.onchange('product_id')
+    # def product_id_change(self):
+    #     res = super(SaleOrderLine, self).product_id_change()
         
-        self._update_description()
+    #     self._update_description()
         
-        return res
+    #     return res
             
     def _update_description(self):
         if not self.product_id:
