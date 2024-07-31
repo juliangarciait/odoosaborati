@@ -21,7 +21,7 @@ class MrpProduction(models.Model):
             })
 
             if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).with_delay(eta=2).shopify_selective_product_stock_export()
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
         
         return res
     
@@ -44,7 +44,7 @@ class MrpProduction(models.Model):
             })
 
             if process_import_export_obj: 
-                process_import_export_obj.with_context({'active_ids' : [product.id]}).with_delay(eta=2).shopify_selective_product_stock_export()
+                process_import_export_obj.with_context({'active_ids' : [product.id]}).shopify_selective_product_stock_export()
         
         return res
     
